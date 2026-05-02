@@ -753,7 +753,7 @@ async function register() {
   try {
     // op::RegUser = crc32("RegUser") — берём из ABI контракта
     // Кодируем: 32bit op + 64bit queryId + 32bit referrerID
-    const opRegUser = 0x4dcbb72a;
+    const opRegUser = 0xc670f579;
     const queryId = 0n;
 
     // Формируем payload в base64 вручную через DataView
@@ -794,7 +794,7 @@ async function buyLevel(level) {
   showToast(`Покупка уровня ${level}...`, '');
 
   try {
-    const opBuyLevel = 0x4f3c3b3a;
+    const opBuyLevel = 0x03398cc8;
     const buf = new ArrayBuffer(9);
     const view = new DataView(buf);
     view.setUint32(0, opBuyLevel);
