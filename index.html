@@ -558,6 +558,8 @@ tonConnectUI.onStatusChange(wallet => {
     btn.textContent = shortenAddr(walletAddress);
     btn.classList.add('connected');
     showToast('Кошелёк подключён!', 'success');
+    updateRefLink();
+    renderTree();
     loadUserData();
     renderDashboard();
   } else {
@@ -565,6 +567,8 @@ tonConnectUI.onStatusChange(wallet => {
     const btn = document.getElementById('walletBtn');
     btn.textContent = 'CONNECT WALLET';
     btn.classList.remove('connected');
+    userState = { registered: false, id: 0, referrerID: 0, referralCount: 0, levels: Array(8).fill(0) };
+    document.getElementById('refLink').textContent = 'Подключите кошелёк для получения ссылки';
     renderDashboard();
   }
 });
@@ -786,7 +790,7 @@ async function register() {
       validUntil: Math.floor(Date.now() / 1000) + 600,
       messages: [{
         address: CONTRACT_ADDRESS,
-        amount: String(Math.floor(0.1 * 1e9) + 50000000), // 0.1 TON + 0.05 TON газ
+        amount: String(Math.floor(0.1 * 1e9) + 200000000), // 0.1 TON + 0.2 TON газ
         payload: cell
       }]
     });
@@ -847,10 +851,24 @@ function renderTree() {
   }
 }
 
+// Адрес владельца (raw формат)
+const OWNER_WALLET_RAW = '0:e598cd4dc0b5aaa47ab9a5e452c0f0e8729408d36121ffcc60b1e48a82028941';
+
 function updateRefLink() {
   const el = document.getElementById('refLink');
+
+  // Если это владельческий кошелёк — сразу показываем как ID=1
+  if (walletAddress && walletAddress.toLowerCase() === OWNER_WALLET_RAW.toLowerCase()) {
+    el.textContent = `https://t.me/${BOT_USERNAME}?start=1`;
+    userState.id = 1;
+    userState.registered = true;
+    return;
+  }
+
   if (userState.id) {
     el.textContent = `https://t.me/${BOT_USERNAME}?start=${userState.id}`;
+  } else if (walletAddress) {
+    el.textContent = 'Зарегистрируйтесь чтобы получить ссылку';
   }
 }
 
