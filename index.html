@@ -1162,7 +1162,7 @@ async function register() {
   btn.innerHTML = '⏳ ...';
 
   try {
-    const cell = buildCell(0xc670f579, 0, refID);
+    const cell = await buildCell(0xc670f579, 0, refID);
     await tonConnectUI.sendTransaction({
       validUntil: Math.floor(Date.now() / 1000) + 600,
       messages: [{address: CONTRACT_ADDRESS, amount: String(Math.floor(0.15 * 1e9)), payload: cell}]
@@ -1180,7 +1180,7 @@ async function buyLevel(level) {
   if (!walletAddress) { showToast(t('need_wallet'), 'error'); return; }
   const price = LEVELS[level - 1].price;
   try {
-    const cell = buildCellLevel(0x03398cc8, 0, level);
+    const cell = await buildCellLevel(0x03398cc8, 0, level);
     await tonConnectUI.sendTransaction({
       validUntil: Math.floor(Date.now() / 1000) + 600,
       messages: [{address: CONTRACT_ADDRESS, amount: String(Math.floor((price + 0.05) * 1e9)), payload: cell}]
@@ -1192,20 +1192,22 @@ async function buyLevel(level) {
   }
 }
 
-function buildCell(op, queryId, referrerID) {
+async function buildCell(op, queryId, referrerID) {
   const cell = new TonWeb.boc.Cell();
   cell.bits.writeUint(op, 32);
   cell.bits.writeUint(0, 64);
   cell.bits.writeUint(referrerID, 32);
-  return TonWeb.utils.bytesToBase64(cell.toBoc(false));
+  const boc = await cell.toBoc(false);
+  return TonWeb.utils.bytesToBase64(boc);
 }
 
-function buildCellLevel(op, queryId, level) {
+async function buildCellLevel(op, queryId, level) {
   const cell = new TonWeb.boc.Cell();
   cell.bits.writeUint(op, 32);
   cell.bits.writeUint(0, 64);
   cell.bits.writeUint(level, 8);
-  return TonWeb.utils.bytesToBase64(cell.toBoc(false));
+  const boc = await cell.toBoc(false);
+  return TonWeb.utils.bytesToBase64(boc);
 }
 
 function showPage(name) {
