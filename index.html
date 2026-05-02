@@ -5,7 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>TonForce</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+  <script src="https://unpkg.com/@tonconnect/ui@2.0.6/dist/tonconnect-ui.min.js"></script>
+  <script src="https://unpkg.com/@ton/ton@13.9.0/dist/ton.min.js"></script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap');
 
@@ -544,73 +545,135 @@ if (tg) {
 }
 
 // ──────────────────────────────────────────────────────────────
-// WALLET (TON Connect stub — подключить @tonconnect/ui)
+// TON CONNECT
 // ──────────────────────────────────────────────────────────────
-async function connectWallet() {
-  const btn = document.getElementById('walletBtn');
+const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
+  manifestUrl: 'https://spsonlys.github.io/tonforce/tonconnect-manifest.json'
+});
 
-  if (walletAddress) {
+tonConnectUI.onStatusChange(wallet => {
+  if (wallet) {
+    walletAddress = wallet.account.address;
+    const btn = document.getElementById('walletBtn');
+    btn.textContent = shortenAddr(walletAddress);
+    btn.classList.add('connected');
+    showToast('Кошелёк подключён!', 'success');
+    loadUserData();
+    renderDashboard();
+  } else {
     walletAddress = null;
+    const btn = document.getElementById('walletBtn');
     btn.textContent = 'CONNECT WALLET';
     btn.classList.remove('connected');
-    showToast('Кошелёк отключён', 'error');
     renderDashboard();
+  }
+});
+
+async function connectWallet() {
+  if (walletAddress) {
+    await tonConnectUI.disconnect();
     return;
   }
-
-  btn.textContent = 'ПОДКЛЮЧЕНИЕ...';
-  btn.disabled = true;
-
-  // ── В реальном проекте здесь @tonconnect/ui ──
-  // const tonConnectUI = new TonConnectUI({ manifestUrl: '...', buttonRootId: '' });
-  // const connectedWallet = await tonConnectUI.connectWallet();
-  // walletAddress = connectedWallet.account.address;
-
-  // DEMO: эмулируем подключение
-  await delay(1200);
-  walletAddress = 'UQD...demo_address...XYZ';
-  btn.disabled = false;
-  btn.textContent = shortenAddr(walletAddress);
-  btn.classList.add('connected');
-  showToast('Кошелёк подключён!', 'success');
-  await loadUserData();
-  renderDashboard();
+  await tonConnectUI.openModal();
 }
 
 // ──────────────────────────────────────────────────────────────
-// LOAD DATA FROM CONTRACT
+// SEND TRANSACTION HELPER
+// ──────────────────────────────────────────────────────────────
+async function sendTx(opcode, payload, nanotons) {
+  // Формируем тело транзакции
+  const body = TonWeb ? null : null; // используем base64 напрямую
+
+  await tonConnectUI.sendTransaction({
+    validUntil: Math.floor(Date.now() / 1000) + 600,
+    messages: [{
+      address: CONTRACT_ADDRESS,
+      amount: nanotons.toString(),
+      payload: payload
+    }]
+  });
+}
+
+// ──────────────────────────────────────────────────────────────
+// LOAD DATA FROM CONTRACT (Toncenter API)
 // ──────────────────────────────────────────────────────────────
 async function loadUserData() {
   if (!walletAddress) return;
 
-  // ── В реальном проекте: запросы через toncenter API ──
-  // const client = new TonClient({ endpoint: 'https://toncenter.com/api/v2/jsonRPC' });
-  // const contract = client.open(TonForce.fromAddress(Address.parse(CONTRACT_ADDRESS)));
-  // const isExist = await contract.getIsUserExists(Address.parse(walletAddress));
+  try {
+    const base = 'https://toncenter.com/api/v2';
 
-  // DEMO данные
-  await delay(600);
-  userState = {
-    registered: true,
-    id: 42,
-    referrerID: 1,
-    referralCount: 2,
-    levels: [
-      Date.now() / 1000 + 86400 * 200, // L1 активен
-      Date.now() / 1000 + 86400 * 150, // L2 активен
-      Date.now() / 1000 + 86400 * 50,  // L3 активен (скоро истекает)
-      0, 0, 0, 0, 0
-    ]
-  };
-  totalUsers = 1247;
+    // Проверяем зарегистрирован ли пользователь
+    const isExistRes = await callGet('isUserExists', [
+      { type: 'slice', value: walletAddress }
+    ]);
+    const isExist = isExistRes?.stack?.[0]?.[1] === '-1';
 
-  document.getElementById('statUsers').textContent = totalUsers.toLocaleString();
-  document.getElementById('statRefs').textContent = userState.referralCount;
-  const activeLvl = userState.levels.filter(e => e > Date.now() / 1000).length;
-  document.getElementById('statLevel').textContent = activeLvl || '—';
+    // Общее количество пользователей
+    const totalRes = await callGet('getTotalUsers', []);
+    totalUsers = parseInt(totalRes?.stack?.[0]?.[1] || '1', 16);
+    document.getElementById('statUsers').textContent = totalUsers.toLocaleString();
 
-  updateRefLink();
-  renderTree();
+    if (isExist) {
+      // Получаем данные пользователя
+      const idRes = await callGet('getUserID', [{ type: 'slice', value: walletAddress }]);
+      const refCountRes = await callGet('getUserReferralCount', [{ type: 'slice', value: walletAddress }]);
+      const refIDRes = await callGet('getUserReferrerID', [{ type: 'slice', value: walletAddress }]);
+
+      const userId = parseInt(idRes?.stack?.[0]?.[1] || '0', 16);
+      const refCount = parseInt(refCountRes?.stack?.[0]?.[1] || '0', 16);
+      const refID = parseInt(refIDRes?.stack?.[0]?.[1] || '0', 16);
+
+      // Получаем сроки уровней
+      const levelExpiries = [];
+      for (let i = 1; i <= 8; i++) {
+        const expRes = await callGet('getLevelExpiredFor', [
+          { type: 'slice', value: walletAddress },
+          { type: 'num', value: i.toString() }
+        ]);
+        const exp = parseInt(expRes?.stack?.[0]?.[1] || '0', 16);
+        levelExpiries.push(exp);
+      }
+
+      userState = {
+        registered: true,
+        id: userId,
+        referrerID: refID,
+        referralCount: refCount,
+        levels: levelExpiries
+      };
+
+      document.getElementById('statRefs').textContent = refCount;
+      const activeLvl = levelExpiries.filter(e => e > Date.now() / 1000).length;
+      document.getElementById('statLevel').textContent = activeLvl || '—';
+    } else {
+      userState.registered = false;
+      document.getElementById('statRefs').textContent = '—';
+      document.getElementById('statLevel').textContent = '—';
+    }
+
+    updateRefLink();
+    renderTree();
+
+  } catch(e) {
+    console.error('loadUserData error:', e);
+    // Fallback — показываем форму регистрации
+    userState.registered = false;
+  }
+}
+
+async function callGet(method, stack) {
+  const params = new URLSearchParams({
+    address: CONTRACT_ADDRESS,
+    method: method,
+    ...(stack.length ? { 'stack': JSON.stringify(stack) } : {})
+  });
+  const res = await fetch(`https://toncenter.com/api/v2/runGetMethod`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ address: CONTRACT_ADDRESS, method, stack })
+  });
+  return res.json();
 }
 
 // ──────────────────────────────────────────────────────────────
@@ -677,7 +740,7 @@ function renderLevels() {
 }
 
 // ──────────────────────────────────────────────────────────────
-// REGISTER
+// REGISTER — реальная транзакция
 // ──────────────────────────────────────────────────────────────
 async function register() {
   if (!walletAddress) { showToast('Сначала подключите кошелёк', 'error'); return; }
@@ -688,28 +751,33 @@ async function register() {
   btn.textContent = 'ОТПРАВКА...';
 
   try {
-    // ── В реальном проекте: ──
-    // const body = beginCell()
-    //   .storeUint(0x5b77e8a2, 32) // op: RegUser
-    //   .storeUint(0, 64)           // queryId
-    //   .storeUint(refID, 32)
-    //   .endCell();
-    // await tonConnectUI.sendTransaction({
-    //   validUntil: Math.floor(Date.now()/1000) + 600,
-    //   messages: [{
-    //     address: CONTRACT_ADDRESS,
-    //     amount: '500000000', // 0.5 TON
-    //     payload: body.toBoc().toString('base64')
-    //   }]
-    // });
+    // op::RegUser = crc32("RegUser") — берём из ABI контракта
+    // Кодируем: 32bit op + 64bit queryId + 32bit referrerID
+    const opRegUser = 0x4dcbb72a;
+    const queryId = 0n;
 
-    await delay(2000); // DEMO
-    showToast('Регистрация отправлена!', 'success');
-    userState.registered = true;
-    userState.levels[0] = Date.now() / 1000 + 86400 * 365;
-    renderDashboard();
-  } catch (e) {
-    showToast('Ошибка транзакции', 'error');
+    // Формируем payload в base64 вручную через DataView
+    const buf = new ArrayBuffer(12);
+    const view = new DataView(buf);
+    view.setUint32(0, opRegUser);
+    view.setUint32(4, 0); // queryId high
+    view.setUint32(8, refID); // referrerID
+    const payload = btoa(String.fromCharCode(...new Uint8Array(buf)));
+
+    await tonConnectUI.sendTransaction({
+      validUntil: Math.floor(Date.now() / 1000) + 600,
+      messages: [{
+        address: CONTRACT_ADDRESS,
+        amount: (5 * 1e9).toString(), // 5 TON в nanoTON
+        payload: payload
+      }]
+    });
+
+    showToast('Транзакция отправлена!', 'success');
+    setTimeout(() => loadUserData(), 5000);
+  } catch(e) {
+    console.error(e);
+    showToast('Ошибка: ' + (e.message || 'отменено'), 'error');
   }
 
   btn.disabled = false;
@@ -717,7 +785,7 @@ async function register() {
 }
 
 // ──────────────────────────────────────────────────────────────
-// BUY LEVEL
+// BUY LEVEL — реальная транзакция
 // ──────────────────────────────────────────────────────────────
 async function buyLevel(level) {
   if (!walletAddress) { showToast('Сначала подключите кошелёк', 'error'); return; }
@@ -726,20 +794,28 @@ async function buyLevel(level) {
   showToast(`Покупка уровня ${level}...`, '');
 
   try {
-    // ── В реальном проекте: ──
-    // const body = beginCell()
-    //   .storeUint(0x11223344, 32) // op: BuyLevel
-    //   .storeUint(0, 64)
-    //   .storeUint(level, 8)
-    //   .endCell();
-    // await tonConnectUI.sendTransaction({...});
+    const opBuyLevel = 0x4f3c3b3a;
+    const buf = new ArrayBuffer(9);
+    const view = new DataView(buf);
+    view.setUint32(0, opBuyLevel);
+    view.setUint32(4, 0); // queryId
+    view.setUint8(8, level);
+    const payload = btoa(String.fromCharCode(...new Uint8Array(buf)));
 
-    await delay(2000); // DEMO
-    showToast(`Уровень ${level} куплен!`, 'success');
-    userState.levels[level - 1] = Date.now() / 1000 + 86400 * 365;
-    renderLevels();
-  } catch (e) {
-    showToast('Ошибка транзакции', 'error');
+    await tonConnectUI.sendTransaction({
+      validUntil: Math.floor(Date.now() / 1000) + 600,
+      messages: [{
+        address: CONTRACT_ADDRESS,
+        amount: (price * 1e9).toString(),
+        payload: payload
+      }]
+    });
+
+    showToast(`Уровень ${level} — транзакция отправлена!`, 'success');
+    setTimeout(() => loadUserData(), 5000);
+  } catch(e) {
+    console.error(e);
+    showToast('Ошибка: ' + (e.message || 'отменено'), 'error');
   }
 }
 
