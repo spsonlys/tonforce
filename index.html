@@ -578,26 +578,84 @@ async function connectWallet() {
 }
 
 // ──────────────────────────────────────────────────────────────
-// BOC BUILDER через TonWeb
+// BOC BUILDER — чистый JS без библиотек
 // ──────────────────────────────────────────────────────────────
 function buildCell(op, queryId, referrerID) {
-  const tonweb = new TonWeb();
-  const cell = new TonWeb.boc.Cell();
-  cell.bits.writeUint(op, 32);
-  cell.bits.writeUint(0, 64); // queryId
-  cell.bits.writeUint(referrerID, 32);
-  const bytes = cell.toBoc(false);
-  return TonWeb.utils.bytesToBase64(bytes);
+  // RegUser: op(32) + queryId(64) + referrerID(32) = 128 бит
+  // Собираем байты вручную
+  const bytes = new Uint8Array(16);
+  // op (32 бит)
+  bytes[0] = (op >>> 24) & 0xff;
+  bytes[1] = (op >>> 16) & 0xff;
+  bytes[2] = (op >>> 8)  & 0xff;
+  bytes[3] = (op)        & 0xff;
+  // queryId (64 бит) = 0
+  bytes[4] = 0; bytes[5] = 0; bytes[6] = 0; bytes[7] = 0;
+  bytes[8] = 0; bytes[9] = 0; bytes[10] = 0; bytes[11] = 0;
+  // referrerID (32 бит)
+  bytes[12] = (referrerID >>> 24) & 0xff;
+  bytes[13] = (referrerID >>> 16) & 0xff;
+  bytes[14] = (referrerID >>> 8)  & 0xff;
+  bytes[15] = (referrerID)        & 0xff;
+  return makeBoc(bytes, 128);
 }
 
 function buildCellLevel(op, queryId, level) {
-  const tonweb = new TonWeb();
-  const cell = new TonWeb.boc.Cell();
-  cell.bits.writeUint(op, 32);
-  cell.bits.writeUint(0, 64); // queryId
-  cell.bits.writeUint(level, 8);
-  const bytes = cell.toBoc(false);
-  return TonWeb.utils.bytesToBase64(bytes);
+  // BuyLevel: op(32) + queryId(64) + level(8) = 104 бит = 13 байт
+  const bytes = new Uint8Array(13);
+  bytes[0] = (op >>> 24) & 0xff;
+  bytes[1] = (op >>> 16) & 0xff;
+  bytes[2] = (op >>> 8)  & 0xff;
+  bytes[3] = (op)        & 0xff;
+  bytes[4] = 0; bytes[5] = 0; bytes[6] = 0; bytes[7] = 0;
+  bytes[8] = 0; bytes[9] = 0; bytes[10] = 0; bytes[11] = 0;
+  bytes[12] = level & 0xff;
+  return makeBoc(bytes, 104);
+}
+
+function makeBoc(data, bits) {
+  const byteLen = Math.ceil(bits / 8);
+  // d1 = 0 (нет refs, не exotic, level=0)
+  // d2 = byteLen*2 если bits кратно 8, иначе byteLen*2-1
+  const d1 = 0x00;
+  const d2 = (bits % 8 === 0) ? byteLen * 2 : byteLen * 2 - 1;
+
+  // Данные ячейки с дескриптором
+  const cellBytes = new Uint8Array(2 + byteLen);
+  cellBytes[0] = d1;
+  cellBytes[1] = d2;
+  for (let i = 0; i < byteLen; i++) cellBytes[2 + i] = data[i];
+
+  // Если bits не кратно 8 — добавляем completion tag
+  if (bits % 8 !== 0) {
+    const last = cellBytes[2 + byteLen - 1];
+    const shift = 8 - (bits % 8);
+    cellBytes[2 + byteLen - 1] = (last | (1 << (shift - 1))) & ~((1 << (shift - 1)) - 1);
+  }
+
+  const cellSize = cellBytes.length;
+
+  // BOC header (упрощённый, без CRC32)
+  // magic(4) + flags(1) + offset_size(1) + cells(1) + roots(1) + absent(1) + tot_size(1) + root_idx(1)
+  const header = new Uint8Array([
+    0xb5, 0xee, 0x9c, 0x72, // magic
+    0x01,                    // has_idx=0, no_crc=0, no_cache=0, flags=0, ref_size=1
+    0x01,                    // offset_size=1
+    0x01,                    // cells_count=1
+    0x01,                    // roots_count=1
+    0x00,                    // absent_count=0
+    cellSize,                // tot_cells_size (1 byte)
+    0x00,                    // root_idx=0
+  ]);
+
+  const boc = new Uint8Array(header.length + cellSize);
+  boc.set(header, 0);
+  boc.set(cellBytes, header.length);
+
+  // Конвертируем в base64
+  let binary = '';
+  for (let i = 0; i < boc.length; i++) binary += String.fromCharCode(boc[i]);
+  return btoa(binary);
 }
 
 // ──────────────────────────────────────────────────────────────
@@ -768,7 +826,7 @@ async function register() {
       validUntil: Math.floor(Date.now() / 1000) + 600,
       messages: [{
         address: CONTRACT_ADDRESS,
-        amount: String(0.1 * 1000000000), // 5 TON
+        amount: String(Math.floor(0.1 * 1e9) + 50000000), // 0.1 TON + 0.05 TON газ
         payload: cell
       }]
     });
@@ -801,7 +859,7 @@ async function buyLevel(level) {
       validUntil: Math.floor(Date.now() / 1000) + 600,
       messages: [{
         address: CONTRACT_ADDRESS,
-        amount: String(price * 1000000000),
+        amount: String(Math.floor(price * 1e9) + 50000000), // цена + 0.05 TON газ
         payload: cell
       }]
     });
