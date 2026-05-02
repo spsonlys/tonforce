@@ -6,7 +6,7 @@
   <title>TonForce</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <script src="https://unpkg.com/@tonconnect/ui@2.0.6/dist/tonconnect-ui.min.js"></script>
-  <script src="https://unpkg.com/@ton/ton@13.9.0/dist/ton.min.js"></script>
+  <script src="https://unpkg.com/tonweb@0.0.62/dist/tonweb.js"></script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap');
 
@@ -578,88 +578,26 @@ async function connectWallet() {
 }
 
 // ──────────────────────────────────────────────────────────────
-// BOC BUILDER — сериализация ячеек TON
+// BOC BUILDER через TonWeb
 // ──────────────────────────────────────────────────────────────
 function buildCell(op, queryId, referrerID) {
-  // RegUser: op(32) + queryId(64) + referrerID(32) = 128 бит
-  const bits = 32 + 64 + 32; // 128 бит
-  const bytes = Math.ceil(bits / 8); // 16 байт
-  const buf = new Uint8Array(bytes);
-  const view = new DataView(buf.buffer);
-  view.setUint32(0, op >>> 0);
-  view.setUint32(4, 0); // queryId high 32
-  view.setUint32(8, 0); // queryId low 32
-  view.setUint32(12, referrerID >>> 0);
-  return bytesToBoc(buf, bits);
+  const tonweb = new TonWeb();
+  const cell = new TonWeb.boc.Cell();
+  cell.bits.writeUint(op, 32);
+  cell.bits.writeUint(0, 64); // queryId
+  cell.bits.writeUint(referrerID, 32);
+  const bytes = cell.toBoc(false);
+  return TonWeb.utils.bytesToBase64(bytes);
 }
 
 function buildCellLevel(op, queryId, level) {
-  // BuyLevel: op(32) + queryId(64) + level(8) = 104 бит
-  const bits = 32 + 64 + 8;
-  const bytes = Math.ceil(bits / 8); // 13 байт
-  const buf = new Uint8Array(bytes);
-  const view = new DataView(buf.buffer);
-  view.setUint32(0, op >>> 0);
-  view.setUint32(4, 0);
-  view.setUint32(8, 0);
-  buf[12] = level & 0xff;
-  return bytesToBoc(buf, bits);
-}
-
-function bytesToBoc(data, bits) {
-  // Минимальный BOC: magic(4) + flags(1) + offset_size(1) + cells_count + ... 
-  // Используем упрощённый single-root BOC формат
-  const bocMagic = new Uint8Array([0xb5, 0xee, 0x9c, 0x72]); // BOC magic
-
-  // Данные ячейки: descriptor(2) + data
-  const byteLen = Math.ceil(bits / 8);
-  const paddedBits = byteLen * 8;
-  const hasCompletion = (bits % 8) !== 0;
-
-  // d1: refs(3bit) + exotic(1) + level(4) = 0x00
-  // d2: ceil(bits/8)*2 - (bits%8==0 ? 0 : 1)
-  const d1 = 0x00;
-  const d2 = byteLen * 2 - (hasCompletion ? 1 : 0);
-
-  const cellData = new Uint8Array(2 + byteLen);
-  cellData[0] = d1;
-  cellData[1] = d2;
-  for (let i = 0; i < byteLen; i++) {
-    cellData[2 + i] = data[i] || 0;
-  }
-  if (hasCompletion) {
-    // Добавляем completion bit
-    const lastByte = cellData[2 + byteLen - 1];
-    const shift = 8 - (bits % 8) - 1;
-    cellData[2 + byteLen - 1] = (lastByte & ~((1 << shift) - 1)) | (1 << shift);
-  }
-
-  // Собираем BOC
-  const offsetSize = 1;
-  const cellsCount = 1;
-  const rootsCount = 1;
-  const absentCount = 0;
-  const totalCellsSize = cellData.length;
-
-  const header = new Uint8Array([
-    0xb5, 0xee, 0x9c, 0x72, // magic
-    0b00010001,              // has_idx=0, hash_crc32=0, has_cache_bits=0, flags=0, size=1
-    offsetSize,              // off_bytes
-    cellsCount,              // cells
-    rootsCount,              // roots
-    absentCount,             // absent
-    totalCellsSize,          // tot_cells_size (1 byte since offsetSize=1)
-    0x00,                    // root index
-  ]);
-
-  const boc = new Uint8Array(header.length + cellData.length);
-  boc.set(header, 0);
-  boc.set(cellData, header.length);
-
-  // base64
-  let bin = '';
-  for (let i = 0; i < boc.length; i++) bin += String.fromCharCode(boc[i]);
-  return btoa(bin);
+  const tonweb = new TonWeb();
+  const cell = new TonWeb.boc.Cell();
+  cell.bits.writeUint(op, 32);
+  cell.bits.writeUint(0, 64); // queryId
+  cell.bits.writeUint(level, 8);
+  const bytes = cell.toBoc(false);
+  return TonWeb.utils.bytesToBase64(bytes);
 }
 
 // ──────────────────────────────────────────────────────────────
