@@ -671,7 +671,8 @@ async function loadUserData() {
     const isExistRes = await callGet('isUserExists', [
       { type: 'slice', value: walletAddress }
     ]);
-    const isExist = isExistRes?.stack?.[0]?.[1] === '-1';
+    const isExist = isExistRes?.result?.stack?.[0]?.[1] === '-1' ||
+                    isExistRes?.stack?.[0]?.[1] === '-1';
 
     // Общее количество пользователей
     const totalRes = await callGet('getTotalUsers', []);
@@ -728,15 +729,32 @@ async function loadUserData() {
 
 async function callGet(method, stack) {
   const API_KEY = '105893705d1e384d248d96788d322fa38ab967bfe6eaa1077039b43ed4b89977';
-  const res = await fetch(`https://toncenter.com/api/v2/runGetMethod`, {
+
+  // Конвертируем стек в правильный формат toncenter v2
+  const formattedStack = stack.map(item => {
+    if (item.type === 'slice') {
+      // Адрес передаём как tvm.Slice
+      return ['tvm.Slice', item.value];
+    } else if (item.type === 'num') {
+      return ['num', item.value];
+    }
+    return item;
+  });
+
+  const res = await fetch('https://toncenter.com/api/v2/runGetMethod', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       'X-API-Key': API_KEY
     },
-    body: JSON.stringify({ address: CONTRACT_ADDRESS, method, stack })
+    body: JSON.stringify({
+      address: CONTRACT_ADDRESS,
+      method: method,
+      stack: formattedStack
+    })
   });
-  return res.json();
+  const data = await res.json();
+  return data;
 }
 
 // ──────────────────────────────────────────────────────────────
@@ -821,6 +839,8 @@ async function register() {
     // Строим TL-B ячейку вручную как BOC
     // Используем TonWeb для сериализации
     const cell = buildCell(opRegUser, 0, refID);
+    console.log('BOC payload:', cell);
+    console.log('BOC length:', cell.length);
 
     await tonConnectUI.sendTransaction({
       validUntil: Math.floor(Date.now() / 1000) + 600,
