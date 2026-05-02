@@ -663,14 +663,13 @@ async function loadUserData() {
 }
 
 async function callGet(method, stack) {
-  const params = new URLSearchParams({
-    address: CONTRACT_ADDRESS,
-    method: method,
-    ...(stack.length ? { 'stack': JSON.stringify(stack) } : {})
-  });
+  const API_KEY = '105893705d1e384d248d96788d322fa38ab967bfe6eaa1077039b43ed4b89977';
   const res = await fetch(`https://toncenter.com/api/v2/runGetMethod`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: {
+      'Content-Type': 'application/json',
+      'X-API-Key': API_KEY
+    },
     body: JSON.stringify({ address: CONTRACT_ADDRESS, method, stack })
   });
   return res.json();
