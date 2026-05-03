@@ -887,7 +887,7 @@ body::before {
  </div>
 
  <div id="pageMatrix" class="page">
- <div class="hero">
+ <div class="hero" id="heroBlock">
  <div class="hero-title" data-i18n="welcome">TONFORCE • МАТРИЦА 3×8</div>
  <div class="hero-sub" data-i18n="hero_sub">Сила сети. Свобода дохода.</div>
  <div class="hero-copy" data-i18n="hero_copy">Зарабатывай на блокчейне TON через матричную программу. 8 уровней, выплаты идут вверх по дереву автоматически.</div>
@@ -1324,10 +1324,35 @@ function renderLeaderboard() {
  list.innerHTML = items.map(item => { const rankClass = item.rank === 1 ? 'gold' : item.rank === 2 ? 'silver' : item.rank === 3 ? 'bronze' : ''; return `<div class="card"><div class="lb-item"><div class="lb-rank ${rankClass}">${item.rank}</div><div class="lb-info"><div class="lb-name">${item.name}</div><div class="lb-stat">${item.addr} · ${item.refs} refs</div></div><div class="lb-value">${item.earnings.toFixed(2)} TON</div></div></div>`; }).join('');
 }
 function renderDashboard() {
- const notReg = document.getElementById('notRegistered'); const isReg = document.getElementById('isRegistered'); const connectPrompt = document.getElementById('connectPrompt'); const regBtn = document.getElementById('regBtn');
- if (!walletAddress) { notReg.classList.remove('hidden'); isReg.classList.add('hidden'); if (connectPrompt) connectPrompt.style.display = 'block'; if (regBtn) regBtn.style.display = 'none'; return; }
- if (userState.registered) { notReg.classList.add('hidden'); isReg.classList.remove('hidden'); renderLevels(); }
- else { notReg.classList.remove('hidden'); isReg.classList.add('hidden'); if (connectPrompt) connectPrompt.style.display = 'none'; if (regBtn) regBtn.style.display = 'block'; }
+ const notReg = document.getElementById('notRegistered');
+ const isReg = document.getElementById('isRegistered');
+ const connectPrompt = document.getElementById('connectPrompt');
+ const regBtn = document.getElementById('regBtn');
+ const hero = document.getElementById('heroBlock');
+
+ if (!walletAddress) {
+   // Кошелёк не подключён — показываем приветствие (hero) и блок "не зарегистрирован"
+   if (hero) hero.classList.remove('hidden');
+   notReg.classList.remove('hidden');
+   isReg.classList.add('hidden');
+   if (connectPrompt) connectPrompt.style.display = 'block';
+   if (regBtn) regBtn.style.display = 'none';
+   return;
+ }
+ if (userState.registered) {
+   // В кабинете — скрываем hero, показываем уровни
+   if (hero) hero.classList.add('hidden');
+   notReg.classList.add('hidden');
+   isReg.classList.remove('hidden');
+   renderLevels();
+ } else {
+   // Кошелёк подключён, но юзер не зарегистрирован — показываем hero + кнопку регистрации
+   if (hero) hero.classList.remove('hidden');
+   notReg.classList.remove('hidden');
+   isReg.classList.add('hidden');
+   if (connectPrompt) connectPrompt.style.display = 'none';
+   if (regBtn) regBtn.style.display = 'block';
+ }
 }
 function renderLevels() {
  const grid = document.getElementById('levelsGrid'); const now = Date.now() / 1000;
