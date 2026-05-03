@@ -932,6 +932,16 @@ async function connectWallet() {
   await tonConnectUI.openModal();
 }
 
+// Конвертирует адрес кошелька (любой формат) в формат для stack параметра runGetMethod
+function addrToStackSlice(addr) {
+  // TonWeb.Address принимает raw (0:abc...) и friendly (UQ.../EQ...) форматы
+  const a = new TonWeb.utils.Address(addr);
+  // Создаём cell с адресом и пакуем в base64 BOC
+  const cell = new TonWeb.boc.Cell();
+  cell.bits.writeAddress(a);
+  return cell;
+}
+
 async function callGet(method, stack) {
   try {
     const res = await fetch('https://toncenter.com/api/v2/runGetMethod', {
@@ -940,29 +950,94 @@ async function callGet(method, stack) {
       body: JSON.stringify({address: CONTRACT_ADDRESS, method, stack})
     });
     return await res.json();
-  } catch(e) { return null; }
+  } catch(e) { console.error('callGet error:', e); return null; }
+}
+
+// Готовит stack параметр для get-метода с адресом юзера
+async function getMethodWithAddress(method, addr, extraStack = []) {
+  const cell = addrToStackSlice(addr);
+  const boc = await cell.toBoc(false);
+  const b64 = TonWeb.utils.bytesToBase64(boc);
+  const stack = [["tvm.Slice", b64], ...extraStack];
+  return await callGet(method, stack);
+}
+
+// Парсит число из ответа toncenter (формат ["num", "0x123"])
+function parseStackNum(res, idx = 0) {
+  if (!res?.ok || !res.result?.stack?.[idx]) return 0;
+  const item = res.result.stack[idx];
+  const val = item[1];
+  if (typeof val === 'string') {
+    return parseInt(val, val.startsWith('0x') ? 16 : 10) || 0;
+  }
+  return parseInt(val) || 0;
 }
 
 async function loadUserData() {
   if (!walletAddress) return;
 
+  // 1. Загружаем общее количество участников
   const totalRes = await callGet('getTotalUsers', []);
-  if (totalRes?.ok && totalRes.result?.stack?.[0]) {
-    totalUsers = parseInt(totalRes.result.stack[0][1], 16) || 1;
-    document.getElementById('statUsers').textContent = totalUsers.toLocaleString();
-    document.getElementById('adminUsers').textContent = totalUsers.toLocaleString();
+  totalUsers = parseStackNum(totalRes) || 1;
+  document.getElementById('statUsers').textContent = totalUsers.toLocaleString();
+  const adminUsersEl = document.getElementById('adminUsers');
+  if (adminUsersEl) adminUsersEl.textContent = totalUsers.toLocaleString();
+
+  // 2. Проверяем зарегистрирован ли текущий юзер
+  let isRegistered = false;
+  let userID = 0;
+  let refCount = 0;
+  let levels = Array(8).fill(0);
+
+  // Owner всегда зарегистрирован (id=1, все уровни forever)
+  if (walletAddress.toLowerCase() === OWNER_WALLET_RAW.toLowerCase()) {
+    isRegistered = true;
+    userID = 1;
+    refCount = Math.max(0, totalUsers - 1);
+    levels = Array(8).fill(99999999999);
+  } else {
+    // Для всех остальных — читаем из контракта
+    try {
+      const existsRes = await getMethodWithAddress('isUserExists', walletAddress);
+      // Bool возвращается как число: -1 = true, 0 = false (TVM convention)
+      const existsVal = parseStackNum(existsRes);
+      isRegistered = existsVal !== 0;
+
+      if (isRegistered) {
+        const idRes = await getMethodWithAddress('getUserID', walletAddress);
+        userID = parseStackNum(idRes);
+
+        const refRes = await getMethodWithAddress('getUserReferralCount', walletAddress);
+        refCount = parseStackNum(refRes);
+
+        // Загружаем expiry для всех 8 уровней
+        for (let lvl = 1; lvl <= 8; lvl++) {
+          const expRes = await getMethodWithAddress(
+            'getLevelExpiredFor',
+            walletAddress,
+            [["num", String(lvl)]]
+          );
+          levels[lvl - 1] = parseStackNum(expRes);
+        }
+      }
+    } catch(e) {
+      console.error('loadUserData error:', e);
+    }
   }
 
-  if (walletAddress.toLowerCase() === OWNER_WALLET_RAW.toLowerCase()) {
-    userState.registered = true;
-    userState.id = 1;
-    userState.referralCount = Math.max(0, totalUsers - 1);
-    userState.levels = Array(8).fill(99999999999);
-    document.getElementById('statRefs').textContent = userState.referralCount;
-    document.getElementById('statLevel').textContent = '8';
-    updateRefLink();
-    renderDashboard();
-  }
+  userState.registered = isRegistered;
+  userState.id = userID;
+  userState.referralCount = refCount;
+  userState.levels = levels;
+
+  // Обновляем UI
+  document.getElementById('statRefs').textContent = refCount;
+  const activeLvl = levels.filter(e => e > Date.now() / 1000).length;
+  document.getElementById('statLevel').textContent = isRegistered ? String(activeLvl) : '—';
+
+  updateRefLink();
+  renderTree();
+  renderDashboard();
 }
 
 async function loadHistory() {
@@ -1162,13 +1237,16 @@ async function register() {
   btn.innerHTML = '⏳ ...';
 
   try {
-    const cell = await buildCell(0xc670f579, 0, refID);
+    const cell = await buildCell(0xc670f579, refID);
     await tonConnectUI.sendTransaction({
       validUntil: Math.floor(Date.now() / 1000) + 600,
       messages: [{address: CONTRACT_ADDRESS, amount: String(Math.floor(0.13 * 1e9)), payload: cell}]
     });
     showToast(t('tx_sent'), 'success');
-    setTimeout(() => { loadUserData(); renderDashboard(); }, 6000);
+    // Несколько попыток подгрузить статус — на mainnet нужно ~10-15 сек на финализацию блока
+    setTimeout(() => loadUserData(), 8000);
+    setTimeout(() => loadUserData(), 16000);
+    setTimeout(() => loadUserData(), 25000);
   } catch(e) {
     console.error(e); showToast(t('tx_error'), 'error');
   }
@@ -1180,32 +1258,35 @@ async function buyLevel(level) {
   if (!walletAddress) { showToast(t('need_wallet'), 'error'); return; }
   const price = LEVELS[level - 1].price;
   try {
-    const cell = await buildCellLevel(0x03398cc8, 0, level);
+    const cell = await buildCellLevel(0x03398cc8, level);
     await tonConnectUI.sendTransaction({
       validUntil: Math.floor(Date.now() / 1000) + 600,
       messages: [{address: CONTRACT_ADDRESS, amount: String(Math.floor((price + 0.05) * 1e9)), payload: cell}]
     });
     showToast(t('tx_sent'), 'success');
-    setTimeout(() => { loadUserData(); renderDashboard(); }, 6000);
+    setTimeout(() => loadUserData(), 8000);
+    setTimeout(() => loadUserData(), 16000);
+    setTimeout(() => loadUserData(), 25000);
   } catch(e) {
     console.error(e); showToast(t('tx_error'), 'error');
   }
 }
 
-async function buildCell(op, queryId, referrerID) {
+// ⚠ ВАЖНО: Tact-сообщения RegUser и BuyLevel НЕ содержат queryId.
+// TL-B: reg_user#c670f579 referrerID:uint32 = RegUser
+// TL-B: buy_level#03398cc8 level:uint8 = BuyLevel
+async function buildCell(op, referrerID) {
   const cell = new TonWeb.boc.Cell();
-  cell.bits.writeUint(op, 32);
-  cell.bits.writeUint(0, 64);
-  cell.bits.writeUint(referrerID, 32);
+  cell.bits.writeUint(op, 32);          // opcode (32 бита)
+  cell.bits.writeUint(referrerID, 32);  // referrerID (uint32)
   const boc = await cell.toBoc(false);
   return TonWeb.utils.bytesToBase64(boc);
 }
 
-async function buildCellLevel(op, queryId, level) {
+async function buildCellLevel(op, level) {
   const cell = new TonWeb.boc.Cell();
-  cell.bits.writeUint(op, 32);
-  cell.bits.writeUint(0, 64);
-  cell.bits.writeUint(level, 8);
+  cell.bits.writeUint(op, 32);   // opcode (32 бита)
+  cell.bits.writeUint(level, 8); // level (uint8)
   const boc = await cell.toBoc(false);
   return TonWeb.utils.bytesToBase64(boc);
 }
