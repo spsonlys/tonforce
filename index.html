@@ -741,7 +741,7 @@ body::before {
     <div class="section-title" data-i18n="contract_addr">АДРЕС КОНТРАКТА</div>
     <div class="card">
       <div style="font-size:10px; word-break:break-all; color:#00D1FF; padding:10px 0">
-        EQCpwsoey9reWF0U2h3GflkgM3SNprEeTdWz47Rrswan_5Vn
+        EQCaLMyvZKWVjLvN3LyA_x140pTcHvv7DMjHNK-FhHtswjLQ
       </div>
       <button class="button gold" onclick="copyContract()">📋 <span data-i18n="copy_addr">СКОПИРОВАТЬ АДРЕС</span></button>
     </div>
@@ -779,7 +779,7 @@ body::before {
 </div>
 
 <script>
-const CONTRACT_ADDRESS = 'EQCpwsoey9reWF0U2h3GflkgM3SNprEeTdWz47Rrswan_5Vn';
+const CONTRACT_ADDRESS = 'EQCaLMyvZKWVjLvN3LyA_x140pTcHvv7DMjHNK-FhHtswjLQ';
 const BOT_USERNAME = 'tonforce_bot';
 const OWNER_WALLET_RAW = '0:e598cd4dc0b5aaa47ab9a5e452c0f0e8729408d36121ffcc60b1e48a82028941';
 const TONCENTER_KEY = '105893705d1e384d248d96788d322fa38ab967bfe6eaa1077039b43ed4b89977';
@@ -1165,7 +1165,7 @@ async function register() {
     const cell = await buildCell(0xc670f579, 0, refID);
     await tonConnectUI.sendTransaction({
       validUntil: Math.floor(Date.now() / 1000) + 600,
-      messages: [{address: CONTRACT_ADDRESS, amount: String(Math.floor(0.15 * 1e9)), payload: cell}]
+      messages: [{address: CONTRACT_ADDRESS, amount: String(Math.floor(0.13 * 1e9)), payload: cell}]
     });
     showToast(t('tx_sent'), 'success');
     setTimeout(() => { loadUserData(); renderDashboard(); }, 6000);
