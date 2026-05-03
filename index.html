@@ -932,13 +932,14 @@ async function connectWallet() {
   await tonConnectUI.openModal();
 }
 
-// Упаковывает адрес TON в BOC (base64) для передачи в slice параметр get-метода.
+// Упаковывает адрес TON в BOC (base64 с CRC) для передачи в slice параметр get-метода.
 // Tact get-методы с параметром Address ожидают MsgAddressInt в TVM Slice.
+// ВАЖНО: Toncenter v2 требует BOC С CRC32 (toBoc(true)) и тип "tvm.Slice" (с большой С)
 async function addrToSliceBoc(addr) {
   const a = new TonWeb.utils.Address(addr);
   const cell = new TonWeb.boc.Cell();
   cell.bits.writeAddress(a);
-  const boc = await cell.toBoc(false);
+  const boc = await cell.toBoc(true); // С CRC32
   return TonWeb.utils.bytesToBase64(boc);
 }
 
@@ -949,9 +950,14 @@ async function callGet(method, stack) {
       headers:{'Content-Type':'application/json','X-API-Key':TONCENTER_KEY},
       body: JSON.stringify({address: CONTRACT_ADDRESS, method, stack})
     });
+    if (!res.ok) {
+      const txt = await res.text();
+      console.error(`[callGet ${method}] HTTP ${res.status}:`, txt);
+      return null;
+    }
     const data = await res.json();
     if (!data.ok) {
-      console.warn(`[callGet ${method}] error:`, data);
+      console.warn(`[callGet ${method}] api error:`, data);
     }
     return data;
   } catch(e) { console.error('callGet error:', e); return null; }
@@ -960,8 +966,8 @@ async function callGet(method, stack) {
 // Готовит stack параметр для get-метода с адресом юзера
 async function getMethodWithAddress(method, addr, extraStack = []) {
   const sliceB64 = await addrToSliceBoc(addr);
-  // Toncenter v2 принимает адрес в стеке как ["slice", "<base64 BOC>"]
-  const stack = [["slice", sliceB64], ...extraStack];
+  // Toncenter v2 ожидает: ["tvm.Slice", "<base64 BOC с CRC>"]
+  const stack = [["tvm.Slice", sliceB64], ...extraStack];
   return await callGet(method, stack);
 }
 
