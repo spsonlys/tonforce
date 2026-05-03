@@ -1210,8 +1210,13 @@ function setLang(lang) {
 function t(key) { return I18N[currentLang]?.[key] || key; }
 function applyI18n() {
  document.querySelectorAll('[data-i18n]').forEach(el => {
- const key = el.dataset.i18n;
- if (I18N[currentLang]?.[key]) el.textContent = I18N[currentLang][key];
+   const key = el.dataset.i18n;
+   if (!I18N[currentLang]?.[key]) return;
+   // Не перезаписываем walletBtn если кошелёк подключён — там уже имя/адрес юзера
+   if (el.id === 'walletBtn' && walletAddress) return;
+   // Не перезаписываем userInfo если кошелёк подключён
+   if (el.closest('#userInfo') && walletAddress) return;
+   el.textContent = I18N[currentLang][key];
  });
  if (userState.registered) renderLevels();
  renderPriceTable();
@@ -1244,8 +1249,11 @@ tonConnectUI.onStatusChange(wallet => {
 
  saveMyTelegramData();
  const myName = getUserDisplayName(walletAddress);
- document.getElementById('walletBtn').textContent = myName.startsWith('@') || myName.length > 6 ? myName.slice(0, 12) : shortenAddr(walletAddress);
+ const shortAddr = shortenAddr(walletAddress);
+ // Кнопка вверху справа — ВСЕГДА адрес кошелька (для consistency с Tonkeeper)
+ document.getElementById('walletBtn').textContent = shortAddr;
  document.getElementById('walletBtn').classList.add('connected');
+ // Под лого — имя из Telegram (если есть) или адрес
  document.getElementById('userInfo').innerHTML = '⚡ ' + myName;
  showToast(t('wallet_connected'), 'success');
  if (walletAddress.toLowerCase() === OWNER_WALLET_RAW.toLowerCase()) {
@@ -1262,6 +1270,10 @@ tonConnectUI.onStatusChange(wallet => {
  document.getElementById('userInfo').innerHTML = '⚡ ' + t('not_connected');
  document.getElementById('navAdmin').classList.add('hidden');
  userState = { registered: false, id: 0, referrerID: 0, referralCount: 0, levels: Array(8).fill(0) };
+ // Очищаем все статы UI чтобы не показывать данные предыдущего юзера
+ const statRefsEl = document.getElementById('statRefs'); if (statRefsEl) statRefsEl.textContent = '—';
+ const statLevelEl = document.getElementById('statLevel'); if (statLevelEl) statLevelEl.textContent = '—';
+ // statUsers оставляем — это глобальное число, не зависит от пользователя
  document.getElementById('refLink').textContent = '—';
  updateNavigationVisibility();
  showPage('matrix');
@@ -1451,7 +1463,24 @@ async function buildCell(op, referrerID) { const cell = new TonWeb.boc.Cell(); c
 async function buildCellLevel(op, level) { const cell = new TonWeb.boc.Cell(); cell.bits.writeUint(op, 32); cell.bits.writeUint(level, 8); const boc = await cell.toBoc(false); return TonWeb.utils.bytesToBase64(boc); }
 function showPage(name) { ['matrix', 'tree', 'leaderboard', 'history', 'info', 'admin'].forEach(p => { const page = document.getElementById('page' + capitalize(p)); if (page) page.classList.add('hidden'); }); document.getElementById('page' + capitalize(name)).classList.remove('hidden'); document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active')); document.querySelector(`.nav-item[data-page="${name}"]`)?.classList.add('active'); if (name === 'leaderboard') renderLeaderboard(); if (name === 'history') loadHistory(); if (name === 'info') calculateIncome(); }
 function showToast(msg, type = '') { const el = document.getElementById('toast'); el.textContent = msg; el.className = `toast show ${type}`; clearTimeout(el._t); el._t = setTimeout(() => el.classList.remove('show'), 2800); }
-function shortenAddr(addr) { return addr ? addr.slice(0, 4) + '..' + addr.slice(-4) : ''; }
+function shortenAddr(addr) {
+  if (!addr) return '';
+  try {
+    // Конвертируем raw 0:abc... в friendly UQ... формат (как в Tonkeeper)
+    // bounceable=false (UQ префикс), testOnly=false, urlSafe=true
+    const friendly = new TonWeb.utils.Address(addr).toString(true, true, false);
+    return friendly.slice(0, 4) + '...' + friendly.slice(-4);
+  } catch(e) {
+    // Fallback: если адрес не парсится — режем как есть
+    return addr.slice(0, 4) + '...' + addr.slice(-4);
+  }
+}
+// Полная friendly-форма адреса (UQ...) для копирования и отображения
+function getFriendlyAddr(addr) {
+  if (!addr) return '';
+  try { return new TonWeb.utils.Address(addr).toString(true, true, false); }
+  catch(e) { return addr; }
+}
 function capitalize(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
 const NAMES_KEY = 'tonforce_names_v1';
 function loadNamesRegistry() { try { return JSON.parse(localStorage.getItem(NAMES_KEY) || '{}'); } catch(e) { return {}; } }
