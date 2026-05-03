@@ -8,929 +8,819 @@
 <script src="https://unpkg.com/tonweb@0.0.66/dist/tonweb.js"></script>
 <script src="https://unpkg.com/@tonconnect/ui@2.0.6/dist/tonconnect-ui.min.js"></script>
 <style>
-/* ═══════════════════════════════════════════════════════════════
-   TonForce — Binance Style
-   Палитра: #0B0E11 (бг), #1E2329 (карточки), #F0B90B (жёлтый акцент)
-   ═══════════════════════════════════════════════════════════════ */
-
 :root {
-  --bg-primary: #0B0E11;
-  --bg-secondary: #1E2329;
-  --bg-tertiary: #2B3139;
-  --bg-elevated: #181A20;
-  --accent: #F0B90B;
-  --accent-hover: #FCD535;
-  --accent-soft: rgba(240, 185, 11, 0.1);
-  --success: #02C076;
-  --success-soft: rgba(2, 192, 118, 0.12);
-  --danger: #F6465D;
-  --text-primary: #EAECEF;
-  --text-secondary: #B7BDC6;
-  --text-muted: #848E9C;
-  --border: #2B3139;
-  --border-soft: rgba(255, 255, 255, 0.06);
+ --bg: #07101f;
+ --bg-soft: #0b1426;
+ --panel: rgba(12, 22, 42, 0.82);
+ --panel-2: rgba(15, 27, 50, 0.92);
+ --border: rgba(123, 169, 255, 0.14);
+ --border-strong: rgba(89, 193, 255, 0.28);
+ --text: #f4f8ff;
+ --muted: #8e9ab3;
+ --muted-2: #66738d;
+ --cyan: #48cfff;
+ --cyan-2: #1e9bff;
+ --violet: #7c6dff;
+ --gold: #ffc861;
+ --gold-2: #ff9d42;
+ --green: #44e1a6;
+ --danger: #ff5f86;
+ --shadow: 0 24px 60px rgba(0, 0, 0, 0.42);
 }
-
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-  -webkit-tap-highlight-color: transparent;
-}
-
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'IBM Plex Sans', 'Segoe UI', Arial, sans-serif;
-  background: var(--bg-primary);
-  color: var(--text-primary);
-  min-height: 100vh;
-  overflow-x: hidden;
-  padding-bottom: 90px;
-  font-size: 14px;
-  line-height: 1.5;
-  -webkit-font-smoothing: antialiased;
+ margin: 0;
+ font-family: Inter, Arial, sans-serif;
+ background:
+ radial-gradient(circle at top left, rgba(124,109,255,0.16), transparent 28%),
+ radial-gradient(circle at top right, rgba(72,207,255,0.12), transparent 32%),
+ linear-gradient(180deg, #040913 0%, #091120 52%, #060c18 100%);
+ color: var(--text);
+ min-height: 100vh;
+ overflow-x: hidden;
+ padding-bottom: 102px;
 }
-
+body::before {
+ content: '';
+ position: fixed; inset: 0;
+ background:
+ linear-gradient(rgba(255,255,255,0.018) 1px, transparent 1px),
+ linear-gradient(90deg, rgba(255,255,255,0.018) 1px, transparent 1px);
+ background-size: 28px 28px;
+ mask-image: radial-gradient(circle at center, black 45%, transparent 88%);
+ z-index: -1;
+ pointer-events: none;
+}
 .container {
-  max-width: 480px;
-  margin: 0 auto;
-  padding: 12px 16px;
+ padding: 18px 16px;
+ max-width: 600px;
+ margin: 0 auto;
 }
-
-/* ─── HEADER ─── */
 .header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 8px 0 16px 0;
-  margin-bottom: 12px;
-  border-bottom: 1px solid var(--border);
+ display: flex;
+ justify-content: space-between;
+ align-items: flex-start;
+ margin-bottom: 18px;
+ gap: 12px;
 }
-
 .header-left {
-  display: flex;
-  align-items: center;
-  gap: 10px;
+ display: flex; align-items: center; gap: 12px;
 }
-
 .header-left img {
-  width: 36px;
-  height: 36px;
-  border-radius: 8px;
-  object-fit: cover;
+ width: 44px;
+ height: 44px;
+ object-fit: contain;
+ border-radius: 14px;
+ padding: 6px;
+ background: linear-gradient(145deg, rgba(72,207,255,0.18), rgba(124,109,255,0.14));
+ border: 1px solid rgba(132, 196, 255, 0.18);
+ box-shadow: inset 0 1px 0 rgba(255,255,255,0.08), 0 12px 26px rgba(24, 94, 255, 0.14);
 }
-
 .header-title {
-  font-weight: 600;
-  font-size: 16px;
-  color: var(--text-primary);
-  letter-spacing: -0.2px;
+ font-size: 20px; font-weight: 700;
+ letter-spacing: 0.01em;
 }
-
 .balance {
-  font-size: 11px;
-  color: var(--text-muted);
-  margin-top: 2px;
+ font-size: 12px;
+ color: var(--muted);
+ margin-top: 4px;
 }
-
-/* Lang switch — табы */
+.header-controls {
+ display:flex; gap:8px; align-items:flex-end; flex-direction:column;
+}
 .lang-switch {
-  display: inline-flex;
-  background: var(--bg-secondary);
-  border-radius: 6px;
-  padding: 2px;
+ display: flex; gap: 4px;
+ background: rgba(255,255,255,0.04);
+ border: 1px solid rgba(255,255,255,0.05);
+ border-radius: 18px;
+ padding: 4px;
+ backdrop-filter: blur(18px);
 }
-
 .lang-btn {
-  padding: 4px 10px;
-  font-size: 11px;
-  font-weight: 600;
-  color: var(--text-muted);
-  background: transparent;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: all 0.15s;
+ padding: 6px 8px;
+ font-size: 10px;
+ background: none; border: none;
+ color: var(--muted);
+ cursor: pointer;
+ border-radius: 12px;
+ font-weight: 700;
+ transition: all .2s;
 }
-
 .lang-btn.active {
-  background: var(--bg-tertiary);
-  color: var(--text-primary);
+ background: linear-gradient(135deg, rgba(72,207,255,0.22), rgba(124,109,255,0.2));
+ color: white;
+ box-shadow: inset 0 0 0 1px rgba(122, 203, 255, 0.2);
 }
-
-/* Wallet button — Binance primary style */
 .wallet-btn {
-  background: var(--accent);
-  color: #0B0E11;
-  border: none;
-  padding: 8px 14px;
-  border-radius: 6px;
-  font-size: 12px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.15s;
+ background: linear-gradient(135deg, rgba(72,207,255,0.16), rgba(31,155,255,0.22));
+ border: 1px solid rgba(95, 196, 255, 0.2);
+ color: white;
+ font-weight: 700;
+ font-size: 12px;
+ padding: 10px 14px;
+ border-radius: 16px;
+ cursor: pointer;
+ box-shadow: inset 0 1px 0 rgba(255,255,255,0.08);
+ transition: 0.25s;
+ white-space: nowrap;
 }
-
-.wallet-btn:active { transform: scale(0.97); }
-.wallet-btn:hover { background: var(--accent-hover); }
-
+.wallet-btn:active { transform: scale(0.98); }
 .wallet-btn.connected {
-  background: var(--bg-secondary);
-  color: var(--text-primary);
-  border: 1px solid var(--border);
+ background: linear-gradient(135deg, rgba(68,225,166,0.18), rgba(72,207,255,0.18));
+ border-color: rgba(68,225,166,0.24);
 }
-
-/* ─── CARDS ─── */
 .card {
-  background: var(--bg-secondary);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 14px;
-  margin-bottom: 10px;
-  transition: all 0.15s;
+ position: relative;
+ background: var(--panel);
+ backdrop-filter: blur(22px);
+ -webkit-backdrop-filter: blur(22px);
+ border-radius: 24px;
+ padding: 18px;
+ margin-bottom: 12px;
+ overflow: hidden;
+ transition: 0.25s;
+ border: 1px solid var(--border);
+ box-shadow: inset 0 1px 0 rgba(255,255,255,0.05);
 }
-
-.card:active { transform: scale(0.99); }
-
 .card.active {
-  border-color: var(--accent);
-  background: linear-gradient(180deg, var(--accent-soft) 0%, var(--bg-secondary) 100%);
+ border-color: rgba(68,225,166,0.24);
+ box-shadow: inset 0 1px 0 rgba(255,255,255,0.06), 0 16px 34px rgba(21, 150, 113, 0.12);
 }
-
 .card.locked {
-  opacity: 0.45;
-  pointer-events: none;
+ opacity: 0.54;
 }
-
-.card-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 8px;
-}
-
 .level {
-  font-size: 11px;
-  color: var(--text-muted);
-  font-weight: 600;
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
+ font-size: 10px;
+ color: var(--muted);
+ letter-spacing: 0.14em;
+ text-transform: uppercase;
 }
-
 .name {
-  font-size: 16px;
-  font-weight: 600;
-  color: var(--text-primary);
-  margin: 4px 0;
+ font-size: 20px;
+ margin: 6px 0 8px;
+ font-weight: 700;
 }
-
 .price {
-  font-size: 28px;
-  font-weight: 700;
-  color: var(--accent);
-  letter-spacing: -0.5px;
-  margin: 4px 0;
+ font-size: 30px;
+ font-weight: 800;
+ letter-spacing: -0.03em;
 }
-
 .info {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 12px;
-  color: var(--text-secondary);
-  margin-top: 4px;
+ font-size: 13px;
+ color: #dbe6fa;
+ margin-top: 10px;
+ line-height: 1.7;
 }
-
-/* ─── BUTTONS ─── */
 .button {
-  display: block;
-  width: 100%;
-  background: var(--accent);
-  color: #0B0E11;
-  border: none;
-  padding: 12px 16px;
-  border-radius: 8px;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.15s;
-  margin-top: 10px;
-  letter-spacing: 0.2px;
+ margin-top: 14px;
+ padding: 14px 16px;
+ text-align: center;
+ border-radius: 16px;
+ background: linear-gradient(135deg, var(--cyan), var(--cyan-2));
+ cursor: pointer;
+ transition: 0.2s;
+ font-weight: 700;
+ font-size: 13px;
+ border: none;
+ color: white;
+ width: 100%;
+ box-shadow: 0 12px 26px rgba(31, 155, 255, 0.22);
 }
-
 .button:active { transform: scale(0.98); }
-.button:hover { background: var(--accent-hover); }
-
 .button.gold {
-  background: var(--success);
-  color: white;
+ background: linear-gradient(135deg, var(--gold), var(--gold-2));
+ box-shadow: 0 12px 26px rgba(255, 170, 79, 0.18);
 }
-
-.button.gold:hover {
-  background: #03A66D;
+.button.secondary {
+ background: rgba(255,255,255,0.04);
+ border: 1px solid rgba(255,255,255,0.08);
+ color: #deeeff;
+ box-shadow: none;
 }
-
 .button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
+ opacity: 0.4; cursor: not-allowed;
 }
-
 .lock-text {
-  text-align: center;
-  color: var(--text-muted);
-  padding: 10px;
-  font-size: 12px;
+ margin-top: 12px;
+ font-size: 12px;
+ opacity: 0.66;
+ text-align: center;
+ color: var(--muted);
 }
-
-/* ─── HERO (приветствие) ─── */
 .hero {
-  background: var(--bg-secondary);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 20px 16px;
-  margin-bottom: 12px;
-  text-align: center;
-  position: relative;
-  overflow: hidden;
+ position: relative;
+ background: linear-gradient(180deg, rgba(14,25,47,0.94), rgba(11,20,38,0.88));
+ border-radius: 28px;
+ padding: 22px;
+ margin-bottom: 14px;
+ overflow: hidden;
+ box-shadow: var(--shadow);
+ border: 1px solid rgba(104, 154, 255, 0.18);
 }
-
-.hero::before {
-  content: '';
-  position: absolute;
-  top: -50%;
-  right: -30%;
-  width: 200px;
-  height: 200px;
-  background: radial-gradient(circle, var(--accent-soft) 0%, transparent 70%);
-  pointer-events: none;
+.hero::after {
+ content: "";
+ position: absolute;
+ inset: auto -50px -70px auto;
+ width: 180px;
+ height: 180px;
+ background: radial-gradient(circle, rgba(72,207,255,0.24), transparent 65%);
 }
-
 .hero-title {
-  font-size: 11px;
-  color: var(--text-muted);
-  letter-spacing: 1.5px;
-  font-weight: 600;
-  text-transform: uppercase;
-  margin-bottom: 6px;
+ font-size: 11px;
+ color: #8fb6ff;
+ letter-spacing: 0.18em;
+ margin-bottom: 8px;
+ text-transform: uppercase;
 }
-
 .hero-sub {
-  font-size: 22px;
-  font-weight: 700;
-  color: var(--text-primary);
-  letter-spacing: -0.5px;
+ font-size: 29px;
+ font-weight: 800;
+ letter-spacing: -0.03em;
+ line-height: 1.05;
+ max-width: 280px;
 }
-
-/* ─── STATS GRID ─── */
+.hero-copy {
+ margin-top: 10px;
+ max-width: 260px;
+ color: var(--muted);
+ font-size: 13px;
+ line-height: 1.65;
+}
+.hero-badges {
+ display: flex;
+ gap: 8px;
+ flex-wrap: wrap;
+ margin-top: 16px;
+}
+.hero-badge {
+ padding: 8px 10px;
+ border-radius: 999px;
+ font-size: 11px;
+ color: #d9ecff;
+ background: rgba(255,255,255,0.05);
+ border: 1px solid rgba(255,255,255,0.06);
+}
 .stats {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 8px;
-  margin-bottom: 12px;
+ display: grid;
+ grid-template-columns: repeat(3, 1fr);
+ gap: 10px;
+ margin-bottom: 14px;
 }
-
 .stat {
-  background: var(--bg-secondary);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 12px 8px;
-  text-align: center;
-  transition: all 0.15s;
+ position: relative;
+ background: var(--panel);
+ border-radius: 22px;
+ padding: 14px 12px;
+ overflow: hidden;
+ border: 1px solid var(--border);
+ backdrop-filter: blur(20px);
 }
-
-.stat:hover {
-  border-color: var(--accent);
-}
-
-.stat-icon {
-  font-size: 18px;
-  margin-bottom: 6px;
-  display: block;
-}
-
+.stat-icon { font-size: 16px; margin-bottom: 12px; }
 .stat-value {
-  font-size: 18px;
-  font-weight: 700;
-  color: var(--text-primary);
-  line-height: 1.2;
+ font-size: 22px; font-weight: 800;
+ letter-spacing: -0.02em;
 }
-
-.stat-label {
-  font-size: 10px;
-  color: var(--text-muted);
-  letter-spacing: 0.8px;
-  margin-top: 4px;
-  text-transform: uppercase;
-}
-
-/* ─── SECTION TITLE ─── */
+.stat-label { font-size: 10px; color: var(--muted); letter-spacing: 0.12em; margin-top: 5px; text-transform: uppercase; }
 .section-title {
-  font-size: 11px;
-  color: var(--text-muted);
-  letter-spacing: 1px;
-  font-weight: 600;
-  text-transform: uppercase;
-  margin: 16px 0 8px 0;
-  padding: 0 4px;
+ display: flex;
+ align-items: center;
+ justify-content: space-between;
+ font-size: 11px;
+ letter-spacing: 0.16em;
+ color: var(--muted);
+ text-transform: uppercase;
+ margin: 18px 0 10px;
+ padding-left: 2px;
 }
-
-/* ─── INPUTS ─── */
-.input-group { margin-bottom: 12px; }
-
+.section-title .section-note {
+ font-size: 11px;
+ letter-spacing: 0;
+ text-transform: none;
+ color: var(--muted);
+}
+.input-group { margin-bottom: 14px; }
 .input-label {
-  font-size: 11px;
-  color: var(--text-muted);
-  margin-bottom: 6px;
-  text-transform: uppercase;
-  letter-spacing: 0.8px;
-  font-weight: 600;
+ font-size: 10px;
+ letter-spacing: 0.14em;
+ color: var(--muted);
+ margin-bottom: 8px;
+ display: block;
+ text-transform: uppercase;
 }
-
 .input-field {
-  width: 100%;
-  background: var(--bg-elevated);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 12px;
-  color: var(--text-primary);
-  font-size: 14px;
-  font-family: inherit;
-  transition: all 0.15s;
+ width: 100%;
+ background: rgba(4,10,20,0.45);
+ border: 1px solid rgba(255,255,255,0.08);
+ color: white;
+ font-size: 16px;
+ font-weight: 600;
+ padding: 14px 16px;
+ border-radius: 16px;
+ outline: none;
+ font-family: inherit;
 }
-
 .input-field:focus {
-  outline: none;
-  border-color: var(--accent);
-  background: var(--bg-secondary);
+ border-color: rgba(72,207,255,0.38);
+ box-shadow: 0 0 0 3px rgba(72, 207, 255, 0.12);
 }
-
-.input-field::placeholder { color: var(--text-muted); }
-
-/* ─── TREE (рефералы) ─── */
 .tree {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 14px 0;
+ text-align: center;
 }
-
+.tree-shell {
+ display: flex;
+ flex-direction: column;
+ align-items: center;
+ gap: 22px;
+}
+.tree-top {
+ position: relative;
+ padding-bottom: 14px;
+}
+.tree-top::after {
+ content: "";
+ position: absolute;
+ left: 50%; top: 100%;
+ width: 1px; height: 18px;
+ background: linear-gradient(180deg, rgba(255,200,97,0.7), rgba(255,255,255,0.08));
+}
 .tree-row {
-  display: flex;
-  justify-content: center;
-  gap: 12px;
-  flex-wrap: wrap;
-  margin-top: 16px;
+ width: 100%;
+ max-width: 280px;
+ display: flex; justify-content: space-between;
+ position: relative;
+ padding-top: 20px;
+ margin-top: 0;
 }
-
+.tree-row::before {
+ content: "";
+ position: absolute;
+ left: 36px; right: 36px; top: 0;
+ height: 1px;
+ background: linear-gradient(90deg, rgba(72,207,255,0.25), rgba(124,109,255,0.38), rgba(72,207,255,0.25));
+}
+.tree-row::after {
+ content: "";
+ position: absolute;
+ left: 50%; top: -20px;
+ width: 1px; height: 20px;
+ background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(124,109,255,0.5));
+}
 .tree-node {
-  min-width: 56px;
-  height: 56px;
-  padding: 0 10px;
-  border-radius: 28px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 11px;
-  font-weight: 600;
-  flex-shrink: 0;
-  text-align: center;
-  white-space: nowrap;
-  cursor: default;
-  transition: all 0.15s;
+ width: 74px; height: 74px;
+ border-radius: 22px;
+ display: flex; align-items: center; justify-content: center;
+ font-size: 12px; font-weight: 800;
+ flex-shrink: 0;
+ text-align: center;
+ cursor: default;
+ transition: transform 0.2s ease;
+ flex-direction: column;
+ padding: 8px;
+ line-height: 1.1;
 }
-
+.tree-node small {
+ display: block;
+ margin-top: 5px;
+ font-size: 10px;
+ font-weight: 600;
+ color: var(--muted);
+}
 .tree-node.you {
-  background: var(--accent);
-  color: #0B0E11;
-  width: 64px;
-  height: 64px;
-  font-size: 13px;
-  font-weight: 700;
-  border-radius: 50%;
-  padding: 0;
-  box-shadow: 0 0 0 4px rgba(240, 185, 11, 0.2);
+ background: linear-gradient(145deg, rgba(255,200,97,0.18), rgba(255,132,41,0.16));
+ border: 1px solid rgba(255,200,97,0.42);
+ box-shadow: 0 18px 42px rgba(255, 180, 62, 0.16), inset 0 1px 0 rgba(255,255,255,0.08);
+ width: 88px; height: 88px;
+ font-size: 13px;
+ border-radius: 28px;
 }
-
 .tree-node.filled {
-  background: var(--bg-tertiary);
-  color: var(--text-primary);
-  border: 1px solid var(--accent);
+ background: linear-gradient(145deg, rgba(72,207,255,0.16), rgba(124,109,255,0.14));
+ border: 1px solid rgba(104, 187, 255, 0.24);
+ color: #fff;
 }
-
-.tree-node.filled:hover {
-  background: var(--accent-soft);
-  transform: translateY(-2px);
-}
-
 .tree-node.empty {
-  background: transparent;
-  border: 1px dashed var(--border);
-  color: var(--text-muted);
-  width: 56px;
-  border-radius: 50%;
-  padding: 0;
+ background: rgba(255,255,255,0.03);
+ border: 1px dashed rgba(255,255,255,0.14);
+ color: rgba(255,255,255,0.45);
 }
-
-/* ─── REF LINK ─── */
+.tree-summary {
+ display: grid;
+ grid-template-columns: repeat(3, 1fr);
+ gap: 10px;
+ margin-top: 18px;
+}
+.tree-summary-item {
+ padding: 12px;
+ border-radius: 16px;
+ background: rgba(255,255,255,0.03);
+ border: 1px solid rgba(255,255,255,0.05);
+ text-align: left;
+}
+.tree-summary-value {
+ font-size: 16px;
+ font-weight: 800;
+ margin-bottom: 4px;
+}
+.tree-summary-label {
+ font-size: 10px;
+ color: var(--muted);
+ text-transform: uppercase;
+ letter-spacing: 0.08em;
+}
 .ref-link-box {
-  background: var(--bg-elevated);
-  padding: 12px;
-  border-radius: 8px;
-  margin: 10px 0;
-  font-size: 12px;
-  word-break: break-all;
-  color: var(--accent);
-  border: 1px solid var(--border);
-  font-family: 'SF Mono', Menlo, Consolas, monospace;
+ display: flex;
+ align-items: center;
+ gap: 10px;
+ background: rgba(4,10,20,0.45);
+ padding: 14px;
+ border-radius: 18px;
+ margin: 12px 0 14px;
+ font-size: 12px;
+ color: #cdefff;
+ border: 1px solid rgba(255,255,255,0.06);
 }
-
-/* ─── LEADERBOARD ─── */
-.lb-item {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 10px 0;
-  border-bottom: 1px solid var(--border-soft);
+.ref-link-box span {
+ flex: 1;
+ overflow: hidden;
+ white-space: nowrap;
+ text-overflow: ellipsis;
 }
-.lb-item:last-child { border-bottom: none; }
-
-.lb-rank {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 700;
-  font-size: 12px;
-  background: var(--bg-tertiary);
-  color: var(--text-secondary);
-  flex-shrink: 0;
+.copy-mini-btn {
+ width: 38px;
+ height: 38px;
+ border-radius: 12px;
+ border: 1px solid rgba(100, 185, 255, 0.22);
+ background: rgba(72,207,255,0.08);
+ color: white;
+ font-size: 16px;
 }
-
-.lb-rank.gold {
-  background: var(--accent);
-  color: #0B0E11;
+.ref-actions {
+ display: grid;
+ grid-template-columns: 1fr 1fr;
+ gap: 10px;
 }
-.lb-rank.silver {
-  background: #B7BDC6;
-  color: #0B0E11;
+.lb-item, .history-item { display: flex; align-items: center; gap: 12px; }
+.lb-rank, .history-icon {
+ width: 38px; height: 38px;
+ border-radius: 14px;
+ display: flex; align-items: center; justify-content: center;
+ font-size: 13px; font-weight: 800;
+ flex-shrink: 0;
 }
-.lb-rank.bronze {
-  background: #CD7F32;
-  color: #0B0E11;
+.lb-rank { background: linear-gradient(145deg, rgba(72,207,255,0.18), rgba(124,109,255,0.16)); }
+.lb-rank.gold { background: linear-gradient(145deg, rgba(255,200,97,0.22), rgba(255,157,66,0.18)); }
+.lb-rank.silver { background: linear-gradient(145deg, rgba(210,220,240,0.22), rgba(130,148,180,0.18)); }
+.lb-rank.bronze { background: linear-gradient(145deg, rgba(205,127,50,0.24), rgba(119,69,35,0.18)); }
+.lb-info, .history-info { flex: 1; min-width: 0; }
+.lb-name, .history-title { font-size: 13px; font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.lb-stat, .history-time { font-size: 10px; color: var(--muted); margin-top: 3px; }
+.lb-value { font-size: 14px; font-weight: 800; color: var(--gold); flex-shrink: 0; }
+.history-icon.in { background: rgba(68,225,166,0.14); color: var(--green); }
+.history-icon.out { background: rgba(255,95,134,0.12); color: var(--danger); }
+.history-amount { font-size: 13px; font-weight: 800; flex-shrink: 0; }
+.history-amount.in { color: var(--green); }
+.history-amount.out { color: var(--danger); }
+.calc-result {
+ background: rgba(68,225,166,0.08);
+ border: 1px solid rgba(68,225,166,0.2);
+ border-radius: 18px;
+ padding: 18px;
+ text-align: center;
+ margin-top: 12px;
 }
-
-.lb-info { flex: 1; min-width: 0; }
-.lb-name {
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--text-primary);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+.calc-result-value {
+ font-size: 30px;
+ font-weight: 800;
 }
-.lb-meta {
-  font-size: 11px;
-  color: var(--text-muted);
-  margin-top: 2px;
+.calc-result-label {
+ font-size: 10px;
+ color: var(--muted);
+ letter-spacing: 0.12em;
+ margin-top: 6px;
+ text-transform: uppercase;
 }
-.lb-value {
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--accent);
+.info-line {
+ display: flex; justify-content: space-between; align-items: center;
+ padding: 10px 0;
+ border-bottom: 1px solid rgba(255,255,255,0.05);
+ font-size: 12px;
+ gap: 12px;
 }
-
-/* ─── BOTTOM NAV ─── */
-.bottom-nav {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: var(--bg-elevated);
-  border-top: 1px solid var(--border);
-  display: flex;
-  justify-content: space-around;
-  padding: 8px 4px;
-  padding-bottom: max(8px, env(safe-area-inset-bottom));
-  z-index: 100;
+.info-line:last-child { border-bottom: none; }
+.info-line .lbl { color: var(--muted); }
+.info-line .val { font-weight: 800; color: #eaf4ff; }
+.admin-stat {
+ display: flex; align-items: center; justify-content: space-between;
 }
-
-.nav-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 2px;
-  padding: 6px 8px;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: all 0.15s;
-  flex: 1;
-  max-width: 70px;
-}
-
-.nav-item .icon {
-  font-size: 18px;
-  filter: grayscale(0.5);
-  opacity: 0.6;
-}
-
-.nav-item .label {
-  font-size: 10px;
-  color: var(--text-muted);
-  font-weight: 500;
-  letter-spacing: 0.3px;
-}
-
-.nav-item.active .icon {
-  filter: none;
-  opacity: 1;
-}
-
-.nav-item.active .label {
-  color: var(--accent);
-  font-weight: 600;
-}
-
-/* ─── PRICE TABLE / CALCULATOR ─── */
-.price-table {
-  background: var(--bg-secondary);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  overflow: hidden;
-}
-
-.price-row {
-  display: grid;
-  grid-template-columns: 50px 1fr auto;
-  align-items: center;
-  padding: 10px 12px;
-  border-bottom: 1px solid var(--border-soft);
-  font-size: 13px;
-}
-.price-row:last-child { border-bottom: none; }
-.price-row.header {
-  background: var(--bg-tertiary);
-  font-weight: 600;
-  font-size: 11px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  color: var(--text-muted);
-}
-
-.price-lvl { color: var(--text-muted); font-weight: 500; }
-.price-name { color: var(--text-primary); }
-.price-val { color: var(--accent); font-weight: 600; }
-
-/* ─── HISTORY / TRANSACTIONS ─── */
-.tx-item {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 12px 0;
-  border-bottom: 1px solid var(--border-soft);
-}
-.tx-item:last-child { border-bottom: none; }
-
-.tx-icon {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  background: var(--bg-tertiary);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 16px;
-  flex-shrink: 0;
-}
-
-.tx-info { flex: 1; min-width: 0; }
-.tx-title {
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--text-primary);
-}
-.tx-time {
-  font-size: 11px;
-  color: var(--text-muted);
-  margin-top: 2px;
-}
-
-.tx-amount {
-  font-size: 13px;
-  font-weight: 600;
-  text-align: right;
-}
-.tx-amount.in { color: var(--success); }
-.tx-amount.out { color: var(--text-primary); }
-
-/* ─── TOAST ─── */
+.admin-stat-info { font-size: 10px; color: var(--muted); letter-spacing: 0.12em; margin-bottom: 6px; text-transform: uppercase; }
+.admin-stat-val { font-size: 24px; font-weight: 800; }
 .toast {
-  position: fixed;
-  top: 70px;
-  left: 50%;
-  transform: translateX(-50%) translateY(-100px);
-  background: var(--bg-tertiary);
-  color: var(--text-primary);
-  padding: 12px 20px;
-  border-radius: 8px;
-  font-size: 13px;
-  font-weight: 500;
-  z-index: 1000;
-  border: 1px solid var(--border);
-  transition: transform 0.3s ease;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+ position: fixed;
+ bottom: 92px; left: 50%;
+ transform: translateX(-50%) translateY(20px);
+ background: linear-gradient(135deg, var(--cyan), var(--cyan-2));
+ color: white;
+ font-size: 12px;
+ font-weight: 700;
+ padding: 12px 20px;
+ border-radius: 24px;
+ opacity: 0;
+ transition: all .3s;
+ z-index: 500;
+ box-shadow: 0 14px 30px rgba(31, 155, 255, 0.24);
+ white-space: nowrap;
+ max-width: 90vw;
+ text-align: center;
 }
-
-.toast.show { transform: translateX(-50%) translateY(0); }
-.toast.success { border-color: var(--success); }
-.toast.error { border-color: var(--danger); }
-
-/* ─── UTILITIES ─── */
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+.toast.error { background: linear-gradient(135deg, #ff5f86, #d33f67); }
+.toast.success { background: linear-gradient(135deg, #44e1a6, #18b98d); }
+.bottom-nav {
+ position: fixed;
+ bottom: 12px; left: 12px; right: 12px;
+ background: rgba(7, 13, 24, 0.82);
+ backdrop-filter: blur(22px);
+ border-radius: 24px;
+ display: flex;
+ z-index: 200;
+ overflow-x: auto;
+ scrollbar-width: none;
+ border: 1px solid rgba(112, 157, 255, 0.14);
+ box-shadow: 0 14px 40px rgba(0,0,0,0.42);
+ padding: 8px;
+}
+.bottom-nav::-webkit-scrollbar { display: none; }
+.nav-item {
+ flex: 1; min-width: 60px;
+ padding: 10px 4px;
+ background: none; border: none;
+ color: rgba(255,255,255,0.42);
+ font-size: 10px; font-weight: 700;
+ cursor: pointer;
+ display: flex; flex-direction: column; align-items: center; gap: 4px;
+ border-radius: 18px;
+ transition: 0.2s;
+}
+.nav-item.active {
+ color: white;
+ background: linear-gradient(135deg, rgba(72,207,255,0.18), rgba(124,109,255,0.18));
+ border: 1px solid rgba(92, 188, 255, 0.22);
+}
+.nav-icon { font-size: 17px; }
 .hidden { display: none !important; }
-
-.tab-content { display: none; }
-.tab-content.active { display: block; }
-
-.banner {
-  background: var(--success-soft);
-  border: 1px solid var(--success);
-  border-radius: 8px;
-  padding: 10px 12px;
-  font-size: 12px;
-  color: var(--success);
-  margin-bottom: 12px;
-  text-align: center;
-  font-weight: 500;
+.page { animation: fadeIn .3s ease both; }
+@keyframes fadeIn {
+ from { opacity: 0; transform: translateY(8px); }
+ to { opacity: 1; transform: translateY(0); }
 }
-
-/* Scrollbar для desktop */
-::-webkit-scrollbar { width: 8px; height: 8px; }
-::-webkit-scrollbar-track { background: var(--bg-primary); }
-::-webkit-scrollbar-thumb {
-  background: var(--bg-tertiary);
-  border-radius: 4px;
+.empty-state {
+ text-align: center;
+ padding: 32px 20px;
+ color: var(--muted);
+ font-size: 12px;
 }
-::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
-
+.empty-state-icon { font-size: 36px; margin-bottom: 10px; }
+.ref-banner {
+ background: rgba(68,225,166,0.08);
+ border: 1px solid rgba(68,225,166,0.2);
+ border-radius: 18px;
+ padding: 14px;
+ font-size: 12px;
+ color: #bffff1;
+ margin-bottom: 12px;
+ text-align: center;
+ font-weight: 700;
+}
+@media (max-width: 420px) {
+ .stats { grid-template-columns: 1fr; }
+ .ref-actions, .tree-summary { grid-template-columns: 1fr; }
+ .hero-sub { font-size: 25px; }
+}
 /* ═══════════════════════════════════════════════════════════════
    TIER SYSTEM — финансовые тиры с цветовой дифференциацией
    ═══════════════════════════════════════════════════════════════ */
 
-/* Базовый бейдж тира (показывается рядом с уровнем) */
+/* Header row: уровень слева + бейдж активности справа */
+.card-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 2px;
+}
+
 .tier-badge {
   font-size: 9px;
-  font-weight: 700;
-  letter-spacing: 0.8px;
-  padding: 3px 8px;
-  border-radius: 4px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  padding: 4px 10px;
+  border-radius: 999px;
   text-transform: uppercase;
 }
-
 .tier-badge-active {
-  background: var(--success-soft);
-  color: var(--success);
-  border: 1px solid var(--success);
+  background: rgba(68, 225, 166, 0.14);
+  color: var(--green);
+  border: 1px solid rgba(68, 225, 166, 0.32);
 }
 
-/* Info-grid — двухколоночный layout для дохода/слотов */
+/* Info-grid в карточке */
 .info-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 8px;
-  margin: 10px 0;
-  padding: 10px;
-  background: var(--bg-elevated);
-  border-radius: 6px;
+  gap: 10px;
+  margin: 12px 0;
+  padding: 12px;
+  background: rgba(4, 10, 20, 0.42);
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.04);
 }
-
-.info-cell {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
+.info-cell { display: flex; flex-direction: column; gap: 4px; }
 .info-cell-label {
   font-size: 9px;
-  color: var(--text-muted);
-  font-weight: 600;
-  letter-spacing: 0.8px;
+  color: var(--muted);
+  font-weight: 700;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
 }
-
-.info-cell-value {
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--text-primary);
-}
-
-.info-cell-value.income-up {
-  color: var(--success);
-}
+.info-cell-value { font-size: 14px; font-weight: 800; color: var(--text); }
+.info-cell-value.income-up { color: var(--green); }
 
 .expiry-row {
   display: inline-block;
-  background: var(--success-soft);
-  color: var(--success);
+  background: rgba(68, 225, 166, 0.12);
+  color: var(--green);
   font-size: 11px;
-  font-weight: 600;
-  padding: 4px 10px;
-  border-radius: 4px;
-  margin: 4px 0 8px 0;
+  font-weight: 700;
+  padding: 6px 12px;
+  border-radius: 999px;
+  margin: 6px 0 10px 0;
+  border: 1px solid rgba(68, 225, 166, 0.22);
 }
 
-/* ─── ТИР 1: STARTER (базовый) ─── */
-.card.tier-starter .price {
-  color: var(--text-primary);
-}
+/* ─── ТИР 1: STARTER (базовый, без особых акцентов) ─── */
+.card.tier-starter .price { color: var(--text); }
 
 /* ─── ТИР 2: BRONZE ─── */
 .card.tier-bronze {
   border-left: 3px solid #CD7F32;
 }
 .card.tier-bronze .price {
-  color: #CD7F32;
+  background: linear-gradient(135deg, #E0A66C, #CD7F32);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 /* ─── ТИР 3: SILVER ─── */
 .card.tier-silver {
   border-left: 3px solid #C0C0C0;
-  background: linear-gradient(135deg, rgba(192, 192, 192, 0.04) 0%, var(--bg-secondary) 60%);
+  background: linear-gradient(135deg, rgba(192, 192, 192, 0.05) 0%, var(--panel) 60%);
 }
 .card.tier-silver .price {
-  background: linear-gradient(135deg, #E8E8E8, #A8A8A8);
+  background: linear-gradient(135deg, #EFEFEF, #B0B0B0);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
-/* ─── ТИР 4: GOLD (Binance основной) ─── */
+/* ─── ТИР 4: GOLD ─── */
 .card.tier-gold {
-  border-left: 3px solid var(--accent);
-  background: linear-gradient(135deg, rgba(240, 185, 11, 0.05) 0%, var(--bg-secondary) 60%);
+  border-left: 3px solid var(--gold);
+  background: linear-gradient(135deg, rgba(255, 200, 97, 0.06) 0%, var(--panel) 60%);
 }
 .card.tier-gold .price {
-  background: linear-gradient(135deg, #FCD535, #F0B90B);
+  background: linear-gradient(135deg, #FFD78A, var(--gold));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
 /* ─── ТИР 5: PLATINUM ─── */
 .card.tier-platinum {
-  border-left: 3px solid #76C7C0;
-  background: linear-gradient(135deg, rgba(118, 199, 192, 0.06) 0%, var(--bg-secondary) 60%);
+  border-left: 3px solid var(--cyan);
+  background: linear-gradient(135deg, rgba(72, 207, 255, 0.07) 0%, var(--panel) 60%);
   position: relative;
 }
-.card.tier-platinum::before {
+.card.tier-platinum::after {
   content: '';
   position: absolute;
   top: 0; right: 0;
-  width: 60px; height: 60px;
-  background: radial-gradient(circle, rgba(118, 199, 192, 0.15) 0%, transparent 70%);
+  width: 80px; height: 80px;
+  background: radial-gradient(circle, rgba(72, 207, 255, 0.2) 0%, transparent 70%);
   pointer-events: none;
-  border-top-right-radius: 10px;
+  border-top-right-radius: 24px;
 }
 .card.tier-platinum .price {
-  background: linear-gradient(135deg, #B0E0DC, #76C7C0);
+  background: linear-gradient(135deg, #B0E5FF, var(--cyan));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
 /* ─── ТИР 6: DIAMOND ─── */
 .card.tier-diamond {
-  border-left: 3px solid #5DADE2;
-  background: linear-gradient(135deg, rgba(93, 173, 226, 0.08) 0%, var(--bg-secondary) 60%);
+  border-left: 3px solid var(--violet);
+  background: linear-gradient(135deg, rgba(124, 109, 255, 0.08) 0%, var(--panel) 60%);
   position: relative;
 }
-.card.tier-diamond::before {
+.card.tier-diamond::after {
   content: '';
   position: absolute;
   top: 0; right: 0;
-  width: 80px; height: 80px;
-  background: radial-gradient(circle, rgba(93, 173, 226, 0.18) 0%, transparent 70%);
+  width: 100px; height: 100px;
+  background: radial-gradient(circle, rgba(124, 109, 255, 0.22) 0%, transparent 70%);
   pointer-events: none;
-  border-top-right-radius: 10px;
+  border-top-right-radius: 24px;
 }
 .card.tier-diamond .price {
-  background: linear-gradient(135deg, #AED6F1, #5DADE2);
+  background: linear-gradient(135deg, #B6ACFF, var(--violet));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
 /* ─── ТИР 7: VIP ─── */
 .card.tier-vip {
-  border: 1px solid var(--accent);
-  background: linear-gradient(135deg, rgba(240, 185, 11, 0.08) 0%, rgba(11, 14, 17, 0.95) 100%);
+  border: 1px solid var(--gold);
+  background:
+    linear-gradient(135deg, rgba(255, 200, 97, 0.10) 0%, rgba(11, 20, 38, 0.88) 100%);
   position: relative;
   overflow: hidden;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), 0 14px 32px rgba(255, 170, 79, 0.12);
 }
-.card.tier-vip::before {
+.card.tier-vip::after {
   content: '';
   position: absolute;
   top: 0; right: 0;
-  width: 100px; height: 100px;
-  background: radial-gradient(circle, rgba(240, 185, 11, 0.2) 0%, transparent 70%);
+  width: 120px; height: 120px;
+  background: radial-gradient(circle, rgba(255, 200, 97, 0.28) 0%, transparent 70%);
   pointer-events: none;
-  border-top-right-radius: 10px;
+  border-top-right-radius: 24px;
 }
 .card.tier-vip .price {
-  background: linear-gradient(135deg, #FCD535, #F0B90B 60%, #BC8F00);
+  background: linear-gradient(135deg, #FFE2A0, var(--gold) 60%, var(--gold-2));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  text-shadow: 0 0 20px rgba(240, 185, 11, 0.3);
 }
-.card.tier-vip .level {
-  color: var(--accent);
-}
+.card.tier-vip .level { color: var(--gold); }
+.card.tier-vip .name { color: #FFE2A0; }
 
-/* ─── ТИР 8: BLACK (топ уровень) ─── */
+/* ─── ТИР 8: BLACK (топ) ─── */
 .card.tier-black {
   background:
-    linear-gradient(135deg, rgba(240, 185, 11, 0.06) 0%, rgba(0, 0, 0, 0.8) 50%),
-    linear-gradient(135deg, #1a1c20 0%, #0a0c0f 100%);
-  border: 1px solid var(--accent);
+    linear-gradient(135deg, rgba(255, 200, 97, 0.06) 0%, rgba(0, 0, 0, 0.85) 50%),
+    linear-gradient(135deg, #16182d 0%, #06080f 100%);
+  border: 1px solid var(--gold);
   position: relative;
   overflow: hidden;
-  box-shadow: 0 0 30px rgba(240, 185, 11, 0.1);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 200, 97, 0.12);
 }
 .card.tier-black::before {
   content: '';
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(circle at 90% 10%, rgba(240, 185, 11, 0.25) 0%, transparent 40%),
-    radial-gradient(circle at 10% 90%, rgba(240, 185, 11, 0.12) 0%, transparent 40%);
+    radial-gradient(circle at 90% 10%, rgba(255, 200, 97, 0.28) 0%, transparent 40%),
+    radial-gradient(circle at 10% 90%, rgba(124, 109, 255, 0.14) 0%, transparent 40%);
   pointer-events: none;
 }
 .card.tier-black::after {
   content: '⚜';
   position: absolute;
-  top: 12px; right: 14px;
-  font-size: 24px;
-  color: var(--accent);
-  opacity: 0.4;
+  top: 14px; right: 14px;
+  font-size: 22px;
+  color: var(--gold);
+  opacity: 0.5;
   pointer-events: none;
 }
 .card.tier-black .price {
-  background: linear-gradient(135deg, #FCD535, #F0B90B);
+  background: linear-gradient(135deg, #FFE2A0, var(--gold));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  text-shadow: 0 0 24px rgba(240, 185, 11, 0.4);
   font-size: 32px;
 }
-.card.tier-black .level {
-  color: var(--accent);
-  font-weight: 700;
-}
-.card.tier-black .name {
-  color: #FCD535;
-  font-weight: 700;
-}
+.card.tier-black .level { color: var(--gold); font-weight: 800; }
+.card.tier-black .name { color: #FFE2A0; }
 
-/* Когда уровень active — добавляем зеленоватый акцент поверх tier-стиля */
-.card.active.tier-starter,
-.card.active.tier-bronze,
-.card.active.tier-silver,
-.card.active.tier-gold {
-  border-left-color: var(--success);
-}
-
-.card.active::after {
+/* Active state поверх tier — пульсирующая зелёная точка в углу */
+.card.active::before {
   content: '';
   position: absolute;
-  top: 12px; right: 14px;
+  top: 18px; right: 18px;
   width: 8px; height: 8px;
-  background: var(--success);
+  background: var(--green);
   border-radius: 50%;
-  box-shadow: 0 0 10px var(--success);
+  box-shadow: 0 0 12px var(--green);
   animation: pulse-dot 2s infinite;
   z-index: 2;
 }
+.card.tier-black.active::before { display: none; } /* не дублируем с ⚜ */
+.card.tier-vip.active::before   { right: 50px; }   /* отступ чтобы не пересекать glow */
 
 @keyframes pulse-dot {
   0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.6; transform: scale(1.4); }
+  50%      { opacity: 0.55; transform: scale(1.4); }
 }
 
-/* Локированные карточки — slightly desaturated */
 .card.locked {
   opacity: 0.45;
-  filter: saturate(0.6);
+  filter: saturate(0.55);
   pointer-events: none;
 }
-
-.card.locked .lock-text {
-  font-size: 11px;
-  color: var(--text-muted);
-  text-align: center;
-  padding: 12px;
-  margin-top: 8px;
-  border: 1px dashed var(--border);
-  border-radius: 6px;
-  background: var(--bg-elevated);
-}
-
-/* Чтобы карточка имела относительное позиционирование под ::after */
-.card { position: relative; }
 
 </style>
 </head>
@@ -938,231 +828,237 @@ body {
 
 <div class="container">
 
-  <!-- Header -->
-  <div class="header">
-    <div class="header-left">
-      <img src="logo.png" alt="TonForce" />
-      <div>
-        <div class="header-title">TonForce</div>
-        <div class="balance" id="userInfo">⚡ <span data-i18n="not_connected">Не подключено</span></div>
-      </div>
-    </div>
-    <div style="display:flex; gap:6px; align-items:center;">
-      <div class="lang-switch">
-        <button class="lang-btn active" data-lang="ru" onclick="setLang('ru')">RU</button>
-        <button class="lang-btn" data-lang="en" onclick="setLang('en')">EN</button>
-        <button class="lang-btn" data-lang="ua" onclick="setLang('ua')">UA</button>
-      </div>
-      <button class="wallet-btn" id="walletBtn" onclick="connectWallet()" data-i18n="connect">CONNECT</button>
-    </div>
-  </div>
+ <div class="header">
+ <div class="header-left">
+ <img src="logo.png" alt="TonForce" />
+ <div>
+ <div class="header-title">TonForce</div>
+ <div class="balance" id="userInfo">⚡ <span data-i18n="not_connected">Не подключено</span></div>
+ </div>
+ </div>
+ <div class="header-controls">
+ <div class="lang-switch">
+ <button class="lang-btn active" data-lang="ru" onclick="setLang('ru')">RU</button>
+ <button class="lang-btn" data-lang="en" onclick="setLang('en')">EN</button>
+ <button class="lang-btn" data-lang="ua" onclick="setLang('ua')">UA</button>
+ </div>
+ <button class="wallet-btn" id="walletBtn" onclick="connectWallet()" data-i18n="connect">CONNECT</button>
+ </div>
+ </div>
 
-  <!-- ─── PAGE: MATRIX ─── -->
-  <div id="pageMatrix" class="page">
+ <div id="pageMatrix" class="page">
+ <div class="hero">
+ <div class="hero-title" data-i18n="welcome">WELCOME TO TONFORCE</div>
+ <div class="hero-sub" data-i18n="hero_sub">Grow your network. Scale your earnings.</div>
+ <div class="hero-copy" data-i18n="hero_copy">Premium TON dashboard with a cleaner structure, clearer levels and a more trusted look.</div>
+ <div class="hero-badges">
+ <div class="hero-badge">Matrix 3×8</div>
+ <div class="hero-badge">365 days active</div>
+ <div class="hero-badge">On-chain payouts</div>
+ </div>
+ </div>
 
-    <div class="hero">
-      <div class="hero-title" data-i18n="welcome">WELCOME TO TONFORCE</div>
-      <div class="hero-sub" data-i18n="hero_sub">Network. Power. Freedom.</div>
-    </div>
+ <div class="stats">
+ <div class="stat">
+ <div class="stat-icon">👥</div>
+ <div class="stat-value" id="statUsers">—</div>
+ <div class="stat-label" data-i18n="participants">УЧАСТНИКОВ</div>
+ </div>
+ <div class="stat">
+ <div class="stat-icon">⭐</div>
+ <div class="stat-value" id="statLevel">—</div>
+ <div class="stat-label" data-i18n="my_level">МОЙ УРОВЕНЬ</div>
+ </div>
+ <div class="stat">
+ <div class="stat-icon">🌿</div>
+ <div class="stat-value" id="statRefs">—</div>
+ <div class="stat-label" data-i18n="referrals">РЕФЕРАЛОВ</div>
+ </div>
+ </div>
 
-    <div class="stats">
-      <div class="stat">
-        <div class="stat-icon">👥</div>
-        <div class="stat-value" id="statUsers">—</div>
-        <div class="stat-label" data-i18n="participants">УЧАСТНИКОВ</div>
-      </div>
-      <div class="stat">
-        <div class="stat-icon">⭐</div>
-        <div class="stat-value" id="statLevel">—</div>
-        <div class="stat-label" data-i18n="my_level">МОЙ УРОВЕНЬ</div>
-      </div>
-      <div class="stat">
-        <div class="stat-icon">🚀</div>
-        <div class="stat-value" id="statRefs">—</div>
-        <div class="stat-label" data-i18n="referrals">РЕФЕРАЛОВ</div>
-      </div>
-    </div>
+ <div id="notRegistered">
+ <div class="ref-banner" id="refBanner" style="display:none;">
+ ✨ <span data-i18n="ref_link_used">ВЫ ПЕРЕШЛИ ПО РЕФЕРАЛЬНОЙ ССЫЛКЕ</span>
+ </div>
 
-    <!-- Регистрация -->
-    <div id="notRegistered">
-      <div class="ref-banner" id="refBanner" style="display:none;">
-        ✨ <span data-i18n="ref_link_used">ВЫ ПЕРЕШЛИ ПО РЕФЕРАЛЬНОЙ ССЫЛКЕ</span>
-      </div>
+ <div class="section-title"><span data-i18n="join">ПРИСОЕДИНИТЬСЯ</span><span class="section-note">Start your first node</span></div>
 
-      <div class="section-title" data-i18n="join">ПРИСОЕДИНИТЬСЯ</div>
+ <div class="card">
+ <input id="refInput" type="hidden" value="1" />
+ <div id="connectPrompt" style="text-align:center; padding:18px 0;">
+ <div style="font-size:44px; margin-bottom:10px">🔌</div>
+ <div style="font-size:14px; color:var(--muted); margin-bottom:16px" data-i18n="connect_first">
+ Подключите кошелёк чтобы начать
+ </div>
+ <button class="button" onclick="connectWallet()">
+ ⚡️ <span data-i18n="connect">CONNECT</span>
+ </button>
+ </div>
+ <button class="button" id="regBtn" onclick="register()" style="display:none;">
+ ⚡️ <span data-i18n="join_btn">АКТИВИРОВАТЬ ЗА</span> 0.1 TON
+ </button>
+ </div>
+ </div>
 
-      <div class="card">
-        <input id="refInput" type="hidden" value="1" />
-        <div id="connectPrompt" style="text-align:center; padding:14px 0;">
-          <div style="font-size:48px; margin-bottom:8px">🔌</div>
-          <div style="font-size:14px; opacity:0.8; margin-bottom:16px" data-i18n="connect_first">
-            Подключите кошелёк чтобы начать
-          </div>
-          <button class="button" onclick="connectWallet()">
-            ⚡️ <span data-i18n="connect">CONNECT</span>
-          </button>
-        </div>
-        <button class="button" id="regBtn" onclick="register()" style="display:none;">
-          ⚡️ <span data-i18n="join_btn">АКТИВИРОВАТЬ ЗА</span> 0.1 TON
-        </button>
-      </div>
-    </div>
+ <div id="isRegistered" class="hidden">
+ <div class="section-title"><span data-i18n="my_levels">МОИ УРОВНИ</span><span class="section-note">Upgrade your matrix</span></div>
+ <div id="levelsGrid"></div>
+ </div>
+ </div>
 
-    <!-- Уровни -->
-    <div id="isRegistered" class="hidden">
-      <div class="section-title" data-i18n="my_levels">МОИ УРОВНИ</div>
-      <div id="levelsGrid"></div>
-    </div>
-  </div>
+ <div id="pageTree" class="page hidden">
+ <div class="section-title"><span data-i18n="ref_tree">ДЕРЕВО РЕФЕРАЛОВ</span><span class="section-note">Level 1 overview</span></div>
+ <div class="card">
+ <div class="tree">
+ <div class="tree-shell">
+ <div class="tree-top">
+ <div class="tree-node you">YOU<small>owner node</small></div>
+ </div>
+ <div class="tree-row" id="treeRow"></div>
+ </div>
+ <div class="tree-summary">
+ <div class="tree-summary-item"><div class="tree-summary-value" id="treeActiveRefs">0</div><div class="tree-summary-label">Active partners</div></div>
+ <div class="tree-summary-item"><div class="tree-summary-value" id="treeOpenSlots">3</div><div class="tree-summary-label">Open slots</div></div>
+ <div class="tree-summary-item"><div class="tree-summary-value" id="treeEarned">0 TON</div><div class="tree-summary-label">Earned</div></div>
+ </div>
+ </div>
+ </div>
 
-  <!-- ─── PAGE: TREE ─── -->
-  <div id="pageTree" class="page hidden">
-    <div class="section-title" data-i18n="ref_tree">ДЕРЕВО РЕФЕРАЛОВ</div>
-    <div class="card">
-      <div class="tree">
-        <div class="tree-row">
-          <div class="tree-node you">YOU</div>
-        </div>
-        <div class="tree-row" id="treeRow"></div>
-      </div>
-    </div>
+ <div class="section-title"><span data-i18n="my_ref_link">МОЯ РЕФЕРАЛЬНАЯ ССЫЛКА</span><span class="section-note">Share & grow</span></div>
+ <div class="card">
+ <div class="input-label" data-i18n="share_earn">ПОДЕЛИТЕСЬ И ЗАРАБАТЫВАЙТЕ</div>
+ <div class="ref-link-box"><span id="refLink">—</span><button class="copy-mini-btn" onclick="copyRef()">⧉</button></div>
+ <div class="ref-actions">
+ <button class="button" onclick="shareRefLink()">📨 <span data-i18n="share_link">ПОДЕЛИТЬСЯ</span></button>
+ <button class="button secondary" onclick="copyRef()">📋 <span data-i18n="copy_link">СКОПИРОВАТЬ ССЫЛКУ</span></button>
+ </div>
+ </div>
+ </div>
 
-    <div class="section-title" data-i18n="my_ref_link">МОЯ РЕФЕРАЛЬНАЯ ССЫЛКА</div>
-    <div class="card">
-      <div class="input-label" data-i18n="share_earn">ПОДЕЛИТЕСЬ И ЗАРАБАТЫВАЙТЕ</div>
-      <div class="ref-link-box" id="refLink">—</div>
-      <button class="button gold" onclick="copyRef()">📋 <span data-i18n="copy_link">СКОПИРОВАТЬ ССЫЛКУ</span></button>
-    </div>
-  </div>
+ <div id="pageLeaderboard" class="page hidden">
+ <div class="section-title"><span data-i18n="top_refs">ТОП РЕФЕРЕРОВ</span><span class="section-note">Best performers</span></div>
+ <div id="leaderboardList">
+ <div class="empty-state">
+ <div class="empty-state-icon">🏆</div>
+ <div data-i18n="lb_loading">Загрузка лидерборда...</div>
+ </div>
+ </div>
+ </div>
 
-  <!-- ─── PAGE: LEADERBOARD ─── -->
-  <div id="pageLeaderboard" class="page hidden">
-    <div class="section-title" data-i18n="top_refs">ТОП РЕФЕРЕРОВ</div>
-    <div id="leaderboardList">
-      <div class="empty-state">
-        <div class="empty-state-icon">🏆</div>
-        <div data-i18n="lb_loading">Загрузка лидерборда...</div>
-      </div>
-    </div>
-  </div>
+ <div id="pageHistory" class="page hidden">
+ <div class="section-title"><span data-i18n="my_history">ИСТОРИЯ ТРАНЗАКЦИЙ</span><span class="section-note">Latest activity</span></div>
+ <div id="historyList">
+ <div class="empty-state">
+ <div class="empty-state-icon">📜</div>
+ <div data-i18n="history_empty">Подключите кошелёк</div>
+ </div>
+ </div>
+ </div>
 
-  <!-- ─── PAGE: HISTORY ─── -->
-  <div id="pageHistory" class="page hidden">
-    <div class="section-title" data-i18n="my_history">ИСТОРИЯ ТРАНЗАКЦИЙ</div>
-    <div id="historyList">
-      <div class="empty-state">
-        <div class="empty-state-icon">📜</div>
-        <div data-i18n="history_empty">Подключите кошелёк</div>
-      </div>
-    </div>
-  </div>
+ <div id="pageInfo" class="page hidden">
 
-  <!-- ─── PAGE: INFO ─── -->
-  <div id="pageInfo" class="page hidden">
+ <div class="section-title"><span data-i18n="calc_title">КАЛЬКУЛЯТОР ДОХОДА</span><span class="section-note">Estimate your upside</span></div>
+ <div class="card">
+ <div class="input-group">
+ <label class="input-label" data-i18n="refs_count">КОЛ-ВО РЕФЕРАЛОВ В МЕСЯЦ</label>
+ <input class="input-field" id="calcRefs" type="number" value="3" min="1" max="100" oninput="calculateIncome()" />
+ </div>
+ <div class="input-group">
+ <label class="input-label" data-i18n="active_levels">АКТИВНЫХ УРОВНЕЙ</label>
+ <input class="input-field" id="calcLevels" type="number" value="3" min="1" max="8" oninput="calculateIncome()" />
+ </div>
+ <div class="calc-result">
+ <div class="calc-result-value" id="calcResult">0 TON</div>
+ <div class="calc-result-label" data-i18n="potential_income">ПОТЕНЦИАЛЬНЫЙ ДОХОД В МЕСЯЦ</div>
+ </div>
+ </div>
 
-    <div class="section-title" data-i18n="calc_title">КАЛЬКУЛЯТОР ДОХОДА</div>
-    <div class="card">
-      <div class="input-group">
-        <label class="input-label" data-i18n="refs_count">КОЛ-ВО РЕФЕРАЛОВ В МЕСЯЦ</label>
-        <input class="input-field" id="calcRefs" type="number" value="3" min="1" max="100" oninput="calculateIncome()" />
-      </div>
-      <div class="input-group">
-        <label class="input-label" data-i18n="active_levels">АКТИВНЫХ УРОВНЕЙ</label>
-        <input class="input-field" id="calcLevels" type="number" value="3" min="1" max="8" oninput="calculateIncome()" />
-      </div>
-      <div class="calc-result">
-        <div class="calc-result-value" id="calcResult">0 TON</div>
-        <div class="calc-result-label" data-i18n="potential_income">ПОТЕНЦИАЛЬНЫЙ ДОХОД В МЕСЯЦ</div>
-      </div>
-    </div>
+ <div class="section-title"><span data-i18n="how_works">КАК ЭТО РАБОТАЕТ</span><span class="section-note">Simple rules</span></div>
+ <div class="card">
+ <div style="font-size:13px; line-height:1.85; color:#d9e5fb;">
+ <div data-i18n="rule_1">▸ Матрица 3×8 — каждый привлекает до 3 рефералов</div>
+ <div data-i18n="rule_2">▸ 8 уровней с умножением цены ×3</div>
+ <div data-i18n="rule_3">▸ Уровень активен 365 дней</div>
+ <div data-i18n="rule_4">▸ Выплаты идут вверх по дереву автоматически</div>
+ <div data-i18n="rule_5">▸ Всё на TON блокчейне</div>
+ </div>
+ </div>
 
-    <div class="section-title" data-i18n="how_works">КАК ЭТО РАБОТАЕТ</div>
-    <div class="card">
-      <div style="font-size:12px; line-height:2; opacity:0.85">
-        <div data-i18n="rule_1">▸ Матрица 3×8 — каждый привлекает до 3 рефералов</div>
-        <div data-i18n="rule_2">▸ 8 уровней с умножением цены ×3</div>
-        <div data-i18n="rule_3">▸ Уровень активен 365 дней</div>
-        <div data-i18n="rule_4">▸ Выплаты идут вверх по дереву автоматически</div>
-        <div data-i18n="rule_5">▸ Всё на TON блокчейне</div>
-      </div>
-    </div>
+ <div class="section-title"><span data-i18n="prices">ЦЕНЫ УРОВНЕЙ</span><span class="section-note">Node ladder</span></div>
+ <div class="card" id="priceTable"></div>
+ </div>
 
-    <div class="section-title" data-i18n="prices">ЦЕНЫ УРОВНЕЙ</div>
-    <div class="card" id="priceTable"></div>
-  </div>
+ <div id="pageAdmin" class="page hidden">
+ <div class="section-title"><span data-i18n="admin">АДМИН ПАНЕЛЬ</span><span class="section-note">Owner insights</span></div>
 
-  <!-- ─── PAGE: ADMIN ─── -->
-  <div id="pageAdmin" class="page hidden">
-    <div class="section-title" data-i18n="admin">АДМИН ПАНЕЛЬ</div>
+ <div class="card">
+ <div class="admin-stat">
+ <div>
+ <div class="admin-stat-info" data-i18n="total_users">ВСЕГО УЧАСТНИКОВ</div>
+ <div class="admin-stat-val" id="adminUsers">—</div>
+ </div>
+ <div style="font-size:34px">👥</div>
+ </div>
+ </div>
 
-    <div class="card">
-      <div class="admin-stat">
-        <div>
-          <div class="admin-stat-info" data-i18n="total_users">ВСЕГО УЧАСТНИКОВ</div>
-          <div class="admin-stat-val" id="adminUsers">—</div>
-        </div>
-        <div style="font-size:36px">👥</div>
-      </div>
-    </div>
+ <div class="card">
+ <div class="admin-stat">
+ <div>
+ <div class="admin-stat-info" data-i18n="contract_balance">БАЛАНС КОНТРАКТА</div>
+ <div class="admin-stat-val" id="adminBalance">— TON</div>
+ </div>
+ <div style="font-size:34px">💰</div>
+ </div>
+ </div>
 
-    <div class="card">
-      <div class="admin-stat">
-        <div>
-          <div class="admin-stat-info" data-i18n="contract_balance">БАЛАНС КОНТРАКТА</div>
-          <div class="admin-stat-val" id="adminBalance">— TON</div>
-        </div>
-        <div style="font-size:36px">💰</div>
-      </div>
-    </div>
+ <div class="card">
+ <div class="admin-stat">
+ <div>
+ <div class="admin-stat-info" data-i18n="my_earnings">МОЙ ЗАРАБОТОК</div>
+ <div class="admin-stat-val" id="admin24h">— TON</div>
+ </div>
+ <div style="font-size:34px">📈</div>
+ </div>
+ </div>
 
-    <div class="card">
-      <div class="admin-stat">
-        <div>
-          <div class="admin-stat-info" data-i18n="my_earnings">МОЙ ЗАРАБОТОК</div>
-          <div class="admin-stat-val" id="admin24h">— TON</div>
-        </div>
-        <div style="font-size:36px">📈</div>
-      </div>
-    </div>
-
-    <div class="section-title" data-i18n="contract_addr">АДРЕС КОНТРАКТА</div>
-    <div class="card">
-      <div style="font-size:11px; word-break:break-all; color:#F0B90B; padding:10px 0; font-family: 'SF Mono', Menlo, Consolas, monospace;">
-        EQCaLMyvZKWVjLvN3LyA_x140pTcHvv7DMjHNK-FhHtswjLQ
-      </div>
-      <button class="button gold" onclick="copyContract()">📋 <span data-i18n="copy_addr">СКОПИРОВАТЬ АДРЕС</span></button>
-    </div>
-  </div>
+ <div class="section-title"><span data-i18n="contract_addr">АДРЕС КОНТРАКТА</span><span class="section-note">Copy for payments</span></div>
+ <div class="card">
+ <div style="font-size:11px; word-break:break-all; color:#cdefff; padding:10px 0; line-height:1.7;">
+ EQCaLMyvZKWVjLvN3LyA_x140pTcHvv7DMjHNK-FhHtswjLQ
+ </div>
+ <button class="button secondary" onclick="copyContract()">📋 <span data-i18n="copy_addr">СКОПИРОВАТЬ АДРЕС</span></button>
+ </div>
+ </div>
 
 </div>
 
 <div class="toast" id="toast"></div>
 
-<div class="bottom-nav">
-  <button class="nav-item active" data-page="matrix" onclick="showPage('matrix')">
-    <span class="nav-icon">⬡</span>
-    <span data-i18n="nav_matrix">МАТРИЦА</span>
-  </button>
-  <button class="nav-item" data-page="tree" onclick="showPage('tree')">
-    <span class="nav-icon">🌳</span>
-    <span data-i18n="nav_tree">ДЕРЕВО</span>
-  </button>
-  <button class="nav-item" data-page="leaderboard" onclick="showPage('leaderboard')">
-    <span class="nav-icon">🏆</span>
-    <span data-i18n="nav_top">ТОП</span>
-  </button>
-  <button class="nav-item" data-page="history" onclick="showPage('history')">
-    <span class="nav-icon">📜</span>
-    <span data-i18n="nav_history">ИСТОРИЯ</span>
-  </button>
-  <button class="nav-item" data-page="info" onclick="showPage('info')">
-    <span class="nav-icon">🧮</span>
-    <span data-i18n="nav_info">КАЛК</span>
-  </button>
-  <button class="nav-item hidden" id="navAdmin" data-page="admin" onclick="showPage('admin')">
-    <span class="nav-icon">👑</span>
-    <span data-i18n="nav_admin">АДМИН</span>
-  </button>
+<div class="bottom-nav hidden" id="bottomNav">
+ <button class="nav-item active" data-page="matrix" onclick="showPage('matrix')">
+ <span class="nav-icon">⬡</span>
+ <span data-i18n="nav_matrix">МАТРИЦА</span>
+ </button>
+ <button class="nav-item" data-page="tree" onclick="showPage('tree')">
+ <span class="nav-icon">🌳</span>
+ <span data-i18n="nav_tree">ДЕРЕВО</span>
+ </button>
+ <button class="nav-item" data-page="leaderboard" onclick="showPage('leaderboard')">
+ <span class="nav-icon">🏆</span>
+ <span data-i18n="nav_top">ТОП</span>
+ </button>
+ <button class="nav-item" data-page="history" onclick="showPage('history')">
+ <span class="nav-icon">📜</span>
+ <span data-i18n="nav_history">ИСТОРИЯ</span>
+ </button>
+ <button class="nav-item" data-page="info" onclick="showPage('info')">
+ <span class="nav-icon">🧮</span>
+ <span data-i18n="nav_info">КАЛК</span>
+ </button>
+ <button class="nav-item hidden" id="navAdmin" data-page="admin" onclick="showPage('admin')">
+ <span class="nav-icon">👑</span>
+ <span data-i18n="nav_admin">АДМИН</span>
+ </button>
 </div>
 
 <script>
@@ -1170,847 +1066,339 @@ const CONTRACT_ADDRESS = 'EQCaLMyvZKWVjLvN3LyA_x140pTcHvv7DMjHNK-FhHtswjLQ';
 const BOT_USERNAME = 'tonforce_bot';
 const OWNER_WALLET_RAW = '0:e598cd4dc0b5aaa47ab9a5e452c0f0e8729408d36121ffcc60b1e48a82028941';
 const TONCENTER_KEY = '105893705d1e384d248d96788d322fa38ab967bfe6eaa1077039b43ed4b89977';
-
-// URL бэкенда бота для получения общего реестра имён.
-// После деплоя бота на Railway замени значение на свой URL, например:
-// 'https://tonforce-bot-production.up.railway.app'
-// Если оставить пустым — будет работать только локальный реестр (твой браузер).
 const BOT_API_URL = '';
 
 const LEVELS = [
-  { level: 1, price: 0.1,   name: '💵 Starter',  nameRu: 'Стартер',     income: 0.2,   slots: 2,   tier: 'starter' },
-  { level: 2, price: 0.3,   name: '💰 Bronze',   nameRu: 'Бронза',      income: 0.6,   slots: 4,   tier: 'bronze'  },
-  { level: 3, price: 0.9,   name: '🥈 Silver',   nameRu: 'Серебро',     income: 1.8,   slots: 8,   tier: 'silver'  },
-  { level: 4, price: 2.7,   name: '🥇 Gold',     nameRu: 'Золото',      income: 5.4,   slots: 16,  tier: 'gold'    },
-  { level: 5, price: 8.1,   name: '💎 Platinum', nameRu: 'Платина',     income: 16.2,  slots: 32,  tier: 'platinum'},
-  { level: 6, price: 24.3,  name: '⭐ Diamond',  nameRu: 'Бриллиант',   income: 48.6,  slots: 64,  tier: 'diamond' },
-  { level: 7, price: 72.9,  name: '👑 VIP',      nameRu: 'VIP',         income: 145.8, slots: 128, tier: 'vip'     },
-  { level: 8, price: 218.7, name: '🏆 Black',    nameRu: 'Black',       income: 437.4, slots: 256, tier: 'black'   }
+ { level: 1, price: 0.1,   name: '💵 Starter',  nameRu: 'Стартер',     nameUa: 'Стартер',     income: 0.2,   slots: 2,   tier: 'starter' },
+ { level: 2, price: 0.3,   name: '💰 Bronze',   nameRu: 'Бронза',      nameUa: 'Бронза',      income: 0.6,   slots: 4,   tier: 'bronze'  },
+ { level: 3, price: 0.9,   name: '🥈 Silver',   nameRu: 'Серебро',     nameUa: 'Срібло',      income: 1.8,   slots: 8,   tier: 'silver'  },
+ { level: 4, price: 2.7,   name: '🥇 Gold',     nameRu: 'Золото',      nameUa: 'Золото',      income: 5.4,   slots: 16,  tier: 'gold'    },
+ { level: 5, price: 8.1,   name: '💎 Platinum', nameRu: 'Платина',     nameUa: 'Платина',     income: 16.2,  slots: 32,  tier: 'platinum'},
+ { level: 6, price: 24.3,  name: '⭐ Diamond',  nameRu: 'Бриллиант',   nameUa: 'Діамант',     income: 48.6,  slots: 64,  tier: 'diamond' },
+ { level: 7, price: 72.9,  name: '👑 VIP',      nameRu: 'VIP',         nameUa: 'VIP',         income: 145.8, slots: 128, tier: 'vip'     },
+ { level: 8, price: 218.7, name: '🏆 Black',    nameRu: 'Black',       nameUa: 'Black',       income: 437.4, slots: 256, tier: 'black'   }
 ];
 
+// Возвращает локализованное имя уровня
+function getLevelName(lvlObj) {
+  const lang = (typeof currentLang !== 'undefined') ? currentLang : 'en';
+  const emoji = lvlObj.name.split(' ')[0]; // эмодзи в начале
+  if (lang === 'ru') return `${emoji} ${lvlObj.nameRu}`;
+  if (lang === 'ua') return `${emoji} ${lvlObj.nameUa}`;
+  return lvlObj.name;
+}
+
 const I18N = {
-  ru: {
-    connect:'CONNECT', not_connected:'Не подключено', welcome:'WELCOME TO TONFORCE', hero_sub:'Network. Power. Freedom.',
-    participants:'УЧАСТНИКОВ', my_level:'МОЙ УРОВЕНЬ', referrals:'РЕФЕРАЛОВ', join:'ПРИСОЕДИНИТЬСЯ',
-    ref_id:'ID РЕФЕРЕРА', join_btn:'АКТИВИРОВАТЬ ЗА', my_levels:'МОИ УРОВНИ', ref_tree:'ДЕРЕВО РЕФЕРАЛОВ',
-    my_ref_link:'МОЯ РЕФЕРАЛЬНАЯ ССЫЛКА', share_earn:'ПОДЕЛИТЕСЬ И ЗАРАБАТЫВАЙТЕ', copy_link:'СКОПИРОВАТЬ ССЫЛКУ',
-    top_refs:'ТОП РЕФЕРЕРОВ', lb_loading:'Загрузка...', my_history:'ИСТОРИЯ ТРАНЗАКЦИЙ',
-    history_empty:'Подключите кошелёк', calc_title:'КАЛЬКУЛЯТОР ДОХОДА',
-    refs_count:'КОЛ-ВО РЕФЕРАЛОВ В МЕСЯЦ', active_levels:'АКТИВНЫХ УРОВНЕЙ', potential_income:'ПОТЕНЦИАЛЬНЫЙ ДОХОД В МЕСЯЦ',
-    how_works:'КАК ЭТО РАБОТАЕТ',
-    rule_1:'▸ Матрица 3×8 — каждый привлекает до 3 рефералов', rule_2:'▸ 8 уровней с умножением цены ×3',
-    rule_3:'▸ Уровень активен 365 дней', rule_4:'▸ Выплаты идут вверх по дереву автоматически',
-    rule_5:'▸ Всё на TON блокчейне',
-    prices:'ЦЕНЫ УРОВНЕЙ', admin:'АДМИН ПАНЕЛЬ', total_users:'ВСЕГО УЧАСТНИКОВ', contract_balance:'БАЛАНС КОНТРАКТА',
-    my_earnings:'МОЙ ЗАРАБОТОК', contract_addr:'АДРЕС КОНТРАКТА', copy_addr:'СКОПИРОВАТЬ АДРЕС',
-    nav_matrix:'МАТРИЦА', nav_tree:'ДЕРЕВО', nav_top:'ТОП', nav_history:'ИСТОРИЯ', nav_info:'КАЛК', nav_admin:'АДМИН',
-    ref_link_used:'ВЫ ПЕРЕШЛИ ПО РЕФЕРАЛЬНОЙ ССЫЛКЕ', auto_filled:'АВТОЗАПОЛНЕНО',
-    wallet_connected:'Кошелёк подключён!', tx_sent:'Транзакция отправлена!', tx_error:'Ошибка транзакции',
-    copied:'Скопировано!', need_wallet:'Сначала подключите кошелёк', days_left:'дн.',
-    activate:'АКТИВИРОВАТЬ', extend:'ПРОДЛИТЬ', locked_text:'Купите предыдущий уровень',
-    income:'ДОХОД', slots:'СЛОТОВ', received:'Получено', sent:'Отправлено',
-    level:'УРОВЕНЬ', active:'АКТИВЕН', forever:'НАВСЕГДА',
-    connect_first:'Подключите кошелёк чтобы начать'
-  },
-  en: {
-    connect:'CONNECT', not_connected:'Not connected', welcome:'WELCOME TO TONFORCE', hero_sub:'Network. Power. Freedom.',
-    participants:'PARTICIPANTS', my_level:'MY LEVEL', referrals:'REFERRALS', join:'JOIN',
-    ref_id:'REFERRER ID', join_btn:'ACTIVATE FOR', my_levels:'MY LEVELS', ref_tree:'REFERRAL TREE',
-    my_ref_link:'MY REFERRAL LINK', share_earn:'SHARE & EARN', copy_link:'COPY LINK',
-    top_refs:'TOP REFERRERS', lb_loading:'Loading...', my_history:'TRANSACTION HISTORY',
-    history_empty:'Connect wallet', calc_title:'INCOME CALCULATOR',
-    refs_count:'REFERRALS PER MONTH', active_levels:'ACTIVE LEVELS', potential_income:'POTENTIAL MONTHLY INCOME',
-    how_works:'HOW IT WORKS',
-    rule_1:'▸ Matrix 3×8 — each invites up to 3 refs', rule_2:'▸ 8 levels with ×3 price multiplier',
-    rule_3:'▸ Level active for 365 days', rule_4:'▸ Payouts flow up the tree automatically',
-    rule_5:'▸ All on TON blockchain',
-    prices:'LEVEL PRICES', admin:'ADMIN PANEL', total_users:'TOTAL USERS', contract_balance:'CONTRACT BALANCE',
-    my_earnings:'MY EARNINGS', contract_addr:'CONTRACT ADDRESS', copy_addr:'COPY ADDRESS',
-    nav_matrix:'MATRIX', nav_tree:'TREE', nav_top:'TOP', nav_history:'HISTORY', nav_info:'CALC', nav_admin:'ADMIN',
-    ref_link_used:'YOU JOINED VIA REFERRAL LINK', auto_filled:'AUTO-FILLED',
-    wallet_connected:'Wallet connected!', tx_sent:'Transaction sent!', tx_error:'Transaction error',
-    copied:'Copied!', need_wallet:'Connect wallet first', days_left:'days',
-    activate:'ACTIVATE', extend:'EXTEND', locked_text:'Buy previous level',
-    income:'INCOME', slots:'SLOTS', received:'Received', sent:'Sent',
-    level:'LEVEL', active:'ACTIVE', forever:'FOREVER',
-    connect_first:'Connect wallet to start'
-  },
-  ua: {
-    connect:'CONNECT', not_connected:'Не підключено', welcome:'ЛАСКАВО ПРОСИМО В TONFORCE', hero_sub:'Мережа. Сила. Свобода.',
-    participants:'УЧАСНИКІВ', my_level:'МІЙ РІВЕНЬ', referrals:'РЕФЕРАЛІВ', join:'ПРИЄДНАТИСЯ',
-    ref_id:'ID РЕФЕРЕРА', join_btn:'АКТИВУВАТИ ЗА', my_levels:'МОЇ РІВНІ', ref_tree:'ДЕРЕВО РЕФЕРАЛІВ',
-    my_ref_link:'МОЄ РЕФЕРАЛЬНЕ ПОСИЛАННЯ', share_earn:'ПОДІЛІТЬСЯ ТА ЗАРОБЛЯЙТЕ', copy_link:'СКОПІЮВАТИ',
-    top_refs:'ТОП РЕФЕРЕРІВ', lb_loading:'Завантаження...', my_history:'ІСТОРІЯ ТРАНЗАКЦІЙ',
-    history_empty:'Підключіть гаманець', calc_title:'КАЛЬКУЛЯТОР ДОХОДУ',
-    refs_count:'РЕФЕРАЛІВ НА МІСЯЦЬ', active_levels:'АКТИВНИХ РІВНІВ', potential_income:'ПОТЕНЦІЙНИЙ ДОХІД ЗА МІСЯЦЬ',
-    how_works:'ЯК ЦЕ ПРАЦЮЄ',
-    rule_1:'▸ Матриця 3×8 — кожен запрошує до 3 рефералів', rule_2:'▸ 8 рівнів з множенням ціни ×3',
-    rule_3:'▸ Рівень активний 365 днів', rule_4:'▸ Виплати йдуть вгору автоматично',
-    rule_5:'▸ Все на TON блокчейні',
-    prices:'ЦІНИ РІВНІВ', admin:'АДМІН ПАНЕЛЬ', total_users:'ВСЬОГО УЧАСНИКІВ', contract_balance:'БАЛАНС КОНТРАКТУ',
-    my_earnings:'МІЙ ЗАРОБІТОК', contract_addr:'АДРЕСА КОНТРАКТУ', copy_addr:'СКОПІЮВАТИ',
-    nav_matrix:'МАТРИЦЯ', nav_tree:'ДЕРЕВО', nav_top:'ТОП', nav_history:'ІСТОРІЯ', nav_info:'КАЛК', nav_admin:'АДМІН',
-    ref_link_used:'ВИ ПЕРЕЙШЛИ ЗА ПОСИЛАННЯМ', auto_filled:'АВТОЗАПОВНЕНО',
-    wallet_connected:'Гаманець підключено!', tx_sent:'Транзакція надіслана!', tx_error:'Помилка',
-    copied:'Скопійовано!', need_wallet:'Спочатку підключіть гаманець', days_left:'дн.',
-    activate:'АКТИВУВАТИ', extend:'ПОНОВИТИ', locked_text:'Купіть попередній рівень',
-    income:'ДОХІД', slots:'СЛОТІВ', received:'Отримано', sent:'Надіслано',
-    level:'РІВЕНЬ', active:'АКТИВНИЙ', forever:'НАЗАВЖДИ',
-    connect_first:'Підключіть гаманець щоб почати'
-  }
+ ru: {
+ connect:'CONNECT', not_connected:'Не подключено', welcome:'PREMIUM TON DASHBOARD', hero_sub:'Grow your network. Scale your earnings.', hero_copy:'Чистый интерфейс для матрицы, уровней и рефералов без перегруженного крипто-шума.',
+ participants:'УЧАСТНИКОВ', my_level:'МОЙ УРОВЕНЬ', referrals:'РЕФЕРАЛОВ', join:'ПРИСОЕДИНИТЬСЯ',
+ ref_id:'ID РЕФЕРЕРА', join_btn:'АКТИВИРОВАТЬ ЗА', my_levels:'МОИ УРОВНИ', ref_tree:'ДЕРЕВО РЕФЕРАЛОВ',
+ my_ref_link:'МОЯ РЕФЕРАЛЬНАЯ ССЫЛКА', share_earn:'ПОДЕЛИТЕСЬ И ЗАРАБАТЫВАЙТЕ', copy_link:'СКОПИРОВАТЬ ССЫЛКУ', share_link:'ПОДЕЛИТЬСЯ',
+ top_refs:'ТОП РЕФЕРЕРОВ', lb_loading:'Загрузка...', my_history:'ИСТОРИЯ ТРАНЗАКЦИЙ',
+ history_empty:'Подключите кошелёк', calc_title:'КАЛЬКУЛЯТОР ДОХОДА',
+ refs_count:'КОЛ-ВО РЕФЕРАЛОВ В МЕСЯЦ', active_levels:'АКТИВНЫХ УРОВНЕЙ', potential_income:'ПОТЕНЦИАЛЬНЫЙ ДОХОД В МЕСЯЦ',
+ how_works:'КАК ЭТО РАБОТАЕТ',
+ rule_1:'▸ Матрица 3×8 — каждый привлекает до 3 рефералов', rule_2:'▸ 8 уровней с умножением цены ×3',
+ rule_3:'▸ Уровень активен 365 дней', rule_4:'▸ Выплаты идут вверх по дереву автоматически',
+ rule_5:'▸ Всё на TON блокчейне',
+ prices:'ЦЕНЫ УРОВНЕЙ', admin:'АДМИН ПАНЕЛЬ', total_users:'ВСЕГО УЧАСТНИКОВ', contract_balance:'БАЛАНС КОНТРАКТА',
+ my_earnings:'МОЙ ЗАРАБОТОК', contract_addr:'АДРЕС КОНТРАКТА', copy_addr:'СКОПИРОВАТЬ АДРЕС',
+ nav_matrix:'МАТРИЦА', nav_tree:'ДЕРЕВО', nav_top:'ТОП', nav_history:'ИСТОРИЯ', nav_info:'КАЛК', nav_admin:'АДМИН',
+ ref_link_used:'ВЫ ПЕРЕШЛИ ПО РЕФЕРАЛЬНОЙ ССЫЛКЕ', auto_filled:'АВТОЗАПОЛНЕНО',
+ wallet_connected:'Кошелёк подключён!', tx_sent:'Транзакция отправлена!', tx_error:'Ошибка транзакции',
+ copied:'Скопировано!', need_wallet:'Сначала подключите кошелёк', days_left:'дн.',
+ activate:'АКТИВИРОВАТЬ', extend:'ПРОДЛИТЬ', locked_text:'Купите предыдущий уровень',
+ income:'ДОХОД', slots:'СЛОТОВ', received:'Получено', sent:'Отправлено',
+ level:'УРОВЕНЬ', active:'АКТИВЕН', forever:'НАВСЕГДА',
+ connect_first:'Подключите кошелёк чтобы начать'
+ },
+ en: {
+ connect:'CONNECT', not_connected:'Not connected', welcome:'PREMIUM TON DASHBOARD', hero_sub:'Grow your network. Scale your earnings.', hero_copy:'Clean matrix, level and referral UI with less noise and more trust.',
+ participants:'PARTICIPANTS', my_level:'MY LEVEL', referrals:'REFERRALS', join:'JOIN',
+ ref_id:'REFERRER ID', join_btn:'ACTIVATE FOR', my_levels:'MY LEVELS', ref_tree:'REFERRAL TREE',
+ my_ref_link:'MY REFERRAL LINK', share_earn:'SHARE & EARN', copy_link:'COPY LINK', share_link:'SHARE',
+ top_refs:'TOP REFERRERS', lb_loading:'Loading...', my_history:'TRANSACTION HISTORY',
+ history_empty:'Connect wallet', calc_title:'INCOME CALCULATOR',
+ refs_count:'REFERRALS PER MONTH', active_levels:'ACTIVE LEVELS', potential_income:'POTENTIAL MONTHLY INCOME',
+ how_works:'HOW IT WORKS',
+ rule_1:'▸ Matrix 3×8 — each invites up to 3 refs', rule_2:'▸ 8 levels with ×3 price multiplier',
+ rule_3:'▸ Level active for 365 days', rule_4:'▸ Payouts flow up the tree automatically',
+ rule_5:'▸ All on TON blockchain',
+ prices:'LEVEL PRICES', admin:'ADMIN PANEL', total_users:'TOTAL USERS', contract_balance:'CONTRACT BALANCE',
+ my_earnings:'MY EARNINGS', contract_addr:'CONTRACT ADDRESS', copy_addr:'COPY ADDRESS',
+ nav_matrix:'MATRIX', nav_tree:'TREE', nav_top:'TOP', nav_history:'HISTORY', nav_info:'CALC', nav_admin:'ADMIN',
+ ref_link_used:'YOU JOINED VIA REFERRAL LINK', auto_filled:'AUTO-FILLED',
+ wallet_connected:'Wallet connected!', tx_sent:'Transaction sent!', tx_error:'Transaction error',
+ copied:'Copied!', need_wallet:'Connect wallet first', days_left:'days',
+ activate:'ACTIVATE', extend:'EXTEND', locked_text:'Buy previous level',
+ income:'INCOME', slots:'SLOTS', received:'Received', sent:'Sent',
+ level:'LEVEL', active:'ACTIVE', forever:'FOREVER',
+ connect_first:'Connect wallet to start'
+ },
+ ua: {
+ connect:'CONNECT', not_connected:'Не підключено', welcome:'PREMIUM TON DASHBOARD', hero_sub:'Grow your network. Scale your earnings.', hero_copy:'Чистий інтерфейс для матриці, рівнів і рефералів без зайвого шуму.',
+ participants:'УЧАСНИКІВ', my_level:'МІЙ РІВЕНЬ', referrals:'РЕФЕРАЛІВ', join:'ПРИЄДНАТИСЯ',
+ ref_id:'ID РЕФЕРЕРА', join_btn:'АКТИВУВАТИ ЗА', my_levels:'МОЇ РІВНІ', ref_tree:'ДЕРЕВО РЕФЕРАЛІВ',
+ my_ref_link:'МОЄ РЕФЕРАЛЬНЕ ПОСИЛАННЯ', share_earn:'ПОДІЛІТЬСЯ ТА ЗАРОБЛЯЙТЕ', copy_link:'СКОПІЮВАТИ', share_link:'ПОДІЛИТИСЯ',
+ top_refs:'ТОП РЕФЕРЕРІВ', lb_loading:'Завантаження...', my_history:'ІСТОРІЯ ТРАНЗАКЦІЙ',
+ history_empty:'Підключіть гаманець', calc_title:'КАЛЬКУЛЯТОР ДОХОДУ',
+ refs_count:'РЕФЕРАЛІВ НА МІСЯЦЬ', active_levels:'АКТИВНИХ РІВНІВ', potential_income:'ПОТЕНЦІЙНИЙ ДОХІД ЗА МІСЯЦЬ',
+ how_works:'ЯК ЦЕ ПРАЦЮЄ',
+ rule_1:'▸ Матриця 3×8 — кожен запрошує до 3 рефералів', rule_2:'▸ 8 рівнів з множенням ціни ×3',
+ rule_3:'▸ Рівень активний 365 днів', rule_4:'▸ Виплати йдуть вгору автоматично',
+ rule_5:'▸ Все на TON блокчейні',
+ prices:'ЦІНИ РІВНІВ', admin:'АДМІН ПАНЕЛЬ', total_users:'ВСЬОГО УЧАСНИКІВ', contract_balance:'БАЛАНС КОНТРАКТУ',
+ my_earnings:'МІЙ ЗАРОБІТОК', contract_addr:'АДРЕСА КОНТРАКТУ', copy_addr:'СКОПІЮВАТИ',
+ nav_matrix:'МАТРИЦЯ', nav_tree:'ДЕРЕВО', nav_top:'ТОП', nav_history:'ІСТОРІЯ', nav_info:'КАЛК', nav_admin:'АДМІН',
+ ref_link_used:'ВИ ПЕРЕЙШЛИ ЗА ПОСИЛАННЯМ', auto_filled:'АВТОЗАПОВНЕНО',
+ wallet_connected:'Гаманець підключено!', tx_sent:'Транзакція надіслана!', tx_error:'Помилка',
+ copied:'Скопійовано!', need_wallet:'Спочатку підключіть гаманець', days_left:'дн.',
+ activate:'АКТИВУВАТИ', extend:'ПРОДОВЖИТИ', locked_text:'Купіть попередній рівень',
+ income:'ДОХІД', slots:'СЛОТІВ', received:'Отримано', sent:'Надіслано',
+ level:'РІВЕНЬ', active:'АКТИВНИЙ', forever:'НАЗАВЖДИ',
+ connect_first:'Підключіть гаманець щоб почати'
+ }
 };
 
 let currentLang = localStorage.getItem('lang') || 'ru';
-
 function setLang(lang) {
-  currentLang = lang;
-  localStorage.setItem('lang', lang);
-  document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.dataset.lang === lang));
-  applyI18n();
+ currentLang = lang;
+ localStorage.setItem('lang', lang);
+ document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.dataset.lang === lang));
+ applyI18n();
 }
-
 function t(key) { return I18N[currentLang]?.[key] || key; }
-
 function applyI18n() {
-  document.querySelectorAll('[data-i18n]').forEach(el => {
-    const key = el.dataset.i18n;
-    if (I18N[currentLang]?.[key]) el.textContent = I18N[currentLang][key];
-  });
-  if (userState.registered) renderLevels();
-  renderPriceTable();
+ document.querySelectorAll('[data-i18n]').forEach(el => {
+ const key = el.dataset.i18n;
+ if (I18N[currentLang]?.[key]) el.textContent = I18N[currentLang][key];
+ });
+ if (userState.registered) renderLevels();
+ renderPriceTable();
+ updateRefLink();
 }
-
 let tg = window.Telegram?.WebApp;
 let walletAddress = null;
 let userState = { registered: false, id: 0, referrerID: 0, referralCount: 0, levels: Array(8).fill(0) };
 let totalUsers = 1;
-
 if (tg) {
-  tg.ready(); tg.expand();
-  tg.setHeaderColor('#0A0F1C');
-  tg.setBackgroundColor('#0A0F1C');
+ tg.ready(); tg.expand();
+ tg.setHeaderColor('#07101f');
+ tg.setBackgroundColor('#07101f');
 }
-
-const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
-  manifestUrl: 'https://spsonlys.github.io/tonforce/tonconnect-manifest.json'
-});
-
+const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({ manifestUrl: 'https://spsonlys.github.io/tonforce/tonconnect-manifest.json' });
+function updateNavigationVisibility() {
+ const nav = document.getElementById('bottomNav');
+ if (!nav) return;
+ nav.classList.toggle('hidden', !walletAddress);
+}
 tonConnectUI.onStatusChange(wallet => {
-  if (wallet) {
-    walletAddress = wallet.account.address;
+ if (wallet) {
+ walletAddress = wallet.account.address;
 
-    // КРИТИЧНО: сбрасываем userState от предыдущего кошелька (если был)
-    // Иначе UI покажет данные старого юзера, пока loadUserData ещё не отработала
-    userState = { registered: false, id: 0, referrerID: 0, referralCount: 0, levels: Array(8).fill(0) };
+ // КРИТИЧНО: сбрасываем userState от предыдущего кошелька — иначе UI покажет
+ // данные старого юзера (или owner-а) пока loadUserData асинхронно не отработает
+ userState = { registered: false, id: 0, referrerID: 0, referralCount: 0, levels: Array(8).fill(0) };
+ const statRefsEl = document.getElementById('statRefs'); if (statRefsEl) statRefsEl.textContent = '—';
+ const statLevelEl = document.getElementById('statLevel'); if (statLevelEl) statLevelEl.textContent = '—';
 
-    // Сохраняем свои telegram-данные в реестр
-    saveMyTelegramData();
-
-    const myName = getUserDisplayName(walletAddress);
-    document.getElementById('walletBtn').textContent =
-      myName.startsWith('@') || myName.length > 6 ? myName.slice(0, 12) : shortenAddr(walletAddress);
-    document.getElementById('walletBtn').classList.add('connected');
-    document.getElementById('userInfo').innerHTML = '⚡ ' + myName;
-    showToast(t('wallet_connected'), 'success');
-
-    if (walletAddress.toLowerCase() === OWNER_WALLET_RAW.toLowerCase()) {
-      document.getElementById('navAdmin').classList.remove('hidden');
-    } else {
-      document.getElementById('navAdmin').classList.add('hidden');
-    }
-
-    // Сбрасываем счётчики на UI до загрузки реальных данных
-    document.getElementById('statRefs').textContent = '0';
-    document.getElementById('statLevel').textContent = '—';
-
-    updateRefLink();
-    renderTree();
-    renderDashboard(); // покажет "АКТИВИРОВАТЬ" пока loadUserData не вернётся
-    loadUserData();    // асинхронно подгрузит реальные данные и обновит UI
-    // Подтягиваем актуальные имена с бэкенда после подключения
-    syncNamesFromBackend();
-  } else {
-    walletAddress = null;
-    document.getElementById('walletBtn').textContent = 'CONNECT';
-    document.getElementById('walletBtn').classList.remove('connected');
-    document.getElementById('userInfo').innerHTML = '⚡ ' + t('not_connected');
-    document.getElementById('navAdmin').classList.add('hidden');
-    userState = { registered: false, id: 0, referrerID: 0, referralCount: 0, levels: Array(8).fill(0) };
-    document.getElementById('refLink').textContent = '—';
-    document.getElementById('statRefs').textContent = '0';
-    document.getElementById('statLevel').textContent = '—';
-    renderDashboard();
-  }
+ saveMyTelegramData();
+ const myName = getUserDisplayName(walletAddress);
+ document.getElementById('walletBtn').textContent = myName.startsWith('@') || myName.length > 6 ? myName.slice(0, 12) : shortenAddr(walletAddress);
+ document.getElementById('walletBtn').classList.add('connected');
+ document.getElementById('userInfo').innerHTML = '⚡ ' + myName;
+ showToast(t('wallet_connected'), 'success');
+ if (walletAddress.toLowerCase() === OWNER_WALLET_RAW.toLowerCase()) {
+   document.getElementById('navAdmin').classList.remove('hidden');
+ } else {
+   document.getElementById('navAdmin').classList.add('hidden');
+ }
+ updateNavigationVisibility();
+ updateRefLink(); renderTree(); renderDashboard(); loadUserData(); syncNamesFromBackend();
+ } else {
+ walletAddress = null;
+ document.getElementById('walletBtn').textContent = 'CONNECT';
+ document.getElementById('walletBtn').classList.remove('connected');
+ document.getElementById('userInfo').innerHTML = '⚡ ' + t('not_connected');
+ document.getElementById('navAdmin').classList.add('hidden');
+ userState = { registered: false, id: 0, referrerID: 0, referralCount: 0, levels: Array(8).fill(0) };
+ document.getElementById('refLink').textContent = '—';
+ updateNavigationVisibility();
+ showPage('matrix');
+ renderDashboard(); renderTree();
+ }
 });
-
-async function connectWallet() {
-  if (walletAddress) { await tonConnectUI.disconnect(); return; }
-  await tonConnectUI.openModal();
-}
-
-// Упаковывает адрес TON в BOC (base64) для slice параметра get-метода.
-// ВАЖНО: Toncenter v2 ожидает BOC БЕЗ CRC32 (toBoc(false)), тип "tvm.Slice".
-// Эталон формата: "te6cckEBAQEAJAAAQ4AbUzrTQYTUv8s/I9ds2TSZgRjyrgl2S2LKcZMEFcxj6PARy3rF"
-async function addrToSliceBoc(addr) {
-  const a = new TonWeb.utils.Address(addr);
-  const cell = new TonWeb.boc.Cell();
-  cell.bits.writeAddress(a);
-  const boc = await cell.toBoc(false); // БЕЗ CRC32
-  return TonWeb.utils.bytesToBase64(boc);
-}
-
-async function callGet(method, stack) {
-  try {
-    const res = await fetch('https://toncenter.com/api/v2/runGetMethod', {
-      method:'POST',
-      headers:{'Content-Type':'application/json','X-API-Key':TONCENTER_KEY},
-      body: JSON.stringify({address: CONTRACT_ADDRESS, method, stack})
-    });
-    if (!res.ok) {
-      const txt = await res.text();
-      console.error(`[callGet ${method}] HTTP ${res.status}:`, txt);
-      return null;
-    }
-    const data = await res.json();
-    if (!data.ok) {
-      console.warn(`[callGet ${method}] api error:`, data);
-    }
-    return data;
-  } catch(e) { console.error('callGet error:', e); return null; }
-}
-
-// Готовит stack параметр для get-метода с адресом юзера.
-// Toncenter v2 требует тип "tvm.Slice" (с большой С!), как в их официальных примерах.
-async function getMethodWithAddress(method, addr, extraStack = []) {
-  const sliceB64 = await addrToSliceBoc(addr);
-  const stack = [["tvm.Slice", sliceB64], ...extraStack];
-  console.log(`[${method}] sending stack:`, JSON.stringify(stack));
-  return await callGet(method, stack);
-}
-
-// Парсит число из ответа toncenter
-// Формат: { ok: true, result: { stack: [["num", "0x123"]] } }
-// TVM bool: -1 = true, 0 = false (как BigInt)
-function parseStackNum(res, idx = 0) {
-  if (!res?.ok || !res.result?.stack?.[idx]) {
-    console.warn('[parseStackNum] нет данных в стеке:', res);
-    return 0;
-  }
-  const item = res.result.stack[idx];
-  const val = item[1];
-  if (typeof val === 'string') {
-    // Обрабатываем как hex (с 0x) или decimal, может быть отрицательным
-    const s = val.startsWith('-') ? val.slice(1) : val;
-    const isHex = s.startsWith('0x');
-    let num = parseInt(isHex ? s : val, isHex ? 16 : 10);
-    if (val.startsWith('-')) num = -num;
-    return num || 0;
-  }
-  return parseInt(val) || 0;
-}
-
+async function connectWallet() { if (walletAddress) { await tonConnectUI.disconnect(); return; } await tonConnectUI.openModal(); }
+async function addrToSliceBoc(addr) { const a = new TonWeb.utils.Address(addr); const cell = new TonWeb.boc.Cell(); cell.bits.writeAddress(a); const boc = await cell.toBoc(false); return TonWeb.utils.bytesToBase64(boc); }
+async function callGet(method, stack) { try { const res = await fetch('https://toncenter.com/api/v2/runGetMethod', { method:'POST', headers:{'Content-Type':'application/json','X-API-Key':TONCENTER_KEY}, body: JSON.stringify({address: CONTRACT_ADDRESS, method, stack}) }); if (!res.ok) return null; return await res.json(); } catch(e) { return null; } }
+async function getMethodWithAddress(method, addr, extraStack = []) { const sliceB64 = await addrToSliceBoc(addr); const stack = [["tvm.Slice", sliceB64], ...extraStack]; return await callGet(method, stack); }
+function parseStackNum(res, idx = 0) { if (!res?.ok || !res.result?.stack?.[idx]) return 0; const item = res.result.stack[idx]; const val = item[1]; if (typeof val === 'string') { const s = val.startsWith('-') ? val.slice(1) : val; const isHex = s.startsWith('0x'); let num = parseInt(isHex ? s : val, isHex ? 16 : 10); if (val.startsWith('-')) num = -num; return num || 0; } return parseInt(val) || 0; }
 async function loadUserData() {
-  if (!walletAddress) return;
-  console.log('[loadUserData] start, wallet:', walletAddress);
-
-  // КРИТИЧНО: всегда начинаем с чистых дефолтов, независимо от того что было раньше
-  let isRegistered = false;
-  let userID = 0;
-  let refCount = 0;
-  let levels = Array(8).fill(0);
-
-  // 1. Загружаем общее количество участников
-  const totalRes = await callGet('getTotalUsers', []);
-  console.log('[getTotalUsers] response:', totalRes);
-  totalUsers = parseStackNum(totalRes) || 1;
-  document.getElementById('statUsers').textContent = totalUsers.toLocaleString();
-  const adminUsersEl = document.getElementById('adminUsers');
-  if (adminUsersEl) adminUsersEl.textContent = totalUsers.toLocaleString();
-
-  // Owner всегда зарегистрирован (id=1, все уровни forever)
-  if (walletAddress.toLowerCase() === OWNER_WALLET_RAW.toLowerCase()) {
-    isRegistered = true;
-    userID = 1;
-    refCount = Math.max(0, totalUsers - 1);
-    levels = Array(8).fill(99999999999);
-  } else {
-    // Для всех остальных — читаем из контракта
-    try {
-      const existsRes = await getMethodWithAddress('isUserExists', walletAddress);
-      console.log('[isUserExists] response:', existsRes);
-      // Bool в TVM: -1 = true, 0 = false
-      const existsVal = parseStackNum(existsRes);
-      isRegistered = existsVal !== 0;
-      console.log('[isUserExists] parsed value:', existsVal, '→ registered:', isRegistered);
-
-      if (isRegistered) {
-        const idRes = await getMethodWithAddress('getUserID', walletAddress);
-        userID = parseStackNum(idRes);
-        console.log('[getUserID] →', userID);
-
-        const refRes = await getMethodWithAddress('getUserReferralCount', walletAddress);
-        refCount = parseStackNum(refRes);
-        console.log('[getUserReferralCount] →', refCount);
-
-        // Загружаем expiry для всех 8 уровней
-        for (let lvl = 1; lvl <= 8; lvl++) {
-          const expRes = await getMethodWithAddress(
-            'getLevelExpiredFor',
-            walletAddress,
-            [["num", String(lvl)]]
-          );
-          levels[lvl - 1] = parseStackNum(expRes);
-        }
-        console.log('[levels expiry] →', levels);
-      }
-    } catch(e) {
-      console.error('loadUserData error:', e);
-    }
-  }
-
-  userState.registered = isRegistered;
-  userState.id = userID;
-  userState.referralCount = refCount;
-  userState.levels = levels;
-
-  // Обновляем UI
-  document.getElementById('statRefs').textContent = refCount;
-  const activeLvl = levels.filter(e => e > Date.now() / 1000).length;
-  document.getElementById('statLevel').textContent = isRegistered ? String(activeLvl) : '—';
-
-  updateRefLink();
-  renderTree();
-  renderDashboard();
+ if (!walletAddress) return;
+ const totalRes = await callGet('getTotalUsers', []);
+ totalUsers = parseStackNum(totalRes) || 1;
+ document.getElementById('statUsers').textContent = totalUsers.toLocaleString();
+ const adminUsersEl = document.getElementById('adminUsers'); if (adminUsersEl) adminUsersEl.textContent = totalUsers.toLocaleString();
+ let isRegistered = false, userID = 0, refCount = 0, levels = Array(8).fill(0);
+ if (walletAddress.toLowerCase() === OWNER_WALLET_RAW.toLowerCase()) { isRegistered = true; userID = 1; refCount = Math.max(0, totalUsers - 1); levels = Array(8).fill(99999999999); }
+ else {
+ try {
+ const existsRes = await getMethodWithAddress('isUserExists', walletAddress);
+ isRegistered = parseStackNum(existsRes) !== 0;
+ if (isRegistered) {
+ userID = parseStackNum(await getMethodWithAddress('getUserID', walletAddress));
+ refCount = parseStackNum(await getMethodWithAddress('getUserReferralCount', walletAddress));
+ for (let lvl = 1; lvl <= 8; lvl++) levels[lvl - 1] = parseStackNum(await getMethodWithAddress('getLevelExpiredFor', walletAddress, [["num", String(lvl)]]));
+ }
+ } catch(e) {}
+ }
+ userState.registered = isRegistered; userState.id = userID; userState.referralCount = refCount; userState.levels = levels;
+ document.getElementById('statRefs').textContent = refCount;
+ const activeLvl = levels.filter(e => e > Date.now() / 1000).length;
+ document.getElementById('statLevel').textContent = isRegistered ? String(activeLvl) : '—';
+ document.getElementById('treeActiveRefs').textContent = refCount;
+ document.getElementById('treeOpenSlots').textContent = Math.max(0, 3 - refCount);
+ document.getElementById('treeEarned').textContent = (refCount * 0.1).toFixed(1) + ' TON';
+ updateRefLink(); renderTree(); renderDashboard();
 }
-
 async function loadHistory() {
-  if (!walletAddress) {
-    document.getElementById('historyList').innerHTML =
-      `<div class="empty-state"><div class="empty-state-icon">📜</div><div>${t('history_empty')}</div></div>`;
-    return;
-  }
-
-  try {
-    const res = await fetch(
-      `https://toncenter.com/api/v2/getTransactions?address=${encodeURIComponent(walletAddress)}&limit=20&api_key=${TONCENTER_KEY}`
-    );
-    const data = await res.json();
-    if (!data.ok || !data.result?.length) {
-      document.getElementById('historyList').innerHTML =
-        `<div class="empty-state"><div class="empty-state-icon">📭</div><div>—</div></div>`;
-      return;
-    }
-
-    document.getElementById('historyList').innerHTML = data.result.slice(0, 20).map(tx => {
-      const inMsg = tx.in_msg, outMsg = tx.out_msgs?.[0];
-      const isIn = inMsg?.value && parseInt(inMsg.value) > 0;
-      const value = parseInt(isIn ? inMsg.value : (outMsg?.value || 0)) / 1e9;
-      const date = new Date(tx.utime * 1000);
-      const timeStr = date.toLocaleString();
-
-      return `
-        <div class="card">
-          <div class="history-item">
-            <div class="history-icon ${isIn ? 'in' : 'out'}">${isIn ? '↓' : '↑'}</div>
-            <div class="history-info">
-              <div class="history-title">${isIn ? t('received') : t('sent')}</div>
-              <div class="history-time">${timeStr}</div>
-            </div>
-            <div class="history-amount ${isIn ? 'in' : 'out'}">${isIn ? '+' : '-'}${value.toFixed(3)} TON</div>
-          </div>
-        </div>`;
-    }).join('');
-  } catch(e) { console.error(e); }
+ if (!walletAddress) { document.getElementById('historyList').innerHTML = `<div class="empty-state"><div class="empty-state-icon">📜</div><div>${t('history_empty')}</div></div>`; return; }
+ try {
+ const res = await fetch(`https://toncenter.com/api/v2/getTransactions?address=${encodeURIComponent(walletAddress)}&limit=20&api_key=${TONCENTER_KEY}`);
+ const data = await res.json();
+ if (!data.ok || !data.result?.length) { document.getElementById('historyList').innerHTML = `<div class="empty-state"><div class="empty-state-icon">📭</div><div>—</div></div>`; return; }
+ document.getElementById('historyList').innerHTML = data.result.slice(0, 20).map(tx => {
+ const inMsg = tx.in_msg, outMsg = tx.out_msgs?.[0];
+ const isIn = inMsg?.value && parseInt(inMsg.value) > 0;
+ const value = parseInt(isIn ? inMsg.value : (outMsg?.value || 0)) / 1e9;
+ const date = new Date(tx.utime * 1000);
+ const timeStr = date.toLocaleString();
+ return `<div class="card"><div class="history-item"><div class="history-icon ${isIn ? 'in' : 'out'}">${isIn ? '↓' : '↑'}</div><div class="history-info"><div class="history-title">${isIn ? t('received') : t('sent')}</div><div class="history-time">${timeStr}</div></div><div class="history-amount ${isIn ? 'in' : 'out'}">${isIn ? '+' : '-'}${value.toFixed(3)} TON</div></div></div>`;
+ }).join('');
+ } catch(e) {}
 }
-
 function renderLeaderboard() {
-  const list = document.getElementById('leaderboardList');
-  const items = [];
-  if (totalUsers >= 1) {
-    items.push({
-      rank: 1, name: '👑 OWNER', addr: 'UQDl...QXtT',
-      refs: Math.max(0, totalUsers - 1),
-      earnings: (totalUsers - 1) * 0.1
-    });
-  }
-
-  if (items.length === 0) {
-    list.innerHTML = `<div class="empty-state"><div class="empty-state-icon">🏆</div><div>—</div></div>`;
-    return;
-  }
-
-  list.innerHTML = items.map(item => {
-    const rankClass = item.rank === 1 ? 'gold' : item.rank === 2 ? 'silver' : item.rank === 3 ? 'bronze' : '';
-    return `
-      <div class="card">
-        <div class="lb-item">
-          <div class="lb-rank ${rankClass}">${item.rank}</div>
-          <div class="lb-info">
-            <div class="lb-name">${item.name}</div>
-            <div class="lb-stat">${item.addr} · ${item.refs} refs</div>
-          </div>
-          <div class="lb-value">${item.earnings.toFixed(2)} TON</div>
-        </div>
-      </div>`;
-  }).join('');
+ const list = document.getElementById('leaderboardList'); const items = [];
+ if (totalUsers >= 1) items.push({ rank: 1, name: 'OWNER', addr: 'UQDl...QXtT', refs: Math.max(0, totalUsers - 1), earnings: (totalUsers - 1) * 0.1 });
+ if (items.length === 0) { list.innerHTML = `<div class="empty-state"><div class="empty-state-icon">🏆</div><div>—</div></div>`; return; }
+ list.innerHTML = items.map(item => { const rankClass = item.rank === 1 ? 'gold' : item.rank === 2 ? 'silver' : item.rank === 3 ? 'bronze' : ''; return `<div class="card"><div class="lb-item"><div class="lb-rank ${rankClass}">${item.rank}</div><div class="lb-info"><div class="lb-name">${item.name}</div><div class="lb-stat">${item.addr} · ${item.refs} refs</div></div><div class="lb-value">${item.earnings.toFixed(2)} TON</div></div></div>`; }).join('');
 }
-
 function renderDashboard() {
-  const notReg = document.getElementById('notRegistered');
-  const isReg = document.getElementById('isRegistered');
-  const connectPrompt = document.getElementById('connectPrompt');
-  const regBtn = document.getElementById('regBtn');
-
-  if (!walletAddress) {
-    // Не подключён → показываем "Подключите кошелёк"
-    notReg.classList.remove('hidden');
-    isReg.classList.add('hidden');
-    if (connectPrompt) connectPrompt.style.display = 'block';
-    if (regBtn) regBtn.style.display = 'none';
-    return;
-  }
-
-  if (userState.registered) {
-    // Зарегистрирован → показываем уровни
-    notReg.classList.add('hidden');
-    isReg.classList.remove('hidden');
-    renderLevels();
-  } else {
-    // Подключён, не зарегистрирован → кнопка активации
-    notReg.classList.remove('hidden');
-    isReg.classList.add('hidden');
-    if (connectPrompt) connectPrompt.style.display = 'none';
-    if (regBtn) regBtn.style.display = 'block';
-  }
+ const notReg = document.getElementById('notRegistered'); const isReg = document.getElementById('isRegistered'); const connectPrompt = document.getElementById('connectPrompt'); const regBtn = document.getElementById('regBtn');
+ if (!walletAddress) { notReg.classList.remove('hidden'); isReg.classList.add('hidden'); if (connectPrompt) connectPrompt.style.display = 'block'; if (regBtn) regBtn.style.display = 'none'; return; }
+ if (userState.registered) { notReg.classList.add('hidden'); isReg.classList.remove('hidden'); renderLevels(); }
+ else { notReg.classList.remove('hidden'); isReg.classList.add('hidden'); if (connectPrompt) connectPrompt.style.display = 'none'; if (regBtn) regBtn.style.display = 'block'; }
 }
-
 function renderLevels() {
-  const grid = document.getElementById('levelsGrid');
-  const now = Date.now() / 1000;
+ const grid = document.getElementById('levelsGrid'); const now = Date.now() / 1000;
+ grid.innerHTML = LEVELS.map((lvl, i) => {
+ const {level, price, income, slots, tier} = lvl;
+ const displayName = getLevelName(lvl);
+ const expiry = userState.levels[i];
+ const isActive = expiry > now;
+ const canBuy = !isActive && (i === 0 || userState.levels[i - 1] > now);
+ const isLocked = !isActive && !canBuy;
 
-  grid.innerHTML = LEVELS.map(({level, price, name, nameRu, income, slots, tier}, i) => {
-    const expiry = userState.levels[i];
-    const isActive = expiry > now;
-    const canBuy = !isActive && (i === 0 || userState.levels[i - 1] > now);
-    const isLocked = !isActive && !canBuy;
+ const cardClass = `card tier-${tier}${isActive ? ' active' : isLocked ? ' locked' : ''}`;
 
-    // Локализуем название уровня
-    const displayName = currentLang === 'ru' ? `${name.split(' ')[0]} ${nameRu}` : name;
+ const activeBadge = isActive
+   ? `<span class="tier-badge tier-badge-active">✓ ${t('active') || 'ACTIVE'}</span>`
+   : '';
 
-    // Tier-классы для CSS дифференциации
-    const stateClass = isActive ? 'active' : isLocked ? 'locked' : '';
-    const cardClass = `card tier-${tier} ${stateClass}`.trim();
+ let expiryTxt = '';
+ if (isActive && expiry < 99999999) {
+   const days = Math.floor((expiry - now) / 86400);
+   expiryTxt = `<div class="expiry-row">⏱ ${days} ${t('days_left')}</div>`;
+ } else if (isActive) {
+   expiryTxt = `<div class="expiry-row">∞ ${t('forever') || 'FOREVER'}</div>`;
+ }
 
-    // Бейдж активности
-    const activeBadge = isActive
-      ? `<span class="tier-badge tier-badge-active">✓ ${t('active') || 'ACTIVE'}</span>`
-      : '';
+ let actionHtml = '';
+ if (isActive) {
+   actionHtml = `<button class="button gold" onclick="buyLevel(${level})">+365 ${t('days_left')}</button>`;
+ } else if (canBuy) {
+   actionHtml = `<button class="button" onclick="buyLevel(${level})">⚡ ${t('activate')} ${price} TON</button>`;
+ } else {
+   actionHtml = `<div class="lock-text">🔒 ${t('locked_text')}</div>`;
+ }
 
-    let expiryTxt = '';
-    if (isActive && expiry < 99999999) {
-      const days = Math.floor((expiry - now) / 86400);
-      expiryTxt = `<div class="expiry-row">⏱ ${days} ${t('days_left')}</div>`;
-    } else if (isActive) {
-      // Owner — forever
-      expiryTxt = `<div class="expiry-row">∞ ${t('forever') || 'FOREVER'}</div>`;
-    }
-
-    let actionHtml = '';
-    if (isActive) {
-      actionHtml = `<button class="button gold" onclick="buyLevel(${level})">+365 ${t('days_left')}</button>`;
-    } else if (canBuy) {
-      actionHtml = `<button class="button" onclick="buyLevel(${level})">⚡ ${t('activate')} ${price} TON</button>`;
-    } else {
-      actionHtml = `<div class="lock-text">🔒 ${t('locked_text')}</div>`;
-    }
-
-    return `
-      <div class="${cardClass}">
-        <div class="card-header">
-          <div class="level">${t('level') || 'LEVEL'} ${level}</div>
-          ${activeBadge}
-        </div>
-        <div class="name">${displayName}</div>
-        <div class="price">${price} TON</div>
-        <div class="info-grid">
-          <div class="info-cell">
-            <div class="info-cell-label">${t('income') || 'ДОХОД'}</div>
-            <div class="info-cell-value income-up">${income} TON</div>
-          </div>
-          <div class="info-cell">
-            <div class="info-cell-label">${t('slots') || 'СЛОТОВ'}</div>
-            <div class="info-cell-value">${slots}</div>
-          </div>
-        </div>
-        ${expiryTxt}
-        ${actionHtml}
-      </div>`;
-  }).join('');
+ return `
+   <div class="${cardClass}">
+     <div class="card-header-row">
+       <div class="level">${t('level') || 'LEVEL'} ${level}</div>
+       ${activeBadge}
+     </div>
+     <div class="name">${displayName}</div>
+     <div class="price">${price} TON</div>
+     <div class="info-grid">
+       <div class="info-cell">
+         <div class="info-cell-label">${t('income') || 'INCOME'}</div>
+         <div class="info-cell-value income-up">${income} TON</div>
+       </div>
+       <div class="info-cell">
+         <div class="info-cell-label">${t('slots') || 'SLOTS'}</div>
+         <div class="info-cell-value">${slots}</div>
+       </div>
+     </div>
+     ${expiryTxt}
+     ${actionHtml}
+   </div>`;
+ }).join('');
 }
-
-// Реестр "моих рефералов": Map<myWallet, Array<{wallet, telegram_data, regAt}>>
 const MY_REFS_KEY = 'tonforce_my_refs_v1';
-
-function loadMyRefs() {
-  try { return JSON.parse(localStorage.getItem(MY_REFS_KEY) || '{}'); }
-  catch(e) { return {}; }
-}
-
-function saveMyRefs(data) {
-  try { localStorage.setItem(MY_REFS_KEY, JSON.stringify(data)); }
-  catch(e) { console.error('saveMyRefs:', e); }
-}
-
-// Записывает реферала для текущего пользователя
-function addMyReferral(myWallet, refWallet, telegramData) {
-  if (!myWallet || !refWallet) return;
-  const all = loadMyRefs();
-  const key = myWallet.toLowerCase();
-  if (!all[key]) all[key] = [];
-  // Не добавляем дубли
-  if (all[key].some(r => r.wallet.toLowerCase() === refWallet.toLowerCase())) return;
-  all[key].push({
-    wallet: refWallet,
-    username: telegramData?.username || null,
-    first_name: telegramData?.first_name || null,
-    tg_id: telegramData?.id || null,
-    regAt: Date.now()
-  });
-  saveMyRefs(all);
-}
-
-// Возвращает массив моих рефералов для текущего кошелька
-function getMyReferrals(myWallet) {
-  if (!myWallet) return [];
-  const all = loadMyRefs();
-  return all[myWallet.toLowerCase()] || [];
-}
-
+function loadMyRefs() { try { return JSON.parse(localStorage.getItem(MY_REFS_KEY) || '{}'); } catch(e) { return {}; } }
+function saveMyRefs(data) { try { localStorage.setItem(MY_REFS_KEY, JSON.stringify(data)); } catch(e) {} }
+function addMyReferral(myWallet, refWallet, telegramData) { if (!myWallet || !refWallet) return; const all = loadMyRefs(); const key = myWallet.toLowerCase(); if (!all[key]) all[key] = []; if (all[key].some(r => r.wallet.toLowerCase() === refWallet.toLowerCase())) return; all[key].push({ wallet: refWallet, username: telegramData?.username || null, first_name: telegramData?.first_name || null, tg_id: telegramData?.id || null, regAt: Date.now() }); saveMyRefs(all); }
+function getMyReferrals(myWallet) { if (!myWallet) return []; const all = loadMyRefs(); return all[myWallet.toLowerCase()] || []; }
 function renderTree() {
-  const row = document.getElementById('treeRow');
-  row.innerHTML = '';
-
-  const realCount = userState.referralCount || 0; // из контракта (источник истины)
-  const myRefs = getMyReferrals(walletAddress); // локальные имена
-
-  for (let i = 0; i < 3; i++) {
-    const filled = i < realCount;
-    if (!filled) {
-      row.innerHTML += `<div class="tree-node empty">+</div>`;
-      continue;
-    }
-
-    // Берём имя из локального кеша (если есть)
-    const refData = myRefs[i];
-    let label;
-    let title; // tooltip с полной инфой
-    if (refData) {
-      if (refData.username) label = '@' + refData.username.slice(0, 8);
-      else if (refData.first_name) label = refData.first_name.slice(0, 8);
-      else label = shortenAddr(refData.wallet);
-      title = `${refData.username ? '@' + refData.username : refData.first_name || ''}\n${shortenAddr(refData.wallet)}`;
-    } else {
-      label = `R${i + 1}`;
-      title = 'Реферал #' + (i + 1) + ' (имя не сохранено)';
-    }
-    row.innerHTML += `<div class="tree-node filled" title="${title}">${label}</div>`;
-  }
+ const row = document.getElementById('treeRow'); row.innerHTML = '';
+ const realCount = userState.referralCount || 0; const myRefs = getMyReferrals(walletAddress);
+ for (let i = 0; i < 3; i++) {
+ const filled = i < realCount;
+ if (!filled) { row.innerHTML += `<div class="tree-node empty">R${i + 1}<small>open slot</small></div>`; continue; }
+ const refData = myRefs[i]; let label, sub;
+ if (refData) { if (refData.username) label = '@' + refData.username.slice(0, 8); else if (refData.first_name) label = refData.first_name.slice(0, 8); else label = shortenAddr(refData.wallet); sub = 'active'; }
+ else { label = `R${i + 1}`; sub = 'partner'; }
+ row.innerHTML += `<div class="tree-node filled">${label}<small>${sub}</small></div>`;
+ }
+ document.getElementById('treeActiveRefs').textContent = realCount;
+ document.getElementById('treeOpenSlots').textContent = Math.max(0, 3 - realCount);
+ document.getElementById('treeEarned').textContent = (realCount * 0.1).toFixed(1) + ' TON';
 }
-
 function updateRefLink() {
-  const el = document.getElementById('refLink');
-  const myUsername = tg?.initDataUnsafe?.user?.username || '';
-  // Формат: ?start=ID или ?start=ID_username (если есть username, добавляем для отображения имени)
-  const usernameSuffix = myUsername ? '_' + myUsername : '';
-
-  if (walletAddress && walletAddress.toLowerCase() === OWNER_WALLET_RAW.toLowerCase()) {
-    el.textContent = `https://t.me/${BOT_USERNAME}?start=1${usernameSuffix}`;
-    return;
-  }
-  if (userState.id) {
-    el.textContent = `https://t.me/${BOT_USERNAME}?start=${userState.id}${usernameSuffix}`;
-  } else if (walletAddress) {
-    el.textContent = currentLang === 'ru' ? 'Зарегистрируйтесь чтобы получить ссылку' :
-                     currentLang === 'en' ? 'Register to get your link' : 'Зареєструйтесь';
-  }
+ const el = document.getElementById('refLink'); const myUsername = tg?.initDataUnsafe?.user?.username || ''; const usernameSuffix = myUsername ? '_' + myUsername : '';
+ if (walletAddress && walletAddress.toLowerCase() === OWNER_WALLET_RAW.toLowerCase()) { el.textContent = `https://t.me/${BOT_USERNAME}?start=1${usernameSuffix}`; return; }
+ if (userState.id) el.textContent = `https://t.me/${BOT_USERNAME}?start=${userState.id}${usernameSuffix}`;
+ else if (walletAddress) el.textContent = currentLang === 'ru' ? 'Зарегистрируйтесь чтобы получить ссылку' : currentLang === 'en' ? 'Register to get your link' : 'Зареєструйтесь';
+ else el.textContent = '—';
 }
-
-function copyRef() {
-  const txt = document.getElementById('refLink').textContent;
-  if (txt && txt !== '—') navigator.clipboard.writeText(txt).then(() => showToast(t('copied'), 'success'));
-}
-
-function copyContract() {
-  navigator.clipboard.writeText(CONTRACT_ADDRESS).then(() => showToast(t('copied'), 'success'));
-}
-
+function copyRef() { const txt = document.getElementById('refLink').textContent; if (txt && txt !== '—') navigator.clipboard.writeText(txt).then(() => showToast(t('copied'), 'success')); }
+function shareRefLink() { const txt = document.getElementById('refLink').textContent; if (!txt || txt === '—') return; if (navigator.share) navigator.share({ title: 'TonForce', text: txt }).catch(() => {}); else copyRef(); }
+function copyContract() { navigator.clipboard.writeText(CONTRACT_ADDRESS).then(() => showToast(t('copied'), 'success')); }
 function renderPriceTable() {
   const el = document.getElementById('priceTable');
-  const headerLabel = currentLang === 'ru' ? 'УРОВЕНЬ' : currentLang === 'ua' ? 'РІВЕНЬ' : 'LEVEL';
-  const nameLabel = currentLang === 'ru' ? 'ПАКЕТ' : currentLang === 'ua' ? 'ПАКЕТ' : 'PACKAGE';
-  const priceLabel = currentLang === 'ru' ? 'ЦЕНА' : currentLang === 'ua' ? 'ЦІНА' : 'PRICE';
-
-  el.innerHTML = `
-    <div class="price-row header">
-      <span class="price-lvl">${headerLabel}</span>
-      <span class="price-name">${nameLabel}</span>
-      <span class="price-val">${priceLabel}</span>
-    </div>
-    ${LEVELS.map(({level, price, name, nameRu}) => {
-      const displayName = currentLang === 'ru' ? `${name.split(' ')[0]} ${nameRu}` : name;
-      return `
-        <div class="price-row">
-          <span class="price-lvl">L${level}</span>
-          <span class="price-name">${displayName}</span>
-          <span class="price-val">${price} TON</span>
-        </div>`;
-    }).join('')}
-  `;
+  el.innerHTML = LEVELS.map((lvl) => `<div class="info-line"><span class="lbl">L${lvl.level} · ${getLevelName(lvl)}</span><span class="val">${lvl.price} TON</span></div>`).join('');
 }
-
-function calculateIncome() {
-  const refs = parseInt(document.getElementById('calcRefs').value) || 0;
-  const lvls = parseInt(document.getElementById('calcLevels').value) || 0;
-  let total = 0;
-  for (let i = 1; i <= Math.min(lvls, 8); i++) total += LEVELS[i - 1].price * refs;
-  document.getElementById('calcResult').textContent = total.toFixed(2) + ' TON';
-}
-
-async function register() {
-  if (!walletAddress) { showToast(t('need_wallet'), 'error'); return; }
-  const refID = parseInt(document.getElementById('refInput').value) || 1;
-  const btn = document.getElementById('regBtn');
-  btn.disabled = true;
-  const oldText = btn.innerHTML;
-  btn.innerHTML = '⏳ ...';
-
-  try {
-    const cell = await buildCell(0xc670f579, refID);
-    await tonConnectUI.sendTransaction({
-      validUntil: Math.floor(Date.now() / 1000) + 600,
-      messages: [{address: CONTRACT_ADDRESS, amount: String(Math.floor(0.13 * 1e9)), payload: cell}]
-    });
-    showToast(t('tx_sent'), 'success');
-
-    // Сохраняем своё имя в реестр (даже до подтверждения транзакции — пользователь точно зашёл)
-    saveMyTelegramData();
-
-    // Если ты зашёл по реф-ссылке — отправляем боту данные о новой паре
-    // (потом бот сможет связать кто кого пригласил и показывать имена всем)
-    if (tg?.sendData && refID > 1) {
-      try {
-        const payload = JSON.stringify({
-          action: 'registered',
-          wallet: walletAddress,
-          referrerID: refID,
-          telegram: tg.initDataUnsafe?.user || null,
-          ts: Date.now()
-        });
-        // sendData закрывает Mini App после отправки, поэтому делаем это с задержкой
-        // и только если приложение открыто из бота
-        setTimeout(() => {
-          try { tg.sendData(payload); } catch(e) { console.warn('sendData failed:', e); }
-        }, 30000); // отправляем через 30 сек, чтобы юзер успел увидеть свой кабинет
-      } catch(e) { console.warn('payload err:', e); }
-    }
-
-    // Несколько попыток подгрузить статус — на mainnet нужно ~10-15 сек на финализацию блока
-    setTimeout(() => loadUserData(), 8000);
-    setTimeout(() => loadUserData(), 16000);
-    setTimeout(() => loadUserData(), 25000);
-  } catch(e) {
-    console.error(e); showToast(t('tx_error'), 'error');
-  }
-  btn.disabled = false;
-  btn.innerHTML = oldText;
-}
-
-async function buyLevel(level) {
-  if (!walletAddress) { showToast(t('need_wallet'), 'error'); return; }
-  const price = LEVELS[level - 1].price;
-  try {
-    const cell = await buildCellLevel(0x03398cc8, level);
-    await tonConnectUI.sendTransaction({
-      validUntil: Math.floor(Date.now() / 1000) + 600,
-      messages: [{address: CONTRACT_ADDRESS, amount: String(Math.floor((price + 0.05) * 1e9)), payload: cell}]
-    });
-    showToast(t('tx_sent'), 'success');
-    setTimeout(() => loadUserData(), 8000);
-    setTimeout(() => loadUserData(), 16000);
-    setTimeout(() => loadUserData(), 25000);
-  } catch(e) {
-    console.error(e); showToast(t('tx_error'), 'error');
-  }
-}
-
-// ⚠ ВАЖНО: Tact-сообщения RegUser и BuyLevel НЕ содержат queryId.
-// TL-B: reg_user#c670f579 referrerID:uint32 = RegUser
-// TL-B: buy_level#03398cc8 level:uint8 = BuyLevel
-async function buildCell(op, referrerID) {
-  const cell = new TonWeb.boc.Cell();
-  cell.bits.writeUint(op, 32);          // opcode (32 бита)
-  cell.bits.writeUint(referrerID, 32);  // referrerID (uint32)
-  const boc = await cell.toBoc(false);
-  return TonWeb.utils.bytesToBase64(boc);
-}
-
-async function buildCellLevel(op, level) {
-  const cell = new TonWeb.boc.Cell();
-  cell.bits.writeUint(op, 32);   // opcode (32 бита)
-  cell.bits.writeUint(level, 8); // level (uint8)
-  const boc = await cell.toBoc(false);
-  return TonWeb.utils.bytesToBase64(boc);
-}
-
-function showPage(name) {
-  ['matrix', 'tree', 'leaderboard', 'history', 'info', 'admin'].forEach(p => {
-    const page = document.getElementById('page' + capitalize(p));
-    if (page) page.classList.add('hidden');
-  });
-  document.getElementById('page' + capitalize(name)).classList.remove('hidden');
-  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  document.querySelector(`.nav-item[data-page="${name}"]`)?.classList.add('active');
-
-  if (name === 'leaderboard') renderLeaderboard();
-  if (name === 'history') loadHistory();
-  if (name === 'info') calculateIncome();
-}
-
-function showToast(msg, type = '') {
-  const el = document.getElementById('toast');
-  el.textContent = msg;
-  el.className = `toast show ${type}`;
-  clearTimeout(el._t);
-  el._t = setTimeout(() => el.classList.remove('show'), 2800);
-}
-
+function calculateIncome() { const refs = parseInt(document.getElementById('calcRefs').value) || 0; const lvls = parseInt(document.getElementById('calcLevels').value) || 0; let total = 0; for (let i = 1; i <= Math.min(lvls, 8); i++) total += LEVELS[i - 1].price * refs; document.getElementById('calcResult').textContent = total.toFixed(2) + ' TON'; }
+async function register() { if (!walletAddress) { showToast(t('need_wallet'), 'error'); return; } const refID = parseInt(document.getElementById('refInput').value) || 1; const btn = document.getElementById('regBtn'); btn.disabled = true; const oldText = btn.innerHTML; btn.innerHTML = '⏳ ...'; try { const cell = await buildCell(0xc670f579, refID); await tonConnectUI.sendTransaction({ validUntil: Math.floor(Date.now() / 1000) + 600, messages: [{address: CONTRACT_ADDRESS, amount: String(Math.floor(0.13 * 1e9)), payload: cell}] }); showToast(t('tx_sent'), 'success'); saveMyTelegramData(); if (tg?.sendData && refID > 1) { try { const payload = JSON.stringify({ action: 'registered', wallet: walletAddress, referrerID: refID, telegram: tg.initDataUnsafe?.user || null, ts: Date.now() }); setTimeout(() => { try { tg.sendData(payload); } catch(e) {} }, 30000); } catch(e) {} } setTimeout(() => loadUserData(), 8000); setTimeout(() => loadUserData(), 16000); setTimeout(() => loadUserData(), 25000); } catch(e) { showToast(t('tx_error'), 'error'); } btn.disabled = false; btn.innerHTML = oldText; }
+async function buyLevel(level) { if (!walletAddress) { showToast(t('need_wallet'), 'error'); return; } const price = LEVELS[level - 1].price; try { const cell = await buildCellLevel(0x03398cc8, level); await tonConnectUI.sendTransaction({ validUntil: Math.floor(Date.now() / 1000) + 600, messages: [{address: CONTRACT_ADDRESS, amount: String(Math.floor((price + 0.05) * 1e9)), payload: cell}] }); showToast(t('tx_sent'), 'success'); setTimeout(() => loadUserData(), 8000); setTimeout(() => loadUserData(), 16000); setTimeout(() => loadUserData(), 25000); } catch(e) { showToast(t('tx_error'), 'error'); } }
+async function buildCell(op, referrerID) { const cell = new TonWeb.boc.Cell(); cell.bits.writeUint(op, 32); cell.bits.writeUint(referrerID, 32); const boc = await cell.toBoc(false); return TonWeb.utils.bytesToBase64(boc); }
+async function buildCellLevel(op, level) { const cell = new TonWeb.boc.Cell(); cell.bits.writeUint(op, 32); cell.bits.writeUint(level, 8); const boc = await cell.toBoc(false); return TonWeb.utils.bytesToBase64(boc); }
+function showPage(name) { ['matrix', 'tree', 'leaderboard', 'history', 'info', 'admin'].forEach(p => { const page = document.getElementById('page' + capitalize(p)); if (page) page.classList.add('hidden'); }); document.getElementById('page' + capitalize(name)).classList.remove('hidden'); document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active')); document.querySelector(`.nav-item[data-page="${name}"]`)?.classList.add('active'); if (name === 'leaderboard') renderLeaderboard(); if (name === 'history') loadHistory(); if (name === 'info') calculateIncome(); }
+function showToast(msg, type = '') { const el = document.getElementById('toast'); el.textContent = msg; el.className = `toast show ${type}`; clearTimeout(el._t); el._t = setTimeout(() => el.classList.remove('show'), 2800); }
 function shortenAddr(addr) { return addr ? addr.slice(0, 4) + '..' + addr.slice(-4) : ''; }
 function capitalize(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
-
-// ─── Реестр имён юзеров (wallet → telegram_data) ────────────────────────────
-// Хранится в localStorage. В будущем заменится на запрос к API бота.
 const NAMES_KEY = 'tonforce_names_v1';
-
-function loadNamesRegistry() {
-  try { return JSON.parse(localStorage.getItem(NAMES_KEY) || '{}'); }
-  catch(e) { return {}; }
-}
-
-function saveNamesRegistry(registry) {
-  try { localStorage.setItem(NAMES_KEY, JSON.stringify(registry)); }
-  catch(e) { console.error('saveNamesRegistry:', e); }
-}
-
-// Сохраняет имя юзера для адреса
-function rememberUserName(wallet, telegramData) {
-  if (!wallet || !telegramData) return;
-  const reg = loadNamesRegistry();
-  reg[wallet.toLowerCase()] = {
-    username: telegramData.username || null,
-    first_name: telegramData.first_name || null,
-    tg_id: telegramData.id || null,
-    saved_at: Date.now()
-  };
-  saveNamesRegistry(reg);
-}
-
-// Получает отображаемое имя для адреса
-function getUserDisplayName(wallet) {
-  if (!wallet) return '—';
-  const reg = loadNamesRegistry();
-  const data = reg[wallet.toLowerCase()];
-  if (data) {
-    if (data.username) return '@' + data.username;
-    if (data.first_name) return data.first_name;
-  }
-  return shortenAddr(wallet);
-}
-
-// Получает короткий значок (для маленьких аватарок в дереве): первая буква имени или 1-2 символа адреса
-function getUserBadge(wallet) {
-  const reg = loadNamesRegistry();
-  const data = reg[wallet?.toLowerCase()];
-  if (data?.first_name) return data.first_name.slice(0, 2).toUpperCase();
-  if (data?.username) return data.username.slice(0, 2).toUpperCase();
-  if (wallet) return wallet.slice(-2).toUpperCase();
-  return '?';
-}
-
-// Сохраняем своё имя при подключении кошелька
-function saveMyTelegramData() {
-  if (!walletAddress || !tg?.initDataUnsafe?.user) return;
-  rememberUserName(walletAddress, tg.initDataUnsafe.user);
-}
-
-// Подтягивает общий реестр имён с бэкенда бота и мерджит с локальным
-async function syncNamesFromBackend() {
-  if (!BOT_API_URL) return; // Если бэкенд не настроен — пропускаем
-  try {
-    const res = await fetch(BOT_API_URL.replace(/\/$/, '') + '/api/names', {
-      method: 'GET',
-      // Без credentials — только публичные данные
-    });
-    if (!res.ok) {
-      console.warn('[syncNames] HTTP', res.status);
-      return;
-    }
-    const remote = await res.json();
-    const local = loadNamesRegistry();
-    let added = 0;
-    for (const [wallet, data] of Object.entries(remote)) {
-      const existing = local[wallet];
-      // Берём более свежие данные (по saved_at)
-      if (!existing || (data.saved_at || 0) > (existing.saved_at || 0)) {
-        local[wallet] = {
-          username: data.username || existing?.username || null,
-          first_name: data.first_name || existing?.first_name || null,
-          tg_id: data.tg_id || existing?.tg_id || null,
-          saved_at: data.saved_at || Date.now(),
-        };
-        added++;
-      }
-    }
-    saveNamesRegistry(local);
-    console.log(`[syncNames] merged ${added} entries from backend`);
-    // Перерисовываем дерево с новыми именами
-    if (walletAddress) renderTree();
-  } catch(e) {
-    console.warn('[syncNames] failed:', e);
-  }
-}
-
+function loadNamesRegistry() { try { return JSON.parse(localStorage.getItem(NAMES_KEY) || '{}'); } catch(e) { return {}; } }
+function saveNamesRegistry(registry) { try { localStorage.setItem(NAMES_KEY, JSON.stringify(registry)); } catch(e) {} }
+function rememberUserName(wallet, telegramData) { if (!wallet || !telegramData) return; const reg = loadNamesRegistry(); reg[wallet.toLowerCase()] = { username: telegramData.username || null, first_name: telegramData.first_name || null, tg_id: telegramData.id || null, saved_at: Date.now() }; saveNamesRegistry(reg); }
+function getUserDisplayName(wallet) { if (!wallet) return '—'; const reg = loadNamesRegistry(); const data = reg[wallet.toLowerCase()]; if (data) { if (data.username) return '@' + data.username; if (data.first_name) return data.first_name; } return shortenAddr(wallet); }
+function saveMyTelegramData() { if (!walletAddress || !tg?.initDataUnsafe?.user) return; rememberUserName(walletAddress, tg.initDataUnsafe.user); }
+async function syncNamesFromBackend() { if (!BOT_API_URL) return; try { const res = await fetch(BOT_API_URL.replace(/\/$/, '') + '/api/names', { method: 'GET' }); if (!res.ok) return; const remote = await res.json(); const local = loadNamesRegistry(); for (const [wallet, data] of Object.entries(remote)) { const existing = local[wallet]; if (!existing || (data.saved_at || 0) > (existing.saved_at || 0)) local[wallet] = { username: data.username || existing?.username || null, first_name: data.first_name || existing?.first_name || null, tg_id: data.tg_id || existing?.tg_id || null, saved_at: data.saved_at || Date.now() }; } saveNamesRegistry(local); if (walletAddress) renderTree(); } catch(e) {} }
 document.addEventListener('DOMContentLoaded', () => {
-  setLang(currentLang);
-  renderPriceTable();
-  calculateIncome();
-  renderTree();
-
-  // Подтягиваем общий реестр имён с бэкенда бота (если настроен)
-  syncNamesFromBackend();
-
-  const params = new URLSearchParams(window.location.search);
-  const startParam = tg?.initDataUnsafe?.start_param || params.get('start') || '';
-
-  // Поддерживаем оба формата:
-  //   ?start=3            → только refID=3
-  //   ?start=3_username   → refID=3 + username пригласителя
-  const match = startParam.match(/^(\d+)(?:_(\w+))?$/);
-  if (match) {
-    const refID = match[1];
-    const refUsername = match[2];
-
-    document.getElementById('refInput').value = refID;
-    document.getElementById('refBanner').style.display = 'block';
-
-    // Если есть username пригласителя — отобразим в баннере
-    if (refUsername) {
-      const banner = document.getElementById('refBanner');
-      if (banner) {
-        const old = banner.innerHTML;
-        banner.innerHTML = old.replace(/\bID\b|\bID#\b/i, `@${refUsername} (ID #${refID})`);
-      }
-    }
-  }
+ setLang(currentLang); renderPriceTable(); calculateIncome(); renderTree(); syncNamesFromBackend(); updateNavigationVisibility();
+ const params = new URLSearchParams(window.location.search); const startParam = tg?.initDataUnsafe?.start_param || params.get('start') || ''; const match = startParam.match(/^(\d+)(?:_(\w+))?$/);
+ if (match) { const refID = match[1]; const refUsername = match[2]; document.getElementById('refInput').value = refID; document.getElementById('refBanner').style.display = 'block'; if (refUsername) { const banner = document.getElementById('refBanner'); if (banner) banner.innerHTML = `✨ @${refUsername} (ID #${refID})`; } }
 });
 </script>
 </body>
