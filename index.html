@@ -798,6 +798,12 @@ const BOT_USERNAME = 'tonforce_bot';
 const OWNER_WALLET_RAW = '0:e598cd4dc0b5aaa47ab9a5e452c0f0e8729408d36121ffcc60b1e48a82028941';
 const TONCENTER_KEY = '105893705d1e384d248d96788d322fa38ab967bfe6eaa1077039b43ed4b89977';
 
+// URL бэкенда бота для получения общего реестра имён.
+// После деплоя бота на Railway замени значение на свой URL, например:
+// 'https://tonforce-bot-production.up.railway.app'
+// Если оставить пустым — будет работать только локальный реестр (твой браузер).
+const BOT_API_URL = '';
+
 const LEVELS = [
   { level: 1, price: 0.1,   name: '💎 Starter Node',  income: 0.2,   slots: 2 },
   { level: 2, price: 0.3,   name: '⚡️ Growth Node',   income: 0.6,   slots: 4 },
@@ -934,6 +940,8 @@ tonConnectUI.onStatusChange(wallet => {
     renderTree();
     loadUserData();
     renderDashboard();
+    // Подтягиваем актуальные имена с бэкенда после подключения
+    syncNamesFromBackend();
   } else {
     walletAddress = null;
     document.getElementById('walletBtn').textContent = 'CONNECT';
@@ -1504,11 +1512,51 @@ function saveMyTelegramData() {
   rememberUserName(walletAddress, tg.initDataUnsafe.user);
 }
 
+// Подтягивает общий реестр имён с бэкенда бота и мерджит с локальным
+async function syncNamesFromBackend() {
+  if (!BOT_API_URL) return; // Если бэкенд не настроен — пропускаем
+  try {
+    const res = await fetch(BOT_API_URL.replace(/\/$/, '') + '/api/names', {
+      method: 'GET',
+      // Без credentials — только публичные данные
+    });
+    if (!res.ok) {
+      console.warn('[syncNames] HTTP', res.status);
+      return;
+    }
+    const remote = await res.json();
+    const local = loadNamesRegistry();
+    let added = 0;
+    for (const [wallet, data] of Object.entries(remote)) {
+      const existing = local[wallet];
+      // Берём более свежие данные (по saved_at)
+      if (!existing || (data.saved_at || 0) > (existing.saved_at || 0)) {
+        local[wallet] = {
+          username: data.username || existing?.username || null,
+          first_name: data.first_name || existing?.first_name || null,
+          tg_id: data.tg_id || existing?.tg_id || null,
+          saved_at: data.saved_at || Date.now(),
+        };
+        added++;
+      }
+    }
+    saveNamesRegistry(local);
+    console.log(`[syncNames] merged ${added} entries from backend`);
+    // Перерисовываем дерево с новыми именами
+    if (walletAddress) renderTree();
+  } catch(e) {
+    console.warn('[syncNames] failed:', e);
+  }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   setLang(currentLang);
   renderPriceTable();
   calculateIncome();
   renderTree();
+
+  // Подтягиваем общий реестр имён с бэкенда бота (если настроен)
+  syncNamesFromBackend();
 
   const params = new URLSearchParams(window.location.search);
   const startParam = tg?.initDataUnsafe?.start_param || params.get('start') || '';
