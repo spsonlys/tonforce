@@ -227,38 +227,51 @@ body::before {
 }
 .hero-title {
  font-size: 11px;
- color: #8fb6ff;
+ color: var(--cyan);
  letter-spacing: 0.18em;
- margin-bottom: 8px;
+ margin-bottom: 10px;
  text-transform: uppercase;
+ font-weight: 700;
 }
 .hero-sub {
- font-size: 29px;
+ font-size: 28px;
  font-weight: 800;
- letter-spacing: -0.03em;
- line-height: 1.05;
- max-width: 280px;
+ letter-spacing: -0.02em;
+ line-height: 1.08;
+ max-width: 320px;
+ background: linear-gradient(135deg, #fff 0%, #c9defc 60%, #8fb6ff 100%);
+ -webkit-background-clip: text;
+ -webkit-text-fill-color: transparent;
+ background-clip: text;
 }
 .hero-copy {
- margin-top: 10px;
- max-width: 260px;
- color: var(--muted);
+ margin-top: 12px;
+ max-width: 320px;
+ color: #b6c4dc;
  font-size: 13px;
- line-height: 1.65;
+ line-height: 1.6;
 }
 .hero-badges {
  display: flex;
  gap: 8px;
  flex-wrap: wrap;
- margin-top: 16px;
+ margin-top: 18px;
 }
 .hero-badge {
- padding: 8px 10px;
+ padding: 8px 12px;
  border-radius: 999px;
  font-size: 11px;
+ font-weight: 600;
  color: #d9ecff;
- background: rgba(255,255,255,0.05);
- border: 1px solid rgba(255,255,255,0.06);
+ background: rgba(255, 255, 255, 0.05);
+ border: 1px solid rgba(132, 196, 255, 0.16);
+ backdrop-filter: blur(10px);
+ transition: 0.2s;
+}
+.hero-badge:hover {
+ background: rgba(72, 207, 255, 0.10);
+ border-color: rgba(72, 207, 255, 0.30);
+ transform: translateY(-1px);
 }
 .stats {
  display: grid;
@@ -269,18 +282,43 @@ body::before {
 .stat {
  position: relative;
  background: var(--panel);
- border-radius: 22px;
- padding: 14px 12px;
+ border-radius: 18px;
+ padding: 12px 10px;
  overflow: hidden;
  border: 1px solid var(--border);
  backdrop-filter: blur(20px);
+ display: flex;
+ flex-direction: column;
+ align-items: flex-start;
+ gap: 6px;
 }
-.stat-icon { font-size: 16px; margin-bottom: 12px; }
+.stat-icon {
+ font-size: 18px;
+ line-height: 1;
+}
 .stat-value {
- font-size: 22px; font-weight: 800;
+ font-size: 18px;
+ font-weight: 800;
  letter-spacing: -0.02em;
+ line-height: 1;
 }
-.stat-label { font-size: 10px; color: var(--muted); letter-spacing: 0.12em; margin-top: 5px; text-transform: uppercase; }
+/* разделитель-черта между значением и лейблом */
+.stat::after {
+ content: '';
+ display: block;
+ width: 28px;
+ height: 2px;
+ background: var(--muted-2);
+ border-radius: 2px;
+ opacity: 0.55;
+}
+.stat-label {
+ font-size: 10px;
+ color: var(--muted);
+ letter-spacing: 0.12em;
+ text-transform: uppercase;
+ font-weight: 700;
+}
 .section-title {
  display: flex;
  align-items: center;
@@ -592,9 +630,11 @@ body::before {
  font-weight: 700;
 }
 @media (max-width: 420px) {
- .stats { grid-template-columns: 1fr; }
  .ref-actions, .tree-summary { grid-template-columns: 1fr; }
  .hero-sub { font-size: 25px; }
+ .stat { padding: 10px 8px; }
+ .stat-value { font-size: 16px; }
+ .stat-label { font-size: 9px; letter-spacing: 0.1em; }
 }
 /* ═══════════════════════════════════════════════════════════════
    TIER SYSTEM — финансовые тиры с цветовой дифференциацией
@@ -848,13 +888,13 @@ body::before {
 
  <div id="pageMatrix" class="page">
  <div class="hero">
- <div class="hero-title" data-i18n="welcome">WELCOME TO TONFORCE</div>
- <div class="hero-sub" data-i18n="hero_sub">Grow your network. Scale your earnings.</div>
- <div class="hero-copy" data-i18n="hero_copy">Premium TON dashboard with a cleaner structure, clearer levels and a more trusted look.</div>
+ <div class="hero-title" data-i18n="welcome">TONFORCE • МАТРИЦА 3×8</div>
+ <div class="hero-sub" data-i18n="hero_sub">Сила сети. Свобода дохода.</div>
+ <div class="hero-copy" data-i18n="hero_copy">Зарабатывай на блокчейне TON через матричную программу. 8 уровней, выплаты идут вверх по дереву автоматически.</div>
  <div class="hero-badges">
- <div class="hero-badge">Matrix 3×8</div>
- <div class="hero-badge">365 days active</div>
- <div class="hero-badge">On-chain payouts</div>
+ <div class="hero-badge" data-i18n="badge_matrix">⚡ Матрица 3×8</div>
+ <div class="hero-badge" data-i18n="badge_days">📅 365 дней</div>
+ <div class="hero-badge" data-i18n="badge_onchain">🔗 On-chain выплаты</div>
  </div>
  </div>
 
@@ -1090,7 +1130,7 @@ function getLevelName(lvlObj) {
 
 const I18N = {
  ru: {
- connect:'CONNECT', not_connected:'Не подключено', welcome:'PREMIUM TON DASHBOARD', hero_sub:'Grow your network. Scale your earnings.', hero_copy:'Чистый интерфейс для матрицы, уровней и рефералов без перегруженного крипто-шума.',
+ connect:'CONNECT', not_connected:'Не подключено', welcome:'TONFORCE • МАТРИЦА 3×8', hero_sub:'Сила сети. Свобода дохода.', hero_copy:'Зарабатывай на блокчейне TON через матричную программу. 8 уровней, выплаты идут вверх по дереву автоматически.', badge_matrix:'⚡ Матрица 3×8', badge_days:'📅 365 дней', badge_onchain:'🔗 On-chain выплаты',
  participants:'УЧАСТНИКОВ', my_level:'МОЙ УРОВЕНЬ', referrals:'РЕФЕРАЛОВ', join:'ПРИСОЕДИНИТЬСЯ',
  ref_id:'ID РЕФЕРЕРА', join_btn:'АКТИВИРОВАТЬ ЗА', my_levels:'МОИ УРОВНИ', ref_tree:'ДЕРЕВО РЕФЕРАЛОВ',
  my_ref_link:'МОЯ РЕФЕРАЛЬНАЯ ССЫЛКА', share_earn:'ПОДЕЛИТЕСЬ И ЗАРАБАТЫВАЙТЕ', copy_link:'СКОПИРОВАТЬ ССЫЛКУ', share_link:'ПОДЕЛИТЬСЯ',
@@ -1113,7 +1153,7 @@ const I18N = {
  connect_first:'Подключите кошелёк чтобы начать'
  },
  en: {
- connect:'CONNECT', not_connected:'Not connected', welcome:'PREMIUM TON DASHBOARD', hero_sub:'Grow your network. Scale your earnings.', hero_copy:'Clean matrix, level and referral UI with less noise and more trust.',
+ connect:'CONNECT', not_connected:'Not connected', welcome:'TONFORCE • 3×8 MATRIX', hero_sub:'Network. Power. Freedom.', hero_copy:'Earn on TON blockchain through the matrix program. 8 levels, payouts flow up the tree automatically.', badge_matrix:'⚡ Matrix 3×8', badge_days:'📅 365 days', badge_onchain:'🔗 On-chain payouts',
  participants:'PARTICIPANTS', my_level:'MY LEVEL', referrals:'REFERRALS', join:'JOIN',
  ref_id:'REFERRER ID', join_btn:'ACTIVATE FOR', my_levels:'MY LEVELS', ref_tree:'REFERRAL TREE',
  my_ref_link:'MY REFERRAL LINK', share_earn:'SHARE & EARN', copy_link:'COPY LINK', share_link:'SHARE',
@@ -1136,7 +1176,7 @@ const I18N = {
  connect_first:'Connect wallet to start'
  },
  ua: {
- connect:'CONNECT', not_connected:'Не підключено', welcome:'PREMIUM TON DASHBOARD', hero_sub:'Grow your network. Scale your earnings.', hero_copy:'Чистий інтерфейс для матриці, рівнів і рефералів без зайвого шуму.',
+ connect:'CONNECT', not_connected:'Не підключено', welcome:'TONFORCE • МАТРИЦЯ 3×8', hero_sub:'Сила мережі. Свобода доходу.', hero_copy:'Заробляй на блокчейні TON через матричну програму. 8 рівнів, виплати йдуть вгору по дереву автоматично.', badge_matrix:'⚡ Матриця 3×8', badge_days:'📅 365 днів', badge_onchain:'🔗 On-chain виплати',
  participants:'УЧАСНИКІВ', my_level:'МІЙ РІВЕНЬ', referrals:'РЕФЕРАЛІВ', join:'ПРИЄДНАТИСЯ',
  ref_id:'ID РЕФЕРЕРА', join_btn:'АКТИВУВАТИ ЗА', my_levels:'МОЇ РІВНІ', ref_tree:'ДЕРЕВО РЕФЕРАЛІВ',
  my_ref_link:'МОЄ РЕФЕРАЛЬНЕ ПОСИЛАННЯ', share_earn:'ПОДІЛІТЬСЯ ТА ЗАРОБЛЯЙТЕ', copy_link:'СКОПІЮВАТИ', share_link:'ПОДІЛИТИСЯ',
