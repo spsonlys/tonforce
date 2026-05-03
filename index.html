@@ -932,14 +932,14 @@ async function connectWallet() {
   await tonConnectUI.openModal();
 }
 
-// Конвертирует адрес кошелька (любой формат) в формат для stack параметра runGetMethod
-function addrToStackSlice(addr) {
-  // TonWeb.Address принимает raw (0:abc...) и friendly (UQ.../EQ...) форматы
+// Упаковывает адрес TON в BOC (base64) для передачи в slice параметр get-метода.
+// Tact get-методы с параметром Address ожидают MsgAddressInt в TVM Slice.
+async function addrToSliceBoc(addr) {
   const a = new TonWeb.utils.Address(addr);
-  // Создаём cell с адресом и пакуем в base64 BOC
   const cell = new TonWeb.boc.Cell();
   cell.bits.writeAddress(a);
-  return cell;
+  const boc = await cell.toBoc(false);
+  return TonWeb.utils.bytesToBase64(boc);
 }
 
 async function callGet(method, stack) {
@@ -949,35 +949,50 @@ async function callGet(method, stack) {
       headers:{'Content-Type':'application/json','X-API-Key':TONCENTER_KEY},
       body: JSON.stringify({address: CONTRACT_ADDRESS, method, stack})
     });
-    return await res.json();
+    const data = await res.json();
+    if (!data.ok) {
+      console.warn(`[callGet ${method}] error:`, data);
+    }
+    return data;
   } catch(e) { console.error('callGet error:', e); return null; }
 }
 
 // Готовит stack параметр для get-метода с адресом юзера
 async function getMethodWithAddress(method, addr, extraStack = []) {
-  const cell = addrToStackSlice(addr);
-  const boc = await cell.toBoc(false);
-  const b64 = TonWeb.utils.bytesToBase64(boc);
-  const stack = [["tvm.Slice", b64], ...extraStack];
+  const sliceB64 = await addrToSliceBoc(addr);
+  // Toncenter v2 принимает адрес в стеке как ["slice", "<base64 BOC>"]
+  const stack = [["slice", sliceB64], ...extraStack];
   return await callGet(method, stack);
 }
 
-// Парсит число из ответа toncenter (формат ["num", "0x123"])
+// Парсит число из ответа toncenter
+// Формат: { ok: true, result: { stack: [["num", "0x123"]] } }
+// TVM bool: -1 = true, 0 = false (как BigInt)
 function parseStackNum(res, idx = 0) {
-  if (!res?.ok || !res.result?.stack?.[idx]) return 0;
+  if (!res?.ok || !res.result?.stack?.[idx]) {
+    console.warn('[parseStackNum] нет данных в стеке:', res);
+    return 0;
+  }
   const item = res.result.stack[idx];
   const val = item[1];
   if (typeof val === 'string') {
-    return parseInt(val, val.startsWith('0x') ? 16 : 10) || 0;
+    // Обрабатываем как hex (с 0x) или decimal, может быть отрицательным
+    const s = val.startsWith('-') ? val.slice(1) : val;
+    const isHex = s.startsWith('0x');
+    let num = parseInt(isHex ? s : val, isHex ? 16 : 10);
+    if (val.startsWith('-')) num = -num;
+    return num || 0;
   }
   return parseInt(val) || 0;
 }
 
 async function loadUserData() {
   if (!walletAddress) return;
+  console.log('[loadUserData] start, wallet:', walletAddress);
 
   // 1. Загружаем общее количество участников
   const totalRes = await callGet('getTotalUsers', []);
+  console.log('[getTotalUsers] response:', totalRes);
   totalUsers = parseStackNum(totalRes) || 1;
   document.getElementById('statUsers').textContent = totalUsers.toLocaleString();
   const adminUsersEl = document.getElementById('adminUsers');
@@ -999,16 +1014,20 @@ async function loadUserData() {
     // Для всех остальных — читаем из контракта
     try {
       const existsRes = await getMethodWithAddress('isUserExists', walletAddress);
-      // Bool возвращается как число: -1 = true, 0 = false (TVM convention)
+      console.log('[isUserExists] response:', existsRes);
+      // Bool в TVM: -1 = true, 0 = false
       const existsVal = parseStackNum(existsRes);
       isRegistered = existsVal !== 0;
+      console.log('[isUserExists] parsed value:', existsVal, '→ registered:', isRegistered);
 
       if (isRegistered) {
         const idRes = await getMethodWithAddress('getUserID', walletAddress);
         userID = parseStackNum(idRes);
+        console.log('[getUserID] →', userID);
 
         const refRes = await getMethodWithAddress('getUserReferralCount', walletAddress);
         refCount = parseStackNum(refRes);
+        console.log('[getUserReferralCount] →', refCount);
 
         // Загружаем expiry для всех 8 уровней
         for (let lvl = 1; lvl <= 8; lvl++) {
@@ -1019,6 +1038,7 @@ async function loadUserData() {
           );
           levels[lvl - 1] = parseStackNum(expRes);
         }
+        console.log('[levels expiry] →', levels);
       }
     } catch(e) {
       console.error('loadUserData error:', e);
