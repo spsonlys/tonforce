@@ -862,6 +862,56 @@ body::before {
   pointer-events: none;
 }
 
+/* Tree-node wrapper для группировки ноды + кнопки TG */
+.tree-node-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Адрес внутри ноды */
+.tree-addr {
+  font-family: 'SF Mono', Menlo, Consolas, monospace;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.tree-node.filled {
+  cursor: pointer;
+  user-select: none;
+}
+.tree-node.filled:active {
+  transform: scale(0.96);
+}
+
+/* Кнопка "Написать в TG" */
+.tree-tg-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #229ED9, #2AABEE);
+  color: #fff;
+  text-decoration: none;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 2px 8px rgba(34, 158, 217, 0.32);
+  transition: 0.2s;
+  white-space: nowrap;
+}
+.tree-tg-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(34, 158, 217, 0.5);
+}
+.tree-tg-btn:active {
+  transform: scale(0.95);
+}
+
 </style>
 </head>
 <body>
@@ -1329,11 +1379,69 @@ async function loadHistory() {
  }).join('');
  } catch(e) {}
 }
-function renderLeaderboard() {
- const list = document.getElementById('leaderboardList'); const items = [];
- if (totalUsers >= 1) items.push({ rank: 1, name: 'OWNER', addr: 'UQDl...QXtT', refs: Math.max(0, totalUsers - 1), earnings: (totalUsers - 1) * 0.1 });
- if (items.length === 0) { list.innerHTML = `<div class="empty-state"><div class="empty-state-icon">🏆</div><div>—</div></div>`; return; }
- list.innerHTML = items.map(item => { const rankClass = item.rank === 1 ? 'gold' : item.rank === 2 ? 'silver' : item.rank === 3 ? 'bronze' : ''; return `<div class="card"><div class="lb-item"><div class="lb-rank ${rankClass}">${item.rank}</div><div class="lb-info"><div class="lb-name">${item.name}</div><div class="lb-stat">${item.addr} · ${item.refs} refs</div></div><div class="lb-value">${item.earnings.toFixed(2)} TON</div></div></div>`; }).join('');
+async function renderLeaderboard() {
+ const list = document.getElementById('leaderboardList');
+ list.innerHTML = `<div class="empty-state"><div class="empty-state-icon">⏳</div><div>${currentLang === 'ru' ? 'Загрузка...' : 'Loading...'}</div></div>`;
+
+ const items = [];
+ // Перебираем юзеров с ID 2..N (пропускаем ID=1 = owner)
+ const startId = 2;
+ const endId = Math.min(totalUsers, 50); // макс 50 для скорости
+
+ for (let id = startId; id <= endId; id++) {
+   try {
+     const addr = await getUserAddressByID(id);
+     if (!addr) continue;
+     // Получаем кол-во рефералов и заработок
+     const refsRes = await getMethodWithAddress('getUserReferralCount', addr);
+     const refs = parseStackNum(refsRes);
+     const earnRes = await getMethodWithAddress('getUserEarnings', addr);
+     const earnings = parseStackNum(earnRes) / 1e9;
+     items.push({ id, addr, refs, earnings });
+   } catch(e) {}
+ }
+
+ // Сортируем по заработку (убывание), берём топ 10
+ items.sort((a, b) => b.earnings - a.earnings);
+ const topItems = items.slice(0, 10);
+
+ if (topItems.length === 0) {
+   list.innerHTML = `<div class="empty-state"><div class="empty-state-icon">🏆</div><div>${currentLang === 'ru' ? 'Пока нет участников' : currentLang === 'ua' ? 'Поки немає учасників' : 'No participants yet'}</div></div>`;
+   return;
+ }
+
+ list.innerHTML = topItems.map((item, idx) => {
+   const rank = idx + 1;
+   const rankClass = rank === 1 ? 'gold' : rank === 2 ? 'silver' : rank === 3 ? 'bronze' : '';
+   const userInfo = getUserDisplayName(item.addr);
+   const displayName = userInfo.startsWith('@') || userInfo.length > 6 ? userInfo : 'Player #' + item.id;
+   const shortA = shortenAddr(item.addr);
+   return `<div class="card"><div class="lb-item">
+     <div class="lb-rank ${rankClass}">${rank}</div>
+     <div class="lb-info">
+       <div class="lb-name">${displayName}</div>
+       <div class="lb-stat">${shortA} · ${item.refs} refs</div>
+     </div>
+     <div class="lb-value">${item.earnings.toFixed(2)} TON</div>
+   </div></div>`;
+ }).join('');
+}
+
+// Helper для получения адреса юзера по ID (новый get-метод v4)
+async function getUserAddressByID(id) {
+  try {
+    const res = await callGet('getUserAddressById', [['num', String(id)]]);
+    if (!res?.ok || !res.result?.stack?.[0]) return null;
+    const item = res.result.stack[0];
+    if (item[0] !== 'cell' && item[0] !== 'slice') return null;
+    // Парсим адрес из BOC
+    const boc = item[1].bytes || item[1];
+    if (!boc) return null;
+    const cells = TonWeb.boc.Cell.fromBoc(TonWeb.utils.base64ToBytes(boc));
+    const slice = cells[0].beginParse();
+    const addr = slice.loadAddress();
+    return addr ? addr.toString(true, true, false) : null;
+  } catch(e) { return null; }
 }
 function renderDashboard() {
  const notReg = document.getElementById('notRegistered');
@@ -1428,25 +1536,89 @@ function saveMyRefs(data) { try { localStorage.setItem(MY_REFS_KEY, JSON.stringi
 function addMyReferral(myWallet, refWallet, telegramData) { if (!myWallet || !refWallet) return; const all = loadMyRefs(); const key = myWallet.toLowerCase(); if (!all[key]) all[key] = []; if (all[key].some(r => r.wallet.toLowerCase() === refWallet.toLowerCase())) return; all[key].push({ wallet: refWallet, username: telegramData?.username || null, first_name: telegramData?.first_name || null, tg_id: telegramData?.id || null, regAt: Date.now() }); saveMyRefs(all); }
 function getMyReferrals(myWallet) { if (!myWallet) return []; const all = loadMyRefs(); return all[myWallet.toLowerCase()] || []; }
 function renderTree() {
- const row = document.getElementById('treeRow'); row.innerHTML = '';
- const realCount = userState.referralCount || 0; const myRefs = getMyReferrals(walletAddress);
+ const row = document.getElementById('treeRow');
+ row.innerHTML = '';
+ const realCount = userState.referralCount || 0;
+ const myRefs = getMyReferrals(walletAddress);
+
  for (let i = 0; i < 3; i++) {
- const filled = i < realCount;
- if (!filled) { row.innerHTML += `<div class="tree-node empty">R${i + 1}<small>open slot</small></div>`; continue; }
- const refData = myRefs[i]; let label, sub;
- if (refData) { if (refData.username) label = '@' + refData.username.slice(0, 8); else if (refData.first_name) label = refData.first_name.slice(0, 8); else label = shortenAddr(refData.wallet); sub = 'active'; }
- else { label = `R${i + 1}`; sub = 'partner'; }
- row.innerHTML += `<div class="tree-node filled">${label}<small>${sub}</small></div>`;
+   const filled = i < realCount;
+   if (!filled) {
+     row.innerHTML += `<div class="tree-node-wrapper"><div class="tree-node empty">+<small>open slot</small></div></div>`;
+     continue;
+   }
+   const refData = myRefs[i];
+   if (!refData) {
+     // Реферал есть в контракте, но мы его не знаем (зарегился до запуска или не через нашу ссылку)
+     row.innerHTML += `<div class="tree-node-wrapper">
+       <div class="tree-node filled">R${i + 1}<small>partner</small></div>
+     </div>`;
+     continue;
+   }
+
+   // Знаем реферала — показываем его адрес и (опционально) кнопку TG
+   const shortAddr = shortenAddr(refData.wallet);
+   const fullFriendlyAddr = getFriendlyAddr(refData.wallet);
+   const username = refData.username || '';
+   const tgBtn = username
+     ? `<a href="https://t.me/${username}" target="_blank" rel="noopener" class="tree-tg-btn" title="@${username}">💬 TG</a>`
+     : '';
+
+   row.innerHTML += `<div class="tree-node-wrapper">
+     <div class="tree-node filled" onclick="copyAddrFromTree('${fullFriendlyAddr}')" title="${fullFriendlyAddr}">
+       <span class="tree-addr">${shortAddr}</span>
+       <small>partner</small>
+     </div>
+     ${tgBtn}
+   </div>`;
  }
+
  document.getElementById('treeActiveRefs').textContent = realCount;
  document.getElementById('treeOpenSlots').textContent = Math.max(0, 3 - realCount);
- document.getElementById('treeEarned').textContent = (realCount * 0.1).toFixed(1) + ' TON';
+ // Заработок берём из userState.earnings если есть (новый контракт), иначе старая прикидка
+ const earned = userState.earnings || (realCount * 5);
+ document.getElementById('treeEarned').textContent = earned.toFixed(1) + ' TON';
 }
+
+// Клик по ноде дерева — копировать адрес кошелька реферала
+function copyAddrFromTree(addr) {
+  if (!addr) return;
+  try {
+    navigator.clipboard.writeText(addr);
+    showToast(t('copied') || 'Адрес скопирован', 'success');
+  } catch(e) {}
+}
+// Кодируем referrer ID в короткий обфусцированный хеш для красивой реф-ссылки.
+// Формат: 10-символов hex (типа "00000032c8" для ID=1)
+// Использует BigInt чтобы избежать переполнения 32-bit для больших ID.
+function encodeRefHash(id) {
+  if (!id || id < 1) id = 1;
+  const obfuscated = (BigInt(id) * 7919n + 5081n);
+  return obfuscated.toString(16).padStart(10, '0');
+}
+
+// Раскодирует ref-hash обратно в ID
+function decodeRefHash(hash) {
+  if (!hash) return 1;
+  try {
+    const obfuscated = BigInt('0x' + hash);
+    if (obfuscated < 5081n) return 1;
+    const id = Number((obfuscated - 5081n) / 7919n);
+    // Валидация: проверяем что обратное кодирование совпадает
+    if (encodeRefHash(id) !== hash) return 1;
+    return id > 0 ? id : 1;
+  } catch(e) { return 1; }
+}
+
 function updateRefLink() {
- const el = document.getElementById('refLink'); const myUsername = tg?.initDataUnsafe?.user?.username || ''; const usernameSuffix = myUsername ? '_' + myUsername : '';
- if (walletAddress && walletAddress.toLowerCase() === OWNER_WALLET_RAW.toLowerCase()) { el.textContent = `https://t.me/${BOT_USERNAME}?start=1${usernameSuffix}`; return; }
- if (userState.id) el.textContent = `https://t.me/${BOT_USERNAME}?start=${userState.id}${usernameSuffix}`;
- else if (walletAddress) el.textContent = currentLang === 'ru' ? 'Зарегистрируйтесь чтобы получить ссылку' : currentLang === 'en' ? 'Register to get your link' : 'Зареєструйтесь';
+ const el = document.getElementById('refLink');
+ const myID = (walletAddress && walletAddress.toLowerCase() === OWNER_WALLET_RAW.toLowerCase()) ? 1 : userState.id;
+ if (myID) {
+   const hash = encodeRefHash(myID);
+   el.textContent = `https://t.me/${BOT_USERNAME}?startapp=${hash}`;
+   return;
+ }
+ if (walletAddress) el.textContent = currentLang === 'ru' ? 'Зарегистрируйтесь чтобы получить ссылку' : currentLang === 'en' ? 'Register to get your link' : 'Зареєструйтесь';
  else el.textContent = '—';
 }
 function copyRef() { const txt = document.getElementById('refLink').textContent; if (txt && txt !== '—') navigator.clipboard.writeText(txt).then(() => showToast(t('copied'), 'success')); }
@@ -1491,8 +1663,31 @@ function saveMyTelegramData() { if (!walletAddress || !tg?.initDataUnsafe?.user)
 async function syncNamesFromBackend() { if (!BOT_API_URL) return; try { const res = await fetch(BOT_API_URL.replace(/\/$/, '') + '/api/names', { method: 'GET' }); if (!res.ok) return; const remote = await res.json(); const local = loadNamesRegistry(); for (const [wallet, data] of Object.entries(remote)) { const existing = local[wallet]; if (!existing || (data.saved_at || 0) > (existing.saved_at || 0)) local[wallet] = { username: data.username || existing?.username || null, first_name: data.first_name || existing?.first_name || null, tg_id: data.tg_id || existing?.tg_id || null, saved_at: data.saved_at || Date.now() }; } saveNamesRegistry(local); if (walletAddress) renderTree(); } catch(e) {} }
 document.addEventListener('DOMContentLoaded', () => {
  setLang(currentLang); renderPriceTable(); calculateIncome(); renderTree(); syncNamesFromBackend(); updateNavigationVisibility();
- const params = new URLSearchParams(window.location.search); const startParam = tg?.initDataUnsafe?.start_param || params.get('start') || ''; const match = startParam.match(/^(\d+)(?:_(\w+))?$/);
- if (match) { const refID = match[1]; const refUsername = match[2]; document.getElementById('refInput').value = refID; document.getElementById('refBanner').style.display = 'block'; if (refUsername) { const banner = document.getElementById('refBanner'); if (banner) banner.innerHTML = `✨ @${refUsername} (ID #${refID})`; } }
+ const params = new URLSearchParams(window.location.search);
+ // start_param из Telegram WebApp API работает для обоих форматов (?start= и ?startapp=)
+ const startParam = tg?.initDataUnsafe?.start_param || params.get('startapp') || params.get('start') || '';
+ if (!startParam) return;
+
+ let refID = 1;
+
+ // Формат 1 (старый): "1" или "1_user" или "1__user" — числовой ID + опционально username
+ const oldMatch = startParam.match(/^(\d+)(?:_+(\w+))?$/);
+ if (oldMatch && !startParam.match(/^[0-9a-f]{10}$/)) {
+   // Если параметр строго цифры — берём как ID. Hex-хеш длиной 10 не должен попадать сюда.
+   refID = parseInt(oldMatch[1]);
+ } else {
+   // Формат 2 (новый): обфусцированный hex-хеш длиной 10
+   refID = decodeRefHash(startParam);
+ }
+
+ if (refID && refID > 0) {
+   document.getElementById('refInput').value = refID;
+   const banner = document.getElementById('refBanner');
+   if (banner) {
+     banner.style.display = 'block';
+     banner.innerHTML = `✨ ${currentLang === 'ru' ? 'Приглашение от' : currentLang === 'ua' ? 'Запрошення від' : 'Invited by'} ID #${refID}`;
+   }
+ }
 });
 </script>
 </body>
