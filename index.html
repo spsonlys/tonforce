@@ -1622,7 +1622,95 @@ function updateRefLink() {
  else el.textContent = '—';
 }
 function copyRef() { const txt = document.getElementById('refLink').textContent; if (txt && txt !== '—') navigator.clipboard.writeText(txt).then(() => showToast(t('copied'), 'success')); }
-function shareRefLink() { const txt = document.getElementById('refLink').textContent; if (!txt || txt === '—') return; if (navigator.share) navigator.share({ title: 'TonForce', text: txt }).catch(() => {}); else copyRef(); }
+function shareRefLink() {
+  const url = document.getElementById('refLink').textContent;
+  if (!url || url === '—' || !url.startsWith('http')) {
+    showToast(t('need_wallet') || 'Подключите кошелёк', 'error');
+    return;
+  }
+
+  // Описание проекта для поделиться (по языку)
+  const descriptions = {
+    ru: `🚀 TonForce — матричная программа на блокчейне TON
+
+💎 8 уровней: от 5 до 10935 TON
+🤝 Матрица 3×3 — выплаты автоматически в TON
+⏰ 365 дней активность пакета
+🔗 On-chain — никаких посредников
+
+Присоединяйся:`,
+    en: `🚀 TonForce — matrix program on TON blockchain
+
+💎 8 levels: from 5 to 10,935 TON
+🤝 3×3 matrix — automatic payouts in TON
+⏰ 365 days package activity
+🔗 On-chain — no middlemen
+
+Join now:`,
+    ua: `🚀 TonForce — матрична програма на блокчейні TON
+
+💎 8 рівнів: від 5 до 10 935 TON
+🤝 Матриця 3×3 — виплати автоматично в TON
+⏰ 365 днів активності пакета
+🔗 On-chain — жодних посередників
+
+Приєднуйся:`
+  };
+
+  const lang = (typeof currentLang !== 'undefined' && descriptions[currentLang]) ? currentLang : 'ru';
+  const description = descriptions[lang];
+  const fullText = description + '\n' + url;
+
+  // Способ 1: Telegram WebApp Share API (когда Mini App запущен в Telegram)
+  // Открывает прямо выбор контакта/чата в Telegram
+  if (tg?.openTelegramLink) {
+    try {
+      const shareText = encodeURIComponent(description);
+      const shareUrl = encodeURIComponent(url);
+      const tgShareUrl = `https://t.me/share/url?url=${shareUrl}&text=${shareText}`;
+      tg.openTelegramLink(tgShareUrl);
+      return;
+    } catch(e) { console.error('TG share failed', e); }
+  }
+
+  // Способ 2: Native share API (мобильные браузеры)
+  if (navigator.share) {
+    navigator.share({
+      title: 'TonForce',
+      text: description,
+      url: url
+    }).catch(err => {
+      // Если юзер отменил шаринг — ничего не делаем; иначе fallback на копирование
+      if (err.name !== 'AbortError') {
+        copyTextToClipboard(fullText);
+      }
+    });
+    return;
+  }
+
+  // Способ 3: Fallback — копируем полный текст в буфер
+  copyTextToClipboard(fullText);
+}
+
+// Helper: копирование с toast-уведомлением
+function copyTextToClipboard(text) {
+  if (navigator.clipboard?.writeText) {
+    navigator.clipboard.writeText(text).then(() => {
+      showToast(t('copied') || 'Скопировано', 'success');
+    }).catch(() => {
+      // Fallback через временный textarea
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      try { document.execCommand('copy'); showToast(t('copied') || 'Скопировано', 'success'); }
+      catch(e) {}
+      document.body.removeChild(ta);
+    });
+  }
+}
 function copyContract() { navigator.clipboard.writeText(CONTRACT_ADDRESS).then(() => showToast(t('copied'), 'success')); }
 function renderPriceTable() {
   const el = document.getElementById('priceTable');
