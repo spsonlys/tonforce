@@ -886,32 +886,50 @@ body::before {
   transform: scale(0.96);
 }
 
-/* Кнопка "Написать в TG" */
-.tree-tg-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.4px;
-  padding: 4px 10px;
-  border-radius: 999px;
-  background: linear-gradient(135deg, #229ED9, #2AABEE);
-  color: #fff;
-  text-decoration: none;
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  box-shadow: 0 2px 8px rgba(34, 158, 217, 0.32);
-  transition: 0.2s;
-  white-space: nowrap;
-}
-.tree-tg-btn:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(34, 158, 217, 0.5);
-}
-.tree-tg-btn:active {
-  transform: scale(0.95);
+/* Компактные мини-кнопки под нодой дерева */
+.tree-mini-actions {
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+  margin-top: 2px;
 }
 
+.tree-mini-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.7);
+  cursor: pointer;
+  text-decoration: none;
+  transition: 0.15s;
+  padding: 0;
+}
+.tree-mini-btn:hover {
+  transform: translateY(-1px) scale(1.05);
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+}
+.tree-mini-btn:active { transform: scale(0.92); }
+
+.tree-mini-btn--tg {
+  background: linear-gradient(135deg, #229ED9, #2AABEE);
+  color: #fff;
+  border-color: rgba(34, 158, 217, 0.5);
+  box-shadow: 0 2px 6px rgba(34, 158, 217, 0.35);
+}
+.tree-mini-btn--tg:hover {
+  background: linear-gradient(135deg, #2BAEEC, #3DBBFF);
+  box-shadow: 0 4px 10px rgba(34, 158, 217, 0.5);
+}
+
+.tree-mini-btn--copy {
+  /* стандартный — серый */
+}
 </style>
 </head>
 <body>
@@ -1585,7 +1603,7 @@ async function renderTree() {
  }
 }
 
-// Отрисовка одной ячейки дерева — адрес кошелька + (опц.) кнопка TG
+// Отрисовка одной ячейки дерева — адрес кошелька + кнопки TG / Copy
 function renderTreeSlot(slotIdx, walletAddr, username, knownAddress) {
   const slot = document.querySelector(`[data-slot="${slotIdx}"]`);
   if (!slot) return;
@@ -1598,16 +1616,25 @@ function renderTreeSlot(slotIdx, walletAddr, username, knownAddress) {
 
   const shortAddr = shortenAddr(walletAddr);
   const fullFriendlyAddr = getFriendlyAddr(walletAddr);
+
+  // Кнопка TG — только если знаем username
   const tgBtn = username
-    ? `<a href="https://t.me/${username}" target="_blank" rel="noopener" class="tree-tg-btn" title="@${username}">💬 TG</a>`
+    ? `<a href="https://t.me/${username}" target="_blank" rel="noopener" class="tree-mini-btn tree-mini-btn--tg" title="@${username}">
+         <svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14"><path d="M22 2L2 11l7 3 9-7-7 9 3 7 8-21z"/></svg>
+       </a>`
     : '';
+
+  // Кнопка Copy — всегда показываем
+  const copyBtn = `<button class="tree-mini-btn tree-mini-btn--copy" onclick="copyAddrFromTree('${fullFriendlyAddr}')" title="Copy address">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="13" height="13"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+  </button>`;
 
   slot.innerHTML = `
     <div class="tree-node filled" onclick="copyAddrFromTree('${fullFriendlyAddr}')" title="${fullFriendlyAddr}">
       <span class="tree-addr">${shortAddr}</span>
       <small>partner</small>
     </div>
-    ${tgBtn}
+    <div class="tree-mini-actions">${tgBtn}${copyBtn}</div>
   `;
 }
 
@@ -1802,7 +1829,34 @@ function loadNamesRegistry() { try { return JSON.parse(localStorage.getItem(NAME
 function saveNamesRegistry(registry) { try { localStorage.setItem(NAMES_KEY, JSON.stringify(registry)); } catch(e) {} }
 function rememberUserName(wallet, telegramData) { if (!wallet || !telegramData) return; const reg = loadNamesRegistry(); reg[wallet.toLowerCase()] = { username: telegramData.username || null, first_name: telegramData.first_name || null, tg_id: telegramData.id || null, saved_at: Date.now() }; saveNamesRegistry(reg); }
 function getUserDisplayName(wallet) { if (!wallet) return '—'; const reg = loadNamesRegistry(); const data = reg[wallet.toLowerCase()]; if (data) { if (data.username) return '@' + data.username; if (data.first_name) return data.first_name; } return shortenAddr(wallet); }
-function saveMyTelegramData() { if (!walletAddress || !tg?.initDataUnsafe?.user) return; rememberUserName(walletAddress, tg.initDataUnsafe.user); }
+function saveMyTelegramData() {
+  if (!walletAddress || !tg?.initDataUnsafe?.user) return;
+  const user = tg.initDataUnsafe.user;
+  // Локально (для оффлайна)
+  rememberUserName(walletAddress, user);
+  // На бэкенд (чтобы был виден всем юзерам, не только в этом браузере)
+  registerWithBackend(walletAddress, user);
+}
+
+// Отправляет данные на бот: связка wallet ↔ telegram username
+async function registerWithBackend(wallet, tgUser) {
+  if (!BOT_API_URL || !wallet || !tgUser) return;
+  try {
+    await fetch(BOT_API_URL.replace(/\/$/, '') + '/api/register-user', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        wallet: wallet,
+        tg_id: tgUser.id,
+        username: tgUser.username || null,
+        first_name: tgUser.first_name || null,
+        last_name: tgUser.last_name || null,
+      })
+    });
+  } catch(e) {
+    // Тихо игнорируем — бэкенд опционален, локальная копия работает в любом случае
+  }
+}
 async function syncNamesFromBackend() { if (!BOT_API_URL) return; try { const res = await fetch(BOT_API_URL.replace(/\/$/, '') + '/api/names', { method: 'GET' }); if (!res.ok) return; const remote = await res.json(); const local = loadNamesRegistry(); for (const [wallet, data] of Object.entries(remote)) { const existing = local[wallet]; if (!existing || (data.saved_at || 0) > (existing.saved_at || 0)) local[wallet] = { username: data.username || existing?.username || null, first_name: data.first_name || existing?.first_name || null, tg_id: data.tg_id || existing?.tg_id || null, saved_at: data.saved_at || Date.now() }; } saveNamesRegistry(local); if (walletAddress) renderTree(); } catch(e) {} }
 document.addEventListener('DOMContentLoaded', () => {
  setLang(currentLang); renderPriceTable(); calculateIncome(); renderTree(); syncNamesFromBackend(); updateNavigationVisibility();
