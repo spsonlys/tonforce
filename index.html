@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://unpkg.com https://cdn.jsdelivr.net https://telegram.org; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; connect-src 'self' https://web-production-7d6ce.up.railway.app https://toncenter.com https://*.toncenter.com https://bridge.tonapi.io wss://bridge.tonapi.io; frame-src https://t.me;" />
 <title>TonForce</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <script src="https://unpkg.com/tonweb@0.0.66/dist/tonweb.js"></script>
@@ -1617,25 +1618,45 @@ function renderTreeSlot(slotIdx, walletAddr, username, knownAddress) {
   const shortAddr = shortenAddr(walletAddr);
   const fullFriendlyAddr = getFriendlyAddr(walletAddr);
 
-  // Кнопка TG — только если знаем username
-  const tgBtn = username
-    ? `<a href="https://t.me/${username}" target="_blank" rel="noopener" class="tree-mini-btn tree-mini-btn--tg" title="@${username}">
+  // Защита от XSS: эскейпим username и адрес перед вставкой в HTML
+  // username приходит с бэкенда (бот), может содержать malicious данные
+  const safeUsername = escapeHtml(username || '');
+  const safeShortAddr = escapeHtml(shortAddr);
+  const safeFullAddr = escapeHtml(fullFriendlyAddr);
+  // Также санитизация для использования в JS-строке onclick (защита от инъекции)
+  const safeAddrForJs = (fullFriendlyAddr || '').replace(/[^A-Za-z0-9_\-]/g, '');
+
+  // Кнопка TG — только если знаем username и он валиден (только буквенно-цифровой)
+  const usernameClean = (username || '').replace(/[^A-Za-z0-9_]/g, '').slice(0, 32);
+  const tgBtn = usernameClean
+    ? `<a href="https://t.me/${encodeURIComponent(usernameClean)}" target="_blank" rel="noopener noreferrer" class="tree-mini-btn tree-mini-btn--tg" title="@${escapeHtml(usernameClean)}">
          <svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14"><path d="M22 2L2 11l7 3 9-7-7 9 3 7 8-21z"/></svg>
        </a>`
     : '';
 
   // Кнопка Copy — всегда показываем
-  const copyBtn = `<button class="tree-mini-btn tree-mini-btn--copy" onclick="copyAddrFromTree('${fullFriendlyAddr}')" title="Copy address">
+  const copyBtn = `<button class="tree-mini-btn tree-mini-btn--copy" onclick="copyAddrFromTree('${safeAddrForJs}')" title="Copy address">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="13" height="13"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
   </button>`;
 
   slot.innerHTML = `
-    <div class="tree-node filled" onclick="copyAddrFromTree('${fullFriendlyAddr}')" title="${fullFriendlyAddr}">
-      <span class="tree-addr">${shortAddr}</span>
+    <div class="tree-node filled" onclick="copyAddrFromTree('${safeAddrForJs}')" title="${safeFullAddr}">
+      <span class="tree-addr">${safeShortAddr}</span>
       <small>partner</small>
     </div>
     <div class="tree-mini-actions">${tgBtn}${copyBtn}</div>
   `;
+}
+
+// Защита от XSS: эскейпит спецсимволы HTML
+function escapeHtml(text) {
+  if (text == null) return '';
+  return String(text)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
 }
 
 // Get-метод v4: getReferralAt(addr, idx) → адрес N-го реферала или null
