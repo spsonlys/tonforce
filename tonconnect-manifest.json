@@ -1,5 +1,7 @@
 {
-  "url": "https://spsonlys.github.io/tonforce/",
+  "url": "https://tonforce.app",
   "name": "TonForce",
-  "iconUrl": "https://spsonlys.github.io/tonforce/logo.png"
+  "iconUrl": "https://tonforce.app/logo.png",
+  "termsOfUseUrl": "https://tonforce.app",
+  "privacyPolicyUrl": "https://tonforce.app"
 }
