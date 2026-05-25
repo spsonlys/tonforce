@@ -915,6 +915,186 @@ footer a:hover { color: var(--accent-1); }
 
 .reveal { opacity: 0; transform: translateY(30px); transition: 0.8s ease; }
 .reveal.visible { opacity: 1; transform: translateY(0); }
+
+/* ═══════════ TELEGRAM FLOATING WIDGET ═══════════ */
+.tg-widget {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 999;
+  font-family: 'Manrope', sans-serif;
+}
+
+/* Развёрнутая плашка */
+.tg-widget-panel {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: linear-gradient(135deg, rgba(20, 24, 42, 0.95), rgba(10, 15, 28, 0.95));
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(0, 209, 255, 0.3);
+  border-radius: 20px;
+  padding: 14px 18px 14px 14px;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.5), 0 0 30px rgba(0, 209, 255, 0.2);
+  min-width: 280px;
+  position: relative;
+  transform: translateX(calc(100% + 48px));
+  opacity: 0;
+  transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.4s ease;
+  pointer-events: none;
+}
+.tg-widget.show .tg-widget-panel {
+  transform: translateX(0);
+  opacity: 1;
+  pointer-events: auto;
+}
+.tg-widget-panel-close {
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  line-height: 1;
+  transition: 0.2s;
+  padding: 0;
+}
+.tg-widget-panel-close:hover {
+  background: rgba(255, 255, 255, 0.15);
+  color: var(--text);
+}
+.tg-widget-icon {
+  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #2AABEE, #229ED9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(42, 171, 238, 0.4);
+}
+.tg-widget-icon svg {
+  width: 28px;
+  height: 28px;
+  fill: white;
+}
+.tg-widget-text {
+  flex: 1;
+  padding-right: 14px;
+}
+.tg-widget-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 10px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--green);
+  font-weight: 700;
+  margin-bottom: 3px;
+}
+.tg-widget-badge::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  background: var(--green);
+  border-radius: 50%;
+  box-shadow: 0 0 6px var(--green);
+  animation: pulse 2s ease infinite;
+}
+.tg-widget-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: white;
+  line-height: 1.2;
+  margin-bottom: 2px;
+}
+.tg-widget-subtitle {
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.3;
+}
+.tg-widget-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: linear-gradient(135deg, #2AABEE, #229ED9);
+  color: white;
+  padding: 8px 14px;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: 0.2s;
+  text-transform: uppercase;
+}
+.tg-widget-cta:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(42, 171, 238, 0.5);
+}
+
+/* Свёрнутый круг */
+.tg-widget-bubble {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #2AABEE, #229ED9);
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 24px rgba(42, 171, 238, 0.4), 0 0 0 0 rgba(42, 171, 238, 0.5);
+  transform: scale(0);
+  opacity: 0;
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease, box-shadow 0.3s ease;
+  padding: 0;
+  animation: tg-pulse-ring 2.5s ease-out infinite;
+  animation-play-state: paused;
+}
+.tg-widget.minimized .tg-widget-bubble {
+  transform: scale(1);
+  opacity: 1;
+  animation-play-state: running;
+}
+.tg-widget-bubble:hover {
+  transform: scale(1.1);
+}
+.tg-widget-bubble svg {
+  width: 30px;
+  height: 30px;
+  fill: white;
+}
+
+@keyframes tg-pulse-ring {
+  0% { box-shadow: 0 8px 24px rgba(42, 171, 238, 0.4), 0 0 0 0 rgba(42, 171, 238, 0.5); }
+  70% { box-shadow: 0 8px 24px rgba(42, 171, 238, 0.4), 0 0 0 16px rgba(42, 171, 238, 0); }
+  100% { box-shadow: 0 8px 24px rgba(42, 171, 238, 0.4), 0 0 0 0 rgba(42, 171, 238, 0); }
+}
+
+@media (max-width: 540px) {
+  .tg-widget { right: 16px; bottom: 16px; }
+  .tg-widget-panel { min-width: auto; max-width: calc(100vw - 32px); padding: 12px 16px 12px 12px; }
+  .tg-widget-text { padding-right: 10px; }
+  .tg-widget-subtitle { display: none; }
+  .tg-widget-cta { padding: 7px 12px; font-size: 11px; }
+  .tg-widget-bubble { width: 52px; height: 52px; }
+}
+
 </style>
 </head>
 <body>
@@ -1477,6 +1657,24 @@ footer a:hover { color: var(--accent-1); }
   </div>
 </section>
 
+
+<!-- ═══════════ TELEGRAM FLOATING WIDGET ═══════════ -->
+<div class="tg-widget" id="tgWidget" aria-live="polite">
+  <div class="tg-widget-panel" role="dialog" aria-label="Приєднуйтесь!">
+    <button class="tg-widget-panel-close" id="tgWidgetClose" aria-label="Згорнути">×</button>
+    <div class="tg-widget-icon"><svg viewBox="0 0 24 24"><path d="M22.05 2.62L2.36 10.42c-1.21.49-1.2 1.17-.22 1.47l5.05 1.58 1.95 5.97c.24.65.12.91.81.91.53 0 .77-.24 1.06-.53l2.55-2.48 5.3 3.92c.98.54 1.68.26 1.92-.91l3.48-16.42c.36-1.43-.55-2.08-1.48-1.66l-.83.35z"/></svg></div>
+    <div class="tg-widget-text">
+      <div class="tg-widget-badge">Онлайн чат</div>
+      <div class="tg-widget-title">Приєднуйтесь!</div>
+      <div class="tg-widget-subtitle">Telegram-чат учасників TonForce</div>
+    </div>
+    <a href="https://t.me/chat_tonforce" target="_blank" rel="noopener" class="tg-widget-cta">Відкрити чат</a>
+  </div>
+  <button class="tg-widget-bubble" id="tgWidgetBubble" aria-label="Відкрити Telegram чат">
+    <svg viewBox="0 0 24 24"><path d="M22.05 2.62L2.36 10.42c-1.21.49-1.2 1.17-.22 1.47l5.05 1.58 1.95 5.97c.24.65.12.91.81.91.53 0 .77-.24 1.06-.53l2.55-2.48 5.3 3.92c.98.54 1.68.26 1.92-.91l3.48-16.42c.36-1.43-.55-2.08-1.48-1.66l-.83.35z"/></svg>
+  </button>
+</div>
+
 </main>
 
 <!-- ═══════════ FOOTER ═══════════ -->
@@ -1560,5 +1758,45 @@ setInterval(() => {
 updateCalc();
 </script>
 
+<script>
+// ═══════════ TELEGRAM WIDGET LOGIC ═══════════
+(function() {
+  const widget = document.getElementById('tgWidget');
+  if (!widget) return;
+  const closeBtn = document.getElementById('tgWidgetClose');
+  const bubble = document.getElementById('tgWidgetBubble');
+  let userClosed = false;
+
+  function showPanel() {
+    if (userClosed) return;
+    widget.classList.remove('minimized');
+    widget.classList.add('show');
+  }
+  function minimize() {
+    widget.classList.remove('show');
+    widget.classList.add('minimized');
+  }
+
+  // Появление через 4 сек, сворачивание через 8 сек после появления
+  setTimeout(() => {
+    showPanel();
+    setTimeout(() => {
+      if (!userClosed) minimize();
+    }, 8000);
+  }, 4000);
+
+  // Клик по закрытию: свернуть в круг
+  closeBtn.addEventListener('click', () => {
+    userClosed = true;
+    minimize();
+  });
+
+  // Клик по пузырю: снова показать плашку
+  bubble.addEventListener('click', () => {
+    userClosed = false;
+    showPanel();
+  });
+})();
+</script>
 </body>
 </html>
