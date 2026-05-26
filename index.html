@@ -1,0 +1,1915 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://unpkg.com https://cdn.jsdelivr.net https://telegram.org; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; connect-src 'self' https://web-production-7d6ce.up.railway.app https://toncenter.com https://*.toncenter.com https://bridge.tonapi.io wss://bridge.tonapi.io; frame-src https://t.me;" />
+<title>TonForce</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<script src="https://unpkg.com/tonweb@0.0.66/dist/tonweb.js"></script>
+<script src="https://unpkg.com/@tonconnect/ui@2.0.6/dist/tonconnect-ui.min.js"></script>
+<style>
+:root {
+ --bg: #07101f;
+ --bg-soft: #0b1426;
+ --panel: rgba(12, 22, 42, 0.82);
+ --panel-2: rgba(15, 27, 50, 0.92);
+ --border: rgba(123, 169, 255, 0.14);
+ --border-strong: rgba(89, 193, 255, 0.28);
+ --text: #f4f8ff;
+ --muted: #8e9ab3;
+ --muted-2: #66738d;
+ --cyan: #48cfff;
+ --cyan-2: #1e9bff;
+ --violet: #7c6dff;
+ --gold: #ffc861;
+ --gold-2: #ff9d42;
+ --green: #44e1a6;
+ --danger: #ff5f86;
+ --shadow: 0 24px 60px rgba(0, 0, 0, 0.42);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+body {
+ margin: 0;
+ font-family: Inter, Arial, sans-serif;
+ background:
+ radial-gradient(circle at top left, rgba(124,109,255,0.16), transparent 28%),
+ radial-gradient(circle at top right, rgba(72,207,255,0.12), transparent 32%),
+ linear-gradient(180deg, #040913 0%, #091120 52%, #060c18 100%);
+ color: var(--text);
+ min-height: 100vh;
+ overflow-x: hidden;
+ padding-bottom: 102px;
+}
+body::before {
+ content: '';
+ position: fixed; inset: 0;
+ background:
+ linear-gradient(rgba(255,255,255,0.018) 1px, transparent 1px),
+ linear-gradient(90deg, rgba(255,255,255,0.018) 1px, transparent 1px);
+ background-size: 28px 28px;
+ mask-image: radial-gradient(circle at center, black 45%, transparent 88%);
+ z-index: -1;
+ pointer-events: none;
+}
+.container {
+ padding: 18px 16px;
+ max-width: 600px;
+ margin: 0 auto;
+}
+.header {
+ display: flex;
+ justify-content: space-between;
+ align-items: flex-start;
+ margin-bottom: 18px;
+ gap: 12px;
+}
+.header-left {
+ display: flex; align-items: center; gap: 12px;
+}
+.header-left img {
+ width: 44px;
+ height: 44px;
+ object-fit: contain;
+ border-radius: 14px;
+ padding: 6px;
+ background: linear-gradient(145deg, rgba(72,207,255,0.18), rgba(124,109,255,0.14));
+ border: 1px solid rgba(132, 196, 255, 0.18);
+ box-shadow: inset 0 1px 0 rgba(255,255,255,0.08), 0 12px 26px rgba(24, 94, 255, 0.14);
+}
+.header-title {
+ font-size: 20px; font-weight: 700;
+ letter-spacing: 0.01em;
+}
+.balance {
+ font-size: 12px;
+ color: var(--muted);
+ margin-top: 4px;
+}
+.header-controls {
+ display:flex; gap:8px; align-items:flex-end; flex-direction:column;
+}
+.lang-switch {
+ display: flex; gap: 4px;
+ background: rgba(255,255,255,0.04);
+ border: 1px solid rgba(255,255,255,0.05);
+ border-radius: 18px;
+ padding: 4px;
+ backdrop-filter: blur(18px);
+}
+.lang-btn {
+ padding: 6px 8px;
+ font-size: 10px;
+ background: none; border: none;
+ color: var(--muted);
+ cursor: pointer;
+ border-radius: 12px;
+ font-weight: 700;
+ transition: all .2s;
+}
+.lang-btn.active {
+ background: linear-gradient(135deg, rgba(72,207,255,0.22), rgba(124,109,255,0.2));
+ color: white;
+ box-shadow: inset 0 0 0 1px rgba(122, 203, 255, 0.2);
+}
+.wallet-btn {
+ background: linear-gradient(135deg, rgba(72,207,255,0.16), rgba(31,155,255,0.22));
+ border: 1px solid rgba(95, 196, 255, 0.2);
+ color: white;
+ font-weight: 700;
+ font-size: 12px;
+ padding: 10px 14px;
+ border-radius: 16px;
+ cursor: pointer;
+ box-shadow: inset 0 1px 0 rgba(255,255,255,0.08);
+ transition: 0.25s;
+ white-space: nowrap;
+}
+.wallet-btn:active { transform: scale(0.98); }
+.wallet-btn.connected {
+ background: linear-gradient(135deg, rgba(68,225,166,0.18), rgba(72,207,255,0.18));
+ border-color: rgba(68,225,166,0.24);
+}
+.card {
+ position: relative;
+ background: var(--panel);
+ backdrop-filter: blur(22px);
+ -webkit-backdrop-filter: blur(22px);
+ border-radius: 24px;
+ padding: 18px;
+ margin-bottom: 12px;
+ overflow: hidden;
+ transition: 0.25s;
+ border: 1px solid var(--border);
+ box-shadow: inset 0 1px 0 rgba(255,255,255,0.05);
+}
+.card.active {
+ border-color: rgba(68,225,166,0.24);
+ box-shadow: inset 0 1px 0 rgba(255,255,255,0.06), 0 16px 34px rgba(21, 150, 113, 0.12);
+}
+.card.locked {
+ opacity: 0.54;
+}
+.level {
+ font-size: 10px;
+ color: var(--muted);
+ letter-spacing: 0.14em;
+ text-transform: uppercase;
+}
+.name {
+ font-size: 20px;
+ margin: 6px 0 8px;
+ font-weight: 700;
+}
+.price {
+ font-size: 30px;
+ font-weight: 800;
+ letter-spacing: -0.03em;
+}
+.info {
+ font-size: 13px;
+ color: #dbe6fa;
+ margin-top: 10px;
+ line-height: 1.7;
+}
+.button {
+ margin-top: 14px;
+ padding: 14px 16px;
+ text-align: center;
+ border-radius: 16px;
+ background: linear-gradient(135deg, var(--cyan), var(--cyan-2));
+ cursor: pointer;
+ transition: 0.2s;
+ font-weight: 700;
+ font-size: 13px;
+ border: none;
+ color: white;
+ width: 100%;
+ box-shadow: 0 12px 26px rgba(31, 155, 255, 0.22);
+}
+.button:active { transform: scale(0.98); }
+.button.gold {
+ background: linear-gradient(135deg, var(--gold), var(--gold-2));
+ box-shadow: 0 12px 26px rgba(255, 170, 79, 0.18);
+}
+.button.secondary {
+ background: rgba(255,255,255,0.04);
+ border: 1px solid rgba(255,255,255,0.08);
+ color: #deeeff;
+ box-shadow: none;
+}
+.button:disabled {
+ opacity: 0.4; cursor: not-allowed;
+}
+.lock-text {
+ margin-top: 12px;
+ font-size: 12px;
+ opacity: 0.66;
+ text-align: center;
+ color: var(--muted);
+}
+.hero {
+ position: relative;
+ background: linear-gradient(180deg, rgba(14,25,47,0.94), rgba(11,20,38,0.88));
+ border-radius: 28px;
+ padding: 22px;
+ margin-bottom: 14px;
+ overflow: hidden;
+ box-shadow: var(--shadow);
+ border: 1px solid rgba(104, 154, 255, 0.18);
+}
+.hero::after {
+ content: "";
+ position: absolute;
+ inset: auto -50px -70px auto;
+ width: 180px;
+ height: 180px;
+ background: radial-gradient(circle, rgba(72,207,255,0.24), transparent 65%);
+}
+.hero-title {
+ font-size: 11px;
+ color: var(--cyan);
+ letter-spacing: 0.18em;
+ margin-bottom: 10px;
+ text-transform: uppercase;
+ font-weight: 700;
+}
+.hero-sub {
+ font-size: 28px;
+ font-weight: 800;
+ letter-spacing: -0.02em;
+ line-height: 1.08;
+ max-width: 320px;
+ background: linear-gradient(135deg, #fff 0%, #c9defc 60%, #8fb6ff 100%);
+ -webkit-background-clip: text;
+ -webkit-text-fill-color: transparent;
+ background-clip: text;
+}
+.hero-copy {
+ margin-top: 12px;
+ max-width: 320px;
+ color: #b6c4dc;
+ font-size: 13px;
+ line-height: 1.6;
+}
+.hero-badges {
+ display: flex;
+ gap: 8px;
+ flex-wrap: wrap;
+ margin-top: 18px;
+}
+.hero-badge {
+ padding: 8px 12px;
+ border-radius: 999px;
+ font-size: 11px;
+ font-weight: 600;
+ color: #d9ecff;
+ background: rgba(255, 255, 255, 0.05);
+ border: 1px solid rgba(132, 196, 255, 0.16);
+ backdrop-filter: blur(10px);
+ transition: 0.2s;
+}
+.hero-badge:hover {
+ background: rgba(72, 207, 255, 0.10);
+ border-color: rgba(72, 207, 255, 0.30);
+ transform: translateY(-1px);
+}
+.stats {
+ display: grid;
+ grid-template-columns: repeat(3, 1fr);
+ gap: 10px;
+ margin-bottom: 14px;
+}
+.stat {
+ position: relative;
+ background: var(--panel);
+ border-radius: 18px;
+ padding: 12px 10px;
+ overflow: hidden;
+ border: 1px solid var(--border);
+ backdrop-filter: blur(20px);
+ display: flex;
+ flex-direction: column;
+ align-items: flex-start;
+ gap: 6px;
+}
+.stat-icon {
+ font-size: 18px;
+ line-height: 1;
+}
+.stat-value {
+ font-size: 18px;
+ font-weight: 800;
+ letter-spacing: -0.02em;
+ line-height: 1;
+}
+/* разделитель-черта между значением и лейблом */
+.stat::after {
+ content: '';
+ display: block;
+ width: 28px;
+ height: 2px;
+ background: var(--muted-2);
+ border-radius: 2px;
+ opacity: 0.55;
+}
+.stat-label {
+ font-size: 10px;
+ color: var(--muted);
+ letter-spacing: 0.12em;
+ text-transform: uppercase;
+ font-weight: 700;
+}
+.section-title {
+ display: flex;
+ align-items: center;
+ justify-content: space-between;
+ font-size: 11px;
+ letter-spacing: 0.16em;
+ color: var(--muted);
+ text-transform: uppercase;
+ margin: 18px 0 10px;
+ padding-left: 2px;
+}
+.section-title .section-note {
+ font-size: 11px;
+ letter-spacing: 0;
+ text-transform: none;
+ color: var(--muted);
+}
+.input-group { margin-bottom: 14px; }
+.input-label {
+ font-size: 10px;
+ letter-spacing: 0.14em;
+ color: var(--muted);
+ margin-bottom: 8px;
+ display: block;
+ text-transform: uppercase;
+}
+.input-field {
+ width: 100%;
+ background: rgba(4,10,20,0.45);
+ border: 1px solid rgba(255,255,255,0.08);
+ color: white;
+ font-size: 16px;
+ font-weight: 600;
+ padding: 14px 16px;
+ border-radius: 16px;
+ outline: none;
+ font-family: inherit;
+}
+.input-field:focus {
+ border-color: rgba(72,207,255,0.38);
+ box-shadow: 0 0 0 3px rgba(72, 207, 255, 0.12);
+}
+.tree {
+ text-align: center;
+}
+.tree-shell {
+ display: flex;
+ flex-direction: column;
+ align-items: center;
+ gap: 22px;
+}
+.tree-top {
+ position: relative;
+ padding-bottom: 14px;
+}
+.tree-top::after {
+ content: "";
+ position: absolute;
+ left: 50%; top: 100%;
+ width: 1px; height: 18px;
+ background: linear-gradient(180deg, rgba(255,200,97,0.7), rgba(255,255,255,0.08));
+}
+.tree-row {
+ width: 100%;
+ max-width: 280px;
+ display: flex; justify-content: space-between;
+ position: relative;
+ padding-top: 20px;
+ margin-top: 0;
+}
+.tree-row::before {
+ content: "";
+ position: absolute;
+ left: 36px; right: 36px; top: 0;
+ height: 1px;
+ background: linear-gradient(90deg, rgba(72,207,255,0.25), rgba(124,109,255,0.38), rgba(72,207,255,0.25));
+}
+.tree-row::after {
+ content: "";
+ position: absolute;
+ left: 50%; top: -20px;
+ width: 1px; height: 20px;
+ background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(124,109,255,0.5));
+}
+.tree-node {
+ width: 74px; height: 74px;
+ border-radius: 22px;
+ display: flex; align-items: center; justify-content: center;
+ font-size: 12px; font-weight: 800;
+ flex-shrink: 0;
+ text-align: center;
+ cursor: default;
+ transition: transform 0.2s ease;
+ flex-direction: column;
+ padding: 8px;
+ line-height: 1.1;
+}
+.tree-node small {
+ display: block;
+ margin-top: 5px;
+ font-size: 10px;
+ font-weight: 600;
+ color: var(--muted);
+}
+.tree-node.you {
+ background: linear-gradient(145deg, rgba(255,200,97,0.18), rgba(255,132,41,0.16));
+ border: 1px solid rgba(255,200,97,0.42);
+ box-shadow: 0 18px 42px rgba(255, 180, 62, 0.16), inset 0 1px 0 rgba(255,255,255,0.08);
+ width: 88px; height: 88px;
+ font-size: 13px;
+ border-radius: 28px;
+}
+.tree-node.filled {
+ background: linear-gradient(145deg, rgba(72,207,255,0.16), rgba(124,109,255,0.14));
+ border: 1px solid rgba(104, 187, 255, 0.24);
+ color: #fff;
+}
+.tree-node.empty {
+ background: rgba(255,255,255,0.03);
+ border: 1px dashed rgba(255,255,255,0.14);
+ color: rgba(255,255,255,0.45);
+}
+.tree-summary {
+ display: grid;
+ grid-template-columns: repeat(3, 1fr);
+ gap: 10px;
+ margin-top: 18px;
+}
+.tree-summary-item {
+ padding: 12px;
+ border-radius: 16px;
+ background: rgba(255,255,255,0.03);
+ border: 1px solid rgba(255,255,255,0.05);
+ text-align: left;
+}
+.tree-summary-value {
+ font-size: 16px;
+ font-weight: 800;
+ margin-bottom: 4px;
+}
+.tree-summary-label {
+ font-size: 10px;
+ color: var(--muted);
+ text-transform: uppercase;
+ letter-spacing: 0.08em;
+}
+.ref-link-box {
+ display: flex;
+ align-items: center;
+ gap: 10px;
+ background: rgba(4,10,20,0.45);
+ padding: 14px;
+ border-radius: 18px;
+ margin: 12px 0 14px;
+ font-size: 12px;
+ color: #cdefff;
+ border: 1px solid rgba(255,255,255,0.06);
+}
+.ref-link-box span {
+ flex: 1;
+ overflow: hidden;
+ white-space: nowrap;
+ text-overflow: ellipsis;
+}
+.copy-mini-btn {
+ width: 38px;
+ height: 38px;
+ border-radius: 12px;
+ border: 1px solid rgba(100, 185, 255, 0.22);
+ background: rgba(72,207,255,0.08);
+ color: white;
+ font-size: 16px;
+}
+.ref-actions {
+ display: grid;
+ grid-template-columns: 1fr 1fr;
+ gap: 10px;
+}
+.lb-item, .history-item { display: flex; align-items: center; gap: 12px; }
+.lb-rank, .history-icon {
+ width: 38px; height: 38px;
+ border-radius: 14px;
+ display: flex; align-items: center; justify-content: center;
+ font-size: 13px; font-weight: 800;
+ flex-shrink: 0;
+}
+.lb-rank { background: linear-gradient(145deg, rgba(72,207,255,0.18), rgba(124,109,255,0.16)); }
+.lb-rank.gold { background: linear-gradient(145deg, rgba(255,200,97,0.22), rgba(255,157,66,0.18)); }
+.lb-rank.silver { background: linear-gradient(145deg, rgba(210,220,240,0.22), rgba(130,148,180,0.18)); }
+.lb-rank.bronze { background: linear-gradient(145deg, rgba(205,127,50,0.24), rgba(119,69,35,0.18)); }
+.lb-info, .history-info { flex: 1; min-width: 0; }
+.lb-name, .history-title { font-size: 13px; font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.lb-stat, .history-time { font-size: 10px; color: var(--muted); margin-top: 3px; }
+.lb-value { font-size: 14px; font-weight: 800; color: var(--gold); flex-shrink: 0; }
+.history-icon.in { background: rgba(68,225,166,0.14); color: var(--green); }
+.history-icon.out { background: rgba(255,95,134,0.12); color: var(--danger); }
+.history-amount { font-size: 13px; font-weight: 800; flex-shrink: 0; }
+.history-amount.in { color: var(--green); }
+.history-amount.out { color: var(--danger); }
+.calc-result {
+ background: rgba(68,225,166,0.08);
+ border: 1px solid rgba(68,225,166,0.2);
+ border-radius: 18px;
+ padding: 18px;
+ text-align: center;
+ margin-top: 12px;
+}
+.calc-result-value {
+ font-size: 30px;
+ font-weight: 800;
+}
+.calc-result-label {
+ font-size: 10px;
+ color: var(--muted);
+ letter-spacing: 0.12em;
+ margin-top: 6px;
+ text-transform: uppercase;
+}
+.info-line {
+ display: flex; justify-content: space-between; align-items: center;
+ padding: 10px 0;
+ border-bottom: 1px solid rgba(255,255,255,0.05);
+ font-size: 12px;
+ gap: 12px;
+}
+.info-line:last-child { border-bottom: none; }
+.info-line .lbl { color: var(--muted); }
+.info-line .val { font-weight: 800; color: #eaf4ff; }
+.admin-stat {
+ display: flex; align-items: center; justify-content: space-between;
+}
+.admin-stat-info { font-size: 10px; color: var(--muted); letter-spacing: 0.12em; margin-bottom: 6px; text-transform: uppercase; }
+.admin-stat-val { font-size: 24px; font-weight: 800; }
+.toast {
+ position: fixed;
+ bottom: 92px; left: 50%;
+ transform: translateX(-50%) translateY(20px);
+ background: linear-gradient(135deg, var(--cyan), var(--cyan-2));
+ color: white;
+ font-size: 12px;
+ font-weight: 700;
+ padding: 12px 20px;
+ border-radius: 24px;
+ opacity: 0;
+ transition: all .3s;
+ z-index: 500;
+ box-shadow: 0 14px 30px rgba(31, 155, 255, 0.24);
+ white-space: nowrap;
+ max-width: 90vw;
+ text-align: center;
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+.toast.error { background: linear-gradient(135deg, #ff5f86, #d33f67); }
+.toast.success { background: linear-gradient(135deg, #44e1a6, #18b98d); }
+.bottom-nav {
+ position: fixed;
+ bottom: 12px; left: 12px; right: 12px;
+ background: rgba(7, 13, 24, 0.82);
+ backdrop-filter: blur(22px);
+ border-radius: 24px;
+ display: flex;
+ z-index: 200;
+ overflow-x: auto;
+ scrollbar-width: none;
+ border: 1px solid rgba(112, 157, 255, 0.14);
+ box-shadow: 0 14px 40px rgba(0,0,0,0.42);
+ padding: 8px;
+}
+.bottom-nav::-webkit-scrollbar { display: none; }
+.nav-item {
+ flex: 1; min-width: 60px;
+ padding: 10px 4px;
+ background: none; border: none;
+ color: rgba(255,255,255,0.42);
+ font-size: 10px; font-weight: 700;
+ cursor: pointer;
+ display: flex; flex-direction: column; align-items: center; gap: 4px;
+ border-radius: 18px;
+ transition: 0.2s;
+}
+.nav-item.active {
+ color: white;
+ background: linear-gradient(135deg, rgba(72,207,255,0.18), rgba(124,109,255,0.18));
+ border: 1px solid rgba(92, 188, 255, 0.22);
+}
+.nav-icon { font-size: 17px; }
+.hidden { display: none !important; }
+.page { animation: fadeIn .3s ease both; }
+@keyframes fadeIn {
+ from { opacity: 0; transform: translateY(8px); }
+ to { opacity: 1; transform: translateY(0); }
+}
+.empty-state {
+ text-align: center;
+ padding: 32px 20px;
+ color: var(--muted);
+ font-size: 12px;
+}
+.empty-state-icon { font-size: 36px; margin-bottom: 10px; }
+.ref-banner {
+ background: rgba(68,225,166,0.08);
+ border: 1px solid rgba(68,225,166,0.2);
+ border-radius: 18px;
+ padding: 14px;
+ font-size: 12px;
+ color: #bffff1;
+ margin-bottom: 12px;
+ text-align: center;
+ font-weight: 700;
+}
+@media (max-width: 420px) {
+ .ref-actions, .tree-summary { grid-template-columns: 1fr; }
+ .hero-sub { font-size: 25px; }
+ .stat { padding: 10px 8px; }
+ .stat-value { font-size: 16px; }
+ .stat-label { font-size: 9px; letter-spacing: 0.1em; }
+}
+/* ═══════════════════════════════════════════════════════════════
+   TIER SYSTEM — финансовые тиры с цветовой дифференциацией
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Header row: уровень слева + бейдж активности справа */
+.card-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 2px;
+}
+
+.tier-badge {
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  padding: 4px 10px;
+  border-radius: 999px;
+  text-transform: uppercase;
+}
+.tier-badge-active {
+  background: rgba(68, 225, 166, 0.14);
+  color: var(--green);
+  border: 1px solid rgba(68, 225, 166, 0.32);
+}
+
+/* Info-grid в карточке */
+.info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin: 12px 0;
+  padding: 12px;
+  background: rgba(4, 10, 20, 0.42);
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.04);
+}
+.info-cell { display: flex; flex-direction: column; gap: 4px; }
+.info-cell-label {
+  font-size: 9px;
+  color: var(--muted);
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.info-cell-value { font-size: 14px; font-weight: 800; color: var(--text); }
+.info-cell-value.income-up { color: var(--green); }
+
+.expiry-row {
+  display: inline-block;
+  background: rgba(68, 225, 166, 0.12);
+  color: var(--green);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 6px 12px;
+  border-radius: 999px;
+  margin: 6px 0 10px 0;
+  border: 1px solid rgba(68, 225, 166, 0.22);
+}
+
+/* ─── ТИР 1: STARTER (базовый, без особых акцентов) ─── */
+.card.tier-starter .price { color: var(--text); }
+
+/* ─── ТИР 2: BRONZE ─── */
+.card.tier-bronze {
+  border-left: 3px solid #CD7F32;
+}
+.card.tier-bronze .price {
+  background: linear-gradient(135deg, #E0A66C, #CD7F32);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* ─── ТИР 3: SILVER ─── */
+.card.tier-silver {
+  border-left: 3px solid #C0C0C0;
+  background: linear-gradient(135deg, rgba(192, 192, 192, 0.05) 0%, var(--panel) 60%);
+}
+.card.tier-silver .price {
+  background: linear-gradient(135deg, #EFEFEF, #B0B0B0);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* ─── ТИР 4: GOLD ─── */
+.card.tier-gold {
+  border-left: 3px solid var(--gold);
+  background: linear-gradient(135deg, rgba(255, 200, 97, 0.06) 0%, var(--panel) 60%);
+}
+.card.tier-gold .price {
+  background: linear-gradient(135deg, #FFD78A, var(--gold));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* ─── ТИР 5: PLATINUM ─── */
+.card.tier-platinum {
+  border-left: 3px solid var(--cyan);
+  background: linear-gradient(135deg, rgba(72, 207, 255, 0.07) 0%, var(--panel) 60%);
+  position: relative;
+}
+.card.tier-platinum::after {
+  content: '';
+  position: absolute;
+  top: 0; right: 0;
+  width: 80px; height: 80px;
+  background: radial-gradient(circle, rgba(72, 207, 255, 0.2) 0%, transparent 70%);
+  pointer-events: none;
+  border-top-right-radius: 24px;
+}
+.card.tier-platinum .price {
+  background: linear-gradient(135deg, #B0E5FF, var(--cyan));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* ─── ТИР 6: DIAMOND ─── */
+.card.tier-diamond {
+  border-left: 3px solid var(--violet);
+  background: linear-gradient(135deg, rgba(124, 109, 255, 0.08) 0%, var(--panel) 60%);
+  position: relative;
+}
+.card.tier-diamond::after {
+  content: '';
+  position: absolute;
+  top: 0; right: 0;
+  width: 100px; height: 100px;
+  background: radial-gradient(circle, rgba(124, 109, 255, 0.22) 0%, transparent 70%);
+  pointer-events: none;
+  border-top-right-radius: 24px;
+}
+.card.tier-diamond .price {
+  background: linear-gradient(135deg, #B6ACFF, var(--violet));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* ─── ТИР 7: VIP ─── */
+.card.tier-vip {
+  border: 1px solid var(--gold);
+  background:
+    linear-gradient(135deg, rgba(255, 200, 97, 0.10) 0%, rgba(11, 20, 38, 0.88) 100%);
+  position: relative;
+  overflow: hidden;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), 0 14px 32px rgba(255, 170, 79, 0.12);
+}
+.card.tier-vip::after {
+  content: '';
+  position: absolute;
+  top: 0; right: 0;
+  width: 120px; height: 120px;
+  background: radial-gradient(circle, rgba(255, 200, 97, 0.28) 0%, transparent 70%);
+  pointer-events: none;
+  border-top-right-radius: 24px;
+}
+.card.tier-vip .price {
+  background: linear-gradient(135deg, #FFE2A0, var(--gold) 60%, var(--gold-2));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.card.tier-vip .level { color: var(--gold); }
+.card.tier-vip .name { color: #FFE2A0; }
+
+/* ─── ТИР 8: BLACK (топ) ─── */
+.card.tier-black {
+  background:
+    linear-gradient(135deg, rgba(255, 200, 97, 0.06) 0%, rgba(0, 0, 0, 0.85) 50%),
+    linear-gradient(135deg, #16182d 0%, #06080f 100%);
+  border: 1px solid var(--gold);
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 200, 97, 0.12);
+}
+.card.tier-black::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 90% 10%, rgba(255, 200, 97, 0.28) 0%, transparent 40%),
+    radial-gradient(circle at 10% 90%, rgba(124, 109, 255, 0.14) 0%, transparent 40%);
+  pointer-events: none;
+}
+.card.tier-black::after {
+  content: '⚜';
+  position: absolute;
+  top: 14px; right: 14px;
+  font-size: 22px;
+  color: var(--gold);
+  opacity: 0.5;
+  pointer-events: none;
+}
+.card.tier-black .price {
+  background: linear-gradient(135deg, #FFE2A0, var(--gold));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-size: 32px;
+}
+.card.tier-black .level { color: var(--gold); font-weight: 800; }
+.card.tier-black .name { color: #FFE2A0; }
+
+/* Active state поверх tier — пульсирующая зелёная точка в углу */
+.card.active::before {
+  content: '';
+  position: absolute;
+  top: 18px; right: 18px;
+  width: 8px; height: 8px;
+  background: var(--green);
+  border-radius: 50%;
+  box-shadow: 0 0 12px var(--green);
+  animation: pulse-dot 2s infinite;
+  z-index: 2;
+}
+.card.tier-black.active::before { display: none; } /* не дублируем с ⚜ */
+.card.tier-vip.active::before   { right: 50px; }   /* отступ чтобы не пересекать glow */
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%      { opacity: 0.55; transform: scale(1.4); }
+}
+
+.card.locked {
+  opacity: 0.45;
+  filter: saturate(0.55);
+  pointer-events: none;
+}
+
+/* Tree-node wrapper для группировки ноды + кнопки TG */
+.tree-node-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Адрес внутри ноды */
+.tree-addr {
+  font-family: 'SF Mono', Menlo, Consolas, monospace;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.tree-node.filled {
+  cursor: pointer;
+  user-select: none;
+}
+.tree-node.filled:active {
+  transform: scale(0.96);
+}
+
+/* Компактные мини-кнопки под нодой дерева */
+.tree-mini-actions {
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+  margin-top: 2px;
+}
+
+.tree-mini-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.7);
+  cursor: pointer;
+  text-decoration: none;
+  transition: 0.15s;
+  padding: 0;
+}
+.tree-mini-btn:hover {
+  transform: translateY(-1px) scale(1.05);
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+}
+.tree-mini-btn:active { transform: scale(0.92); }
+
+.tree-mini-btn--tg {
+  background: linear-gradient(135deg, #229ED9, #2AABEE);
+  color: #fff;
+  border-color: rgba(34, 158, 217, 0.5);
+  box-shadow: 0 2px 6px rgba(34, 158, 217, 0.35);
+}
+.tree-mini-btn--tg:hover {
+  background: linear-gradient(135deg, #2BAEEC, #3DBBFF);
+  box-shadow: 0 4px 10px rgba(34, 158, 217, 0.5);
+}
+
+.tree-mini-btn--copy {
+  /* стандартный — серый */
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+
+ <div class="header">
+ <div class="header-left">
+ <img src="logo.png" alt="TonForce" />
+ <div>
+ <div class="header-title">TonForce</div>
+ <div class="balance" id="userInfo">⚡ <span data-i18n="not_connected">Не подключено</span></div>
+ </div>
+ </div>
+ <div class="header-controls">
+ <div class="lang-switch">
+ <button class="lang-btn active" data-lang="ru" onclick="setLang('ru')">RU</button>
+ <button class="lang-btn" data-lang="en" onclick="setLang('en')">EN</button>
+ <button class="lang-btn" data-lang="ua" onclick="setLang('ua')">UA</button>
+ </div>
+ <button class="wallet-btn" id="walletBtn" onclick="connectWallet()" data-i18n="connect">CONNECT</button>
+ </div>
+ </div>
+
+ <div id="pageMatrix" class="page">
+ <div class="hero" id="heroBlock">
+ <div class="hero-title" data-i18n="welcome">TONFORCE • МАТРИЦА 3×8</div>
+ <div class="hero-sub" data-i18n="hero_sub">Сила сети. Свобода дохода.</div>
+ <div class="hero-copy" data-i18n="hero_copy">Зарабатывай на блокчейне TON через матричную программу. 8 уровней, выплаты идут вверх по дереву автоматически.</div>
+ <div class="hero-badges">
+ <div class="hero-badge" data-i18n="badge_matrix">⚡ Матрица 3×8</div>
+ <div class="hero-badge" data-i18n="badge_days">📅 365 дней</div>
+ <div class="hero-badge" data-i18n="badge_onchain">🔗 On-chain выплаты</div>
+ </div>
+ </div>
+
+ <div class="stats">
+ <div class="stat">
+ <div class="stat-icon">👥</div>
+ <div class="stat-value" id="statUsers">—</div>
+ <div class="stat-label" data-i18n="participants">УЧАСТНИКОВ</div>
+ </div>
+ <div class="stat">
+ <div class="stat-icon">⭐</div>
+ <div class="stat-value" id="statLevel">—</div>
+ <div class="stat-label" data-i18n="my_level">МОЙ УРОВЕНЬ</div>
+ </div>
+ <div class="stat">
+ <div class="stat-icon">🌿</div>
+ <div class="stat-value" id="statRefs">—</div>
+ <div class="stat-label" data-i18n="referrals">РЕФЕРАЛОВ</div>
+ </div>
+ </div>
+
+ <div id="notRegistered">
+ <div class="ref-banner" id="refBanner" style="display:none;">
+ ✨ <span data-i18n="ref_link_used">ВЫ ПЕРЕШЛИ ПО РЕФЕРАЛЬНОЙ ССЫЛКЕ</span>
+ </div>
+
+ <div class="section-title"><span data-i18n="join">ПРИСОЕДИНИТЬСЯ</span><span class="section-note">Start your first node</span></div>
+
+ <div class="card">
+ <input id="refInput" type="hidden" value="1" />
+ <div id="connectPrompt" style="text-align:center; padding:18px 0;">
+ <div style="font-size:44px; margin-bottom:10px">🔌</div>
+ <div style="font-size:14px; color:var(--muted); margin-bottom:16px" data-i18n="connect_first">
+ Подключите кошелёк чтобы начать
+ </div>
+ <button class="button" onclick="connectWallet()">
+ ⚡️ <span data-i18n="connect">CONNECT</span>
+ </button>
+ </div>
+ <button class="button" id="regBtn" onclick="register()" style="display:none;">
+ ⚡️ <span data-i18n="join_btn">АКТИВИРОВАТЬ ЗА</span> <span id="regBtnPrice">5</span> TON
+ </button>
+ </div>
+ </div>
+
+ <div id="isRegistered" class="hidden">
+ <div class="section-title"><span data-i18n="my_levels">МОИ УРОВНИ</span><span class="section-note">Upgrade your matrix</span></div>
+ <div id="levelsGrid"></div>
+ </div>
+ </div>
+
+ <div id="pageTree" class="page hidden">
+ <div class="section-title"><span data-i18n="ref_tree">ДЕРЕВО РЕФЕРАЛОВ</span><span class="section-note">Level 1 overview</span></div>
+ <div class="card">
+ <div class="tree">
+ <div class="tree-shell">
+ <div class="tree-top">
+ <div class="tree-node you">YOU<small>owner node</small></div>
+ </div>
+ <div class="tree-row" id="treeRow"></div>
+ </div>
+ <div class="tree-summary">
+ <div class="tree-summary-item"><div class="tree-summary-value" id="treeActiveRefs">0</div><div class="tree-summary-label">Active partners</div></div>
+ <div class="tree-summary-item"><div class="tree-summary-value" id="treeOpenSlots">3</div><div class="tree-summary-label">Open slots</div></div>
+ <div class="tree-summary-item"><div class="tree-summary-value" id="treeEarned">0 TON</div><div class="tree-summary-label">Earned</div></div>
+ </div>
+ </div>
+ </div>
+
+ <div class="section-title"><span data-i18n="my_ref_link">МОЯ РЕФЕРАЛЬНАЯ ССЫЛКА</span><span class="section-note">Share & grow</span></div>
+ <div class="card">
+ <div class="input-label" data-i18n="share_earn">ПОДЕЛИТЕСЬ И ЗАРАБАТЫВАЙТЕ</div>
+ <div class="ref-link-box"><span id="refLink">—</span><button class="copy-mini-btn" onclick="copyRef()">⧉</button></div>
+ <div class="ref-actions">
+ <button class="button" onclick="shareRefLink()">📨 <span data-i18n="share_link">ПОДЕЛИТЬСЯ</span></button>
+ <button class="button secondary" onclick="copyRef()">📋 <span data-i18n="copy_link">СКОПИРОВАТЬ ССЫЛКУ</span></button>
+ </div>
+ </div>
+ </div>
+
+ <div id="pageLeaderboard" class="page hidden">
+ <div class="section-title"><span data-i18n="top_refs">ТОП РЕФЕРЕРОВ</span><span class="section-note">Best performers</span></div>
+ <div id="leaderboardList">
+ <div class="empty-state">
+ <div class="empty-state-icon">🏆</div>
+ <div data-i18n="lb_loading">Загрузка лидерборда...</div>
+ </div>
+ </div>
+ </div>
+
+ <div id="pageHistory" class="page hidden">
+ <div class="section-title"><span data-i18n="my_history">ИСТОРИЯ ТРАНЗАКЦИЙ</span><span class="section-note">Latest activity</span></div>
+ <div id="historyList">
+ <div class="empty-state">
+ <div class="empty-state-icon">📜</div>
+ <div data-i18n="history_empty">Подключите кошелёк</div>
+ </div>
+ </div>
+ </div>
+
+ <div id="pageInfo" class="page hidden">
+
+ <div class="section-title"><span data-i18n="calc_title">КАЛЬКУЛЯТОР ДОХОДА</span><span class="section-note">Estimate your upside</span></div>
+ <div class="card">
+ <div class="input-group">
+ <label class="input-label" data-i18n="refs_count">КОЛ-ВО РЕФЕРАЛОВ В МЕСЯЦ</label>
+ <input class="input-field" id="calcRefs" type="number" value="3" min="1" max="100" oninput="calculateIncome()" />
+ </div>
+ <div class="input-group">
+ <label class="input-label" data-i18n="active_levels">АКТИВНЫХ УРОВНЕЙ</label>
+ <input class="input-field" id="calcLevels" type="number" value="3" min="1" max="8" oninput="calculateIncome()" />
+ </div>
+ <div class="calc-result">
+ <div class="calc-result-value" id="calcResult">0 TON</div>
+ <div class="calc-result-label" data-i18n="potential_income">ПОТЕНЦИАЛЬНЫЙ ДОХОД В МЕСЯЦ</div>
+ </div>
+ </div>
+
+ <div class="section-title"><span data-i18n="how_works">КАК ЭТО РАБОТАЕТ</span><span class="section-note">Simple rules</span></div>
+ <div class="card">
+ <div style="font-size:13px; line-height:1.85; color:#d9e5fb;">
+ <div data-i18n="rule_1">▸ Матрица 3×8 — каждый привлекает до 3 рефералов</div>
+ <div data-i18n="rule_2">▸ 8 уровней с умножением цены ×3</div>
+ <div data-i18n="rule_3">▸ Уровень активен 365 дней</div>
+ <div data-i18n="rule_4">▸ Выплаты идут вверх по дереву автоматически</div>
+ <div data-i18n="rule_5">▸ Всё на TON блокчейне</div>
+ </div>
+ </div>
+
+ <div class="section-title"><span data-i18n="prices">ЦЕНЫ УРОВНЕЙ</span><span class="section-note">Node ladder</span></div>
+ <div class="card" id="priceTable"></div>
+ </div>
+
+ <div id="pageAdmin" class="page hidden">
+ <div class="section-title"><span data-i18n="admin">АДМИН ПАНЕЛЬ</span><span class="section-note">Owner insights</span></div>
+
+ <div class="card">
+ <div class="admin-stat">
+ <div>
+ <div class="admin-stat-info" data-i18n="total_users">ВСЕГО УЧАСТНИКОВ</div>
+ <div class="admin-stat-val" id="adminUsers">—</div>
+ </div>
+ <div style="font-size:34px">👥</div>
+ </div>
+ </div>
+
+ <div class="card">
+ <div class="admin-stat">
+ <div>
+ <div class="admin-stat-info" data-i18n="contract_balance">БАЛАНС КОНТРАКТА</div>
+ <div class="admin-stat-val" id="adminBalance">— TON</div>
+ </div>
+ <div style="font-size:34px">💰</div>
+ </div>
+ </div>
+
+ <div class="card">
+ <div class="admin-stat">
+ <div>
+ <div class="admin-stat-info" data-i18n="my_earnings">МОЙ ЗАРАБОТОК</div>
+ <div class="admin-stat-val" id="admin24h">— TON</div>
+ </div>
+ <div style="font-size:34px">📈</div>
+ </div>
+ </div>
+
+ <div class="section-title"><span data-i18n="contract_addr">АДРЕС КОНТРАКТА</span><span class="section-note">Copy for payments</span></div>
+ <div class="card">
+ <div style="font-size:11px; word-break:break-all; color:#cdefff; padding:10px 0; line-height:1.7;">
+ EQD9w0u-1pXUF3YWHA8b5YRG_CdDhjlyZAJ37uoT1YvljZLb
+ </div>
+ <button class="button secondary" onclick="copyContract()">📋 <span data-i18n="copy_addr">СКОПИРОВАТЬ АДРЕС</span></button>
+ </div>
+ </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<div class="bottom-nav hidden" id="bottomNav">
+ <button class="nav-item active" data-page="matrix" onclick="showPage('matrix')">
+ <span class="nav-icon">⬡</span>
+ <span data-i18n="nav_matrix">МАТРИЦА</span>
+ </button>
+ <button class="nav-item" data-page="tree" onclick="showPage('tree')">
+ <span class="nav-icon">🌳</span>
+ <span data-i18n="nav_tree">ДЕРЕВО</span>
+ </button>
+ <button class="nav-item" data-page="leaderboard" onclick="showPage('leaderboard')">
+ <span class="nav-icon">🏆</span>
+ <span data-i18n="nav_top">ТОП</span>
+ </button>
+ <button class="nav-item" data-page="history" onclick="showPage('history')">
+ <span class="nav-icon">📜</span>
+ <span data-i18n="nav_history">ИСТОРИЯ</span>
+ </button>
+ <button class="nav-item" data-page="info" onclick="showPage('info')">
+ <span class="nav-icon">🧮</span>
+ <span data-i18n="nav_info">КАЛК</span>
+ </button>
+ <button class="nav-item hidden" id="navAdmin" data-page="admin" onclick="showPage('admin')">
+ <span class="nav-icon">👑</span>
+ <span data-i18n="nav_admin">АДМИН</span>
+ </button>
+</div>
+
+<script>
+const CONTRACT_ADDRESS = 'EQD9w0u-1pXUF3YWHA8b5YRG_CdDhjlyZAJ37uoT1YvljZLb';
+const BOT_USERNAME = 'tonforce_bot';
+const OWNER_WALLET_RAW = '0:e598cd4dc0b5aaa47ab9a5e452c0f0e8729408d36121ffcc60b1e48a82028941';
+const TONCENTER_KEY = '105893705d1e384d248d96788d322fa38ab967bfe6eaa1077039b43ed4b89977';
+const BOT_API_URL = 'https://web-production-7d6ce.up.railway.app';
+
+const LEVELS = [
+ { level: 1, price: 5,     name: '💵 Starter',  nameRu: 'Стартер',     nameUa: 'Стартер',     income: 15,    slots: 2,   tier: 'starter' },
+ { level: 2, price: 15,    name: '💰 Bronze',   nameRu: 'Бронза',      nameUa: 'Бронза',      income: 45,    slots: 4,   tier: 'bronze'  },
+ { level: 3, price: 45,    name: '🥈 Silver',   nameRu: 'Серебро',     nameUa: 'Срібло',      income: 135,   slots: 8,   tier: 'silver'  },
+ { level: 4, price: 135,   name: '🥇 Gold',     nameRu: 'Золото',      nameUa: 'Золото',      income: 405,   slots: 16,  tier: 'gold'    },
+ { level: 5, price: 405,   name: '💎 Platinum', nameRu: 'Платина',     nameUa: 'Платина',     income: 1215,  slots: 32,  tier: 'platinum'},
+ { level: 6, price: 1215,  name: '⭐ Diamond',  nameRu: 'Бриллиант',   nameUa: 'Діамант',     income: 3645,  slots: 64,  tier: 'diamond' },
+ { level: 7, price: 3645,  name: '👑 VIP',      nameRu: 'VIP',         nameUa: 'VIP',         income: 10935, slots: 128, tier: 'vip'     },
+ { level: 8, price: 10935, name: '🏆 Black',    nameRu: 'Black',       nameUa: 'Black',       income: 32805, slots: 256, tier: 'black'   }
+];
+
+// Возвращает локализованное имя уровня
+function getLevelName(lvlObj) {
+  const lang = (typeof currentLang !== 'undefined') ? currentLang : 'en';
+  const emoji = lvlObj.name.split(' ')[0]; // эмодзи в начале
+  if (lang === 'ru') return `${emoji} ${lvlObj.nameRu}`;
+  if (lang === 'ua') return `${emoji} ${lvlObj.nameUa}`;
+  return lvlObj.name;
+}
+
+const I18N = {
+ ru: {
+ connect:'CONNECT', not_connected:'Не подключено', welcome:'TONFORCE • МАТРИЦА 3×8', hero_sub:'Сила сети. Свобода дохода.', hero_copy:'Зарабатывай на блокчейне TON через матричную программу. 8 уровней, выплаты идут вверх по дереву автоматически.', badge_matrix:'⚡ Матрица 3×8', badge_days:'📅 365 дней', badge_onchain:'🔗 On-chain выплаты',
+ participants:'УЧАСТНИКОВ', my_level:'МОЙ УРОВЕНЬ', referrals:'РЕФЕРАЛОВ', join:'ПРИСОЕДИНИТЬСЯ',
+ ref_id:'ID РЕФЕРЕРА', join_btn:'АКТИВИРОВАТЬ ЗА', my_levels:'МОИ УРОВНИ', ref_tree:'ДЕРЕВО РЕФЕРАЛОВ',
+ my_ref_link:'МОЯ РЕФЕРАЛЬНАЯ ССЫЛКА', share_earn:'ПОДЕЛИТЕСЬ И ЗАРАБАТЫВАЙТЕ', copy_link:'СКОПИРОВАТЬ ССЫЛКУ', share_link:'ПОДЕЛИТЬСЯ',
+ top_refs:'ТОП РЕФЕРЕРОВ', lb_loading:'Загрузка...', my_history:'ИСТОРИЯ ТРАНЗАКЦИЙ',
+ history_empty:'Подключите кошелёк', calc_title:'КАЛЬКУЛЯТОР ДОХОДА',
+ refs_count:'КОЛ-ВО РЕФЕРАЛОВ В МЕСЯЦ', active_levels:'АКТИВНЫХ УРОВНЕЙ', potential_income:'ПОТЕНЦИАЛЬНЫЙ ДОХОД В МЕСЯЦ',
+ how_works:'КАК ЭТО РАБОТАЕТ',
+ rule_1:'▸ Матрица 3×8 — каждый привлекает до 3 рефералов', rule_2:'▸ 8 уровней с умножением цены ×3',
+ rule_3:'▸ Уровень активен 365 дней', rule_4:'▸ Выплаты идут вверх по дереву автоматически',
+ rule_5:'▸ Всё на TON блокчейне',
+ prices:'ЦЕНЫ УРОВНЕЙ', admin:'АДМИН ПАНЕЛЬ', total_users:'ВСЕГО УЧАСТНИКОВ', contract_balance:'БАЛАНС КОНТРАКТА',
+ my_earnings:'МОЙ ЗАРАБОТОК', contract_addr:'АДРЕС КОНТРАКТА', copy_addr:'СКОПИРОВАТЬ АДРЕС',
+ nav_matrix:'МАТРИЦА', nav_tree:'ДЕРЕВО', nav_top:'ТОП', nav_history:'ИСТОРИЯ', nav_info:'КАЛК', nav_admin:'АДМИН',
+ ref_link_used:'ВЫ ПЕРЕШЛИ ПО РЕФЕРАЛЬНОЙ ССЫЛКЕ', auto_filled:'АВТОЗАПОЛНЕНО',
+ wallet_connected:'Кошелёк подключён!', tx_sent:'Транзакция отправлена!', tx_error:'Ошибка транзакции',
+ copied:'Скопировано!', need_wallet:'Сначала подключите кошелёк', days_left:'дн.',
+ activate:'АКТИВИРОВАТЬ', extend:'ПРОДЛИТЬ', locked_text:'Купите предыдущий уровень',
+ income:'ДОХОД', slots:'СЛОТОВ', received:'Получено', sent:'Отправлено',
+ level:'УРОВЕНЬ', active:'АКТИВЕН', forever:'НАВСЕГДА',
+ connect_first:'Подключите кошелёк чтобы начать'
+ },
+ en: {
+ connect:'CONNECT', not_connected:'Not connected', welcome:'TONFORCE • 3×8 MATRIX', hero_sub:'Network. Power. Freedom.', hero_copy:'Earn on TON blockchain through the matrix program. 8 levels, payouts flow up the tree automatically.', badge_matrix:'⚡ Matrix 3×8', badge_days:'📅 365 days', badge_onchain:'🔗 On-chain payouts',
+ participants:'PARTICIPANTS', my_level:'MY LEVEL', referrals:'REFERRALS', join:'JOIN',
+ ref_id:'REFERRER ID', join_btn:'ACTIVATE FOR', my_levels:'MY LEVELS', ref_tree:'REFERRAL TREE',
+ my_ref_link:'MY REFERRAL LINK', share_earn:'SHARE & EARN', copy_link:'COPY LINK', share_link:'SHARE',
+ top_refs:'TOP REFERRERS', lb_loading:'Loading...', my_history:'TRANSACTION HISTORY',
+ history_empty:'Connect wallet', calc_title:'INCOME CALCULATOR',
+ refs_count:'REFERRALS PER MONTH', active_levels:'ACTIVE LEVELS', potential_income:'POTENTIAL MONTHLY INCOME',
+ how_works:'HOW IT WORKS',
+ rule_1:'▸ Matrix 3×8 — each invites up to 3 refs', rule_2:'▸ 8 levels with ×3 price multiplier',
+ rule_3:'▸ Level active for 365 days', rule_4:'▸ Payouts flow up the tree automatically',
+ rule_5:'▸ All on TON blockchain',
+ prices:'LEVEL PRICES', admin:'ADMIN PANEL', total_users:'TOTAL USERS', contract_balance:'CONTRACT BALANCE',
+ my_earnings:'MY EARNINGS', contract_addr:'CONTRACT ADDRESS', copy_addr:'COPY ADDRESS',
+ nav_matrix:'MATRIX', nav_tree:'TREE', nav_top:'TOP', nav_history:'HISTORY', nav_info:'CALC', nav_admin:'ADMIN',
+ ref_link_used:'YOU JOINED VIA REFERRAL LINK', auto_filled:'AUTO-FILLED',
+ wallet_connected:'Wallet connected!', tx_sent:'Transaction sent!', tx_error:'Transaction error',
+ copied:'Copied!', need_wallet:'Connect wallet first', days_left:'days',
+ activate:'ACTIVATE', extend:'EXTEND', locked_text:'Buy previous level',
+ income:'INCOME', slots:'SLOTS', received:'Received', sent:'Sent',
+ level:'LEVEL', active:'ACTIVE', forever:'FOREVER',
+ connect_first:'Connect wallet to start'
+ },
+ ua: {
+ connect:'CONNECT', not_connected:'Не підключено', welcome:'TONFORCE • МАТРИЦЯ 3×8', hero_sub:'Сила мережі. Свобода доходу.', hero_copy:'Заробляй на блокчейні TON через матричну програму. 8 рівнів, виплати йдуть вгору по дереву автоматично.', badge_matrix:'⚡ Матриця 3×8', badge_days:'📅 365 днів', badge_onchain:'🔗 On-chain виплати',
+ participants:'УЧАСНИКІВ', my_level:'МІЙ РІВЕНЬ', referrals:'РЕФЕРАЛІВ', join:'ПРИЄДНАТИСЯ',
+ ref_id:'ID РЕФЕРЕРА', join_btn:'АКТИВУВАТИ ЗА', my_levels:'МОЇ РІВНІ', ref_tree:'ДЕРЕВО РЕФЕРАЛІВ',
+ my_ref_link:'МОЄ РЕФЕРАЛЬНЕ ПОСИЛАННЯ', share_earn:'ПОДІЛІТЬСЯ ТА ЗАРОБЛЯЙТЕ', copy_link:'СКОПІЮВАТИ', share_link:'ПОДІЛИТИСЯ',
+ top_refs:'ТОП РЕФЕРЕРІВ', lb_loading:'Завантаження...', my_history:'ІСТОРІЯ ТРАНЗАКЦІЙ',
+ history_empty:'Підключіть гаманець', calc_title:'КАЛЬКУЛЯТОР ДОХОДУ',
+ refs_count:'РЕФЕРАЛІВ НА МІСЯЦЬ', active_levels:'АКТИВНИХ РІВНІВ', potential_income:'ПОТЕНЦІЙНИЙ ДОХІД ЗА МІСЯЦЬ',
+ how_works:'ЯК ЦЕ ПРАЦЮЄ',
+ rule_1:'▸ Матриця 3×8 — кожен запрошує до 3 рефералів', rule_2:'▸ 8 рівнів з множенням ціни ×3',
+ rule_3:'▸ Рівень активний 365 днів', rule_4:'▸ Виплати йдуть вгору автоматично',
+ rule_5:'▸ Все на TON блокчейні',
+ prices:'ЦІНИ РІВНІВ', admin:'АДМІН ПАНЕЛЬ', total_users:'ВСЬОГО УЧАСНИКІВ', contract_balance:'БАЛАНС КОНТРАКТУ',
+ my_earnings:'МІЙ ЗАРОБІТОК', contract_addr:'АДРЕСА КОНТРАКТУ', copy_addr:'СКОПІЮВАТИ',
+ nav_matrix:'МАТРИЦЯ', nav_tree:'ДЕРЕВО', nav_top:'ТОП', nav_history:'ІСТОРІЯ', nav_info:'КАЛК', nav_admin:'АДМІН',
+ ref_link_used:'ВИ ПЕРЕЙШЛИ ЗА ПОСИЛАННЯМ', auto_filled:'АВТОЗАПОВНЕНО',
+ wallet_connected:'Гаманець підключено!', tx_sent:'Транзакція надіслана!', tx_error:'Помилка',
+ copied:'Скопійовано!', need_wallet:'Спочатку підключіть гаманець', days_left:'дн.',
+ activate:'АКТИВУВАТИ', extend:'ПРОДОВЖИТИ', locked_text:'Купіть попередній рівень',
+ income:'ДОХІД', slots:'СЛОТІВ', received:'Отримано', sent:'Надіслано',
+ level:'РІВЕНЬ', active:'АКТИВНИЙ', forever:'НАЗАВЖДИ',
+ connect_first:'Підключіть гаманець щоб почати'
+ }
+};
+
+let currentLang = localStorage.getItem('lang') || 'ru';
+function setLang(lang) {
+ currentLang = lang;
+ localStorage.setItem('lang', lang);
+ document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.dataset.lang === lang));
+ applyI18n();
+}
+function t(key) { return I18N[currentLang]?.[key] || key; }
+function applyI18n() {
+ document.querySelectorAll('[data-i18n]').forEach(el => {
+   const key = el.dataset.i18n;
+   if (!I18N[currentLang]?.[key]) return;
+   // Не перезаписываем walletBtn если кошелёк подключён — там уже имя/адрес юзера
+   if (el.id === 'walletBtn' && walletAddress) return;
+   // Не перезаписываем userInfo если кошелёк подключён
+   if (el.closest('#userInfo') && walletAddress) return;
+   el.textContent = I18N[currentLang][key];
+ });
+ if (userState.registered) renderLevels();
+ renderPriceTable();
+ updateRefLink();
+}
+let tg = window.Telegram?.WebApp;
+let walletAddress = null;
+let userState = { registered: false, id: 0, referrerID: 0, referralCount: 0, levels: Array(8).fill(0) };
+let totalUsers = 1;
+if (tg) {
+ tg.ready(); tg.expand();
+ tg.setHeaderColor('#07101f');
+ tg.setBackgroundColor('#07101f');
+}
+const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({ manifestUrl: 'https://tonforce.app/tonconnect-manifest.json' });
+function updateNavigationVisibility() {
+ const nav = document.getElementById('bottomNav');
+ if (!nav) return;
+ nav.classList.toggle('hidden', !walletAddress);
+}
+tonConnectUI.onStatusChange(wallet => {
+ if (wallet) {
+ walletAddress = wallet.account.address;
+
+ // КРИТИЧНО: сбрасываем userState от предыдущего кошелька — иначе UI покажет
+ // данные старого юзера (или owner-а) пока loadUserData асинхронно не отработает
+ userState = { registered: false, id: 0, referrerID: 0, referralCount: 0, levels: Array(8).fill(0) };
+ const statRefsEl = document.getElementById('statRefs'); if (statRefsEl) statRefsEl.textContent = '—';
+ const statLevelEl = document.getElementById('statLevel'); if (statLevelEl) statLevelEl.textContent = '—';
+
+ saveMyTelegramData();
+ const myName = getUserDisplayName(walletAddress);
+ const shortAddr = shortenAddr(walletAddress);
+ // Кнопка вверху справа — ВСЕГДА адрес кошелька (для consistency с Tonkeeper)
+ document.getElementById('walletBtn').textContent = shortAddr;
+ document.getElementById('walletBtn').classList.add('connected');
+ // Под лого — имя из Telegram (если есть) или адрес
+ document.getElementById('userInfo').innerHTML = '⚡ ' + myName;
+ showToast(t('wallet_connected'), 'success');
+ if (walletAddress.toLowerCase() === OWNER_WALLET_RAW.toLowerCase()) {
+   document.getElementById('navAdmin').classList.remove('hidden');
+ } else {
+   document.getElementById('navAdmin').classList.add('hidden');
+ }
+ updateNavigationVisibility();
+ updateRefLink(); renderTree(); renderDashboard(); loadUserData(); syncNamesFromBackend();
+ } else {
+ walletAddress = null;
+ document.getElementById('walletBtn').textContent = 'CONNECT';
+ document.getElementById('walletBtn').classList.remove('connected');
+ document.getElementById('userInfo').innerHTML = '⚡ ' + t('not_connected');
+ document.getElementById('navAdmin').classList.add('hidden');
+ userState = { registered: false, id: 0, referrerID: 0, referralCount: 0, levels: Array(8).fill(0) };
+ // Очищаем все статы UI чтобы не показывать данные предыдущего юзера
+ const statRefsEl = document.getElementById('statRefs'); if (statRefsEl) statRefsEl.textContent = '—';
+ const statLevelEl = document.getElementById('statLevel'); if (statLevelEl) statLevelEl.textContent = '—';
+ // statUsers оставляем — это глобальное число, не зависит от пользователя
+ document.getElementById('refLink').textContent = '—';
+ updateNavigationVisibility();
+ showPage('matrix');
+ renderDashboard(); renderTree();
+ }
+});
+async function connectWallet() { if (walletAddress) { await tonConnectUI.disconnect(); return; } await tonConnectUI.openModal(); }
+async function addrToSliceBoc(addr) { const a = new TonWeb.utils.Address(addr); const cell = new TonWeb.boc.Cell(); cell.bits.writeAddress(a); const boc = await cell.toBoc(false); return TonWeb.utils.bytesToBase64(boc); }
+async function callGet(method, stack) { try { const res = await fetch('https://toncenter.com/api/v2/runGetMethod', { method:'POST', headers:{'Content-Type':'application/json','X-API-Key':TONCENTER_KEY}, body: JSON.stringify({address: CONTRACT_ADDRESS, method, stack}) }); if (!res.ok) return null; return await res.json(); } catch(e) { return null; } }
+async function getMethodWithAddress(method, addr, extraStack = []) { const sliceB64 = await addrToSliceBoc(addr); const stack = [["tvm.Slice", sliceB64], ...extraStack]; return await callGet(method, stack); }
+function parseStackNum(res, idx = 0) { if (!res?.ok || !res.result?.stack?.[idx]) return 0; const item = res.result.stack[idx]; const val = item[1]; if (typeof val === 'string') { const s = val.startsWith('-') ? val.slice(1) : val; const isHex = s.startsWith('0x'); let num = parseInt(isHex ? s : val, isHex ? 16 : 10); if (val.startsWith('-')) num = -num; return num || 0; } return parseInt(val) || 0; }
+async function loadUserData() {
+ if (!walletAddress) return;
+ const totalRes = await callGet('getTotalUsers', []);
+ totalUsers = parseStackNum(totalRes) || 1;
+ document.getElementById('statUsers').textContent = totalUsers.toLocaleString();
+ const adminUsersEl = document.getElementById('adminUsers'); if (adminUsersEl) adminUsersEl.textContent = totalUsers.toLocaleString();
+ let isRegistered = false, userID = 0, refCount = 0, levels = Array(8).fill(0);
+ if (walletAddress.toLowerCase() === OWNER_WALLET_RAW.toLowerCase()) { isRegistered = true; userID = 1; refCount = Math.max(0, totalUsers - 1); levels = Array(8).fill(99999999999); }
+ else {
+ try {
+ const existsRes = await getMethodWithAddress('isUserExists', walletAddress);
+ isRegistered = parseStackNum(existsRes) !== 0;
+ if (isRegistered) {
+ userID = parseStackNum(await getMethodWithAddress('getUserID', walletAddress));
+ refCount = parseStackNum(await getMethodWithAddress('getUserReferralCount', walletAddress));
+ for (let lvl = 1; lvl <= 8; lvl++) levels[lvl - 1] = parseStackNum(await getMethodWithAddress('getLevelExpiredFor', walletAddress, [["num", String(lvl)]]));
+ }
+ } catch(e) {}
+ }
+ userState.registered = isRegistered; userState.id = userID; userState.referralCount = refCount; userState.levels = levels;
+ document.getElementById('statRefs').textContent = refCount;
+ const activeLvl = levels.filter(e => e > Date.now() / 1000).length;
+ document.getElementById('statLevel').textContent = isRegistered ? String(activeLvl) : '—';
+ document.getElementById('treeActiveRefs').textContent = refCount;
+ document.getElementById('treeOpenSlots').textContent = Math.max(0, 3 - refCount);
+ document.getElementById('treeEarned').textContent = (refCount * 0.1).toFixed(1) + ' TON';
+ updateRefLink(); renderTree(); renderDashboard();
+}
+async function loadHistory() {
+ if (!walletAddress) { document.getElementById('historyList').innerHTML = `<div class="empty-state"><div class="empty-state-icon">📜</div><div>${t('history_empty')}</div></div>`; return; }
+ try {
+ const res = await fetch(`https://toncenter.com/api/v2/getTransactions?address=${encodeURIComponent(walletAddress)}&limit=20&api_key=${TONCENTER_KEY}`);
+ const data = await res.json();
+ if (!data.ok || !data.result?.length) { document.getElementById('historyList').innerHTML = `<div class="empty-state"><div class="empty-state-icon">📭</div><div>—</div></div>`; return; }
+ document.getElementById('historyList').innerHTML = data.result.slice(0, 20).map(tx => {
+ const inMsg = tx.in_msg, outMsg = tx.out_msgs?.[0];
+ const isIn = inMsg?.value && parseInt(inMsg.value) > 0;
+ const value = parseInt(isIn ? inMsg.value : (outMsg?.value || 0)) / 1e9;
+ const date = new Date(tx.utime * 1000);
+ const timeStr = date.toLocaleString();
+ return `<div class="card"><div class="history-item"><div class="history-icon ${isIn ? 'in' : 'out'}">${isIn ? '↓' : '↑'}</div><div class="history-info"><div class="history-title">${isIn ? t('received') : t('sent')}</div><div class="history-time">${timeStr}</div></div><div class="history-amount ${isIn ? 'in' : 'out'}">${isIn ? '+' : '-'}${value.toFixed(3)} TON</div></div></div>`;
+ }).join('');
+ } catch(e) {}
+}
+async function renderLeaderboard() {
+ const list = document.getElementById('leaderboardList');
+ list.innerHTML = `<div class="empty-state"><div class="empty-state-icon">⏳</div><div>${currentLang === 'ru' ? 'Загрузка...' : 'Loading...'}</div></div>`;
+
+ const items = [];
+ // Перебираем юзеров с ID 2..N (пропускаем ID=1 = owner)
+ const startId = 2;
+ const endId = Math.min(totalUsers, 50); // макс 50 для скорости
+
+ for (let id = startId; id <= endId; id++) {
+   try {
+     const addr = await getUserAddressByID(id);
+     if (!addr) continue;
+     // Получаем кол-во рефералов и заработок
+     const refsRes = await getMethodWithAddress('getUserReferralCount', addr);
+     const refs = parseStackNum(refsRes);
+     const earnRes = await getMethodWithAddress('getUserEarnings', addr);
+     const earnings = parseStackNum(earnRes) / 1e9;
+     items.push({ id, addr, refs, earnings });
+   } catch(e) {}
+ }
+
+ // Сортируем по заработку (убывание), берём топ 10
+ items.sort((a, b) => b.earnings - a.earnings);
+ const topItems = items.slice(0, 10);
+
+ if (topItems.length === 0) {
+   list.innerHTML = `<div class="empty-state"><div class="empty-state-icon">🏆</div><div>${currentLang === 'ru' ? 'Пока нет участников' : currentLang === 'ua' ? 'Поки немає учасників' : 'No participants yet'}</div></div>`;
+   return;
+ }
+
+ list.innerHTML = topItems.map((item, idx) => {
+   const rank = idx + 1;
+   const rankClass = rank === 1 ? 'gold' : rank === 2 ? 'silver' : rank === 3 ? 'bronze' : '';
+   const userInfo = getUserDisplayName(item.addr);
+   const displayName = userInfo.startsWith('@') || userInfo.length > 6 ? userInfo : 'Player #' + item.id;
+   const shortA = shortenAddr(item.addr);
+   return `<div class="card"><div class="lb-item">
+     <div class="lb-rank ${rankClass}">${rank}</div>
+     <div class="lb-info">
+       <div class="lb-name">${displayName}</div>
+       <div class="lb-stat">${shortA} · ${item.refs} refs</div>
+     </div>
+     <div class="lb-value">${item.earnings.toFixed(2)} TON</div>
+   </div></div>`;
+ }).join('');
+}
+
+// Helper для получения адреса юзера по ID (новый get-метод v4)
+async function getUserAddressByID(id) {
+  try {
+    const res = await callGet('getUserAddressById', [['num', String(id)]]);
+    if (!res?.ok || !res.result?.stack?.[0]) return null;
+    const item = res.result.stack[0];
+    if (item[0] !== 'cell' && item[0] !== 'slice') return null;
+    // Парсим адрес из BOC
+    const boc = item[1].bytes || item[1];
+    if (!boc) return null;
+    const cells = TonWeb.boc.Cell.fromBoc(TonWeb.utils.base64ToBytes(boc));
+    const slice = cells[0].beginParse();
+    const addr = slice.loadAddress();
+    return addr ? addr.toString(true, true, false) : null;
+  } catch(e) { return null; }
+}
+function renderDashboard() {
+ const notReg = document.getElementById('notRegistered');
+ const isReg = document.getElementById('isRegistered');
+ const connectPrompt = document.getElementById('connectPrompt');
+ const regBtn = document.getElementById('regBtn');
+ const hero = document.getElementById('heroBlock');
+
+ if (!walletAddress) {
+   // Кошелёк не подключён — показываем приветствие (hero) и блок "не зарегистрирован"
+   if (hero) hero.classList.remove('hidden');
+   notReg.classList.remove('hidden');
+   isReg.classList.add('hidden');
+   if (connectPrompt) connectPrompt.style.display = 'block';
+   if (regBtn) regBtn.style.display = 'none';
+   return;
+ }
+ if (userState.registered) {
+   // В кабинете — скрываем hero, показываем уровни
+   if (hero) hero.classList.add('hidden');
+   notReg.classList.add('hidden');
+   isReg.classList.remove('hidden');
+   renderLevels();
+ } else {
+   // Кошелёк подключён, но юзер не зарегистрирован — показываем hero + кнопку регистрации
+   if (hero) hero.classList.remove('hidden');
+   notReg.classList.remove('hidden');
+   isReg.classList.add('hidden');
+   if (connectPrompt) connectPrompt.style.display = 'none';
+   if (regBtn) regBtn.style.display = 'block';
+ }
+}
+function renderLevels() {
+ const grid = document.getElementById('levelsGrid'); const now = Date.now() / 1000;
+ grid.innerHTML = LEVELS.map((lvl, i) => {
+ const {level, price, income, slots, tier} = lvl;
+ const displayName = getLevelName(lvl);
+ const expiry = userState.levels[i];
+ const isActive = expiry > now;
+ const canBuy = !isActive && (i === 0 || userState.levels[i - 1] > now);
+ const isLocked = !isActive && !canBuy;
+
+ const cardClass = `card tier-${tier}${isActive ? ' active' : isLocked ? ' locked' : ''}`;
+
+ const activeBadge = isActive
+   ? `<span class="tier-badge tier-badge-active">✓ ${t('active') || 'ACTIVE'}</span>`
+   : '';
+
+ let expiryTxt = '';
+ if (isActive && expiry < 99999999) {
+   const days = Math.floor((expiry - now) / 86400);
+   expiryTxt = `<div class="expiry-row">⏱ ${days} ${t('days_left')}</div>`;
+ } else if (isActive) {
+   expiryTxt = `<div class="expiry-row">∞ ${t('forever') || 'FOREVER'}</div>`;
+ }
+
+ let actionHtml = '';
+ if (isActive) {
+   actionHtml = `<button class="button gold" onclick="buyLevel(${level})">+365 ${t('days_left')}</button>`;
+ } else if (canBuy) {
+   actionHtml = `<button class="button" onclick="buyLevel(${level})">⚡ ${t('activate')} ${price} TON</button>`;
+ } else {
+   actionHtml = `<div class="lock-text">🔒 ${t('locked_text')}</div>`;
+ }
+
+ return `
+   <div class="${cardClass}">
+     <div class="card-header-row">
+       <div class="level">${t('level') || 'LEVEL'} ${level}</div>
+       ${activeBadge}
+     </div>
+     <div class="name">${displayName}</div>
+     <div class="price">${price} TON</div>
+     <div class="info-grid">
+       <div class="info-cell">
+         <div class="info-cell-label">${t('income') || 'INCOME'}</div>
+         <div class="info-cell-value income-up">${income} TON</div>
+       </div>
+       <div class="info-cell">
+         <div class="info-cell-label">${t('slots') || 'SLOTS'}</div>
+         <div class="info-cell-value">${slots}</div>
+       </div>
+     </div>
+     ${expiryTxt}
+     ${actionHtml}
+   </div>`;
+ }).join('');
+}
+const MY_REFS_KEY = 'tonforce_my_refs_v1';
+function loadMyRefs() { try { return JSON.parse(localStorage.getItem(MY_REFS_KEY) || '{}'); } catch(e) { return {}; } }
+function saveMyRefs(data) { try { localStorage.setItem(MY_REFS_KEY, JSON.stringify(data)); } catch(e) {} }
+function addMyReferral(myWallet, refWallet, telegramData) { if (!myWallet || !refWallet) return; const all = loadMyRefs(); const key = myWallet.toLowerCase(); if (!all[key]) all[key] = []; if (all[key].some(r => r.wallet.toLowerCase() === refWallet.toLowerCase())) return; all[key].push({ wallet: refWallet, username: telegramData?.username || null, first_name: telegramData?.first_name || null, tg_id: telegramData?.id || null, regAt: Date.now() }); saveMyRefs(all); }
+function getMyReferrals(myWallet) { if (!myWallet) return []; const all = loadMyRefs(); return all[myWallet.toLowerCase()] || []; }
+async function renderTree() {
+ const row = document.getElementById('treeRow');
+ row.innerHTML = '';
+ const realCount = userState.referralCount || 0;
+ const localRefs = getMyReferrals(walletAddress);
+ const namesRegistry = loadNamesRegistry();
+
+ // Сразу рисуем "загрузка..." для заполненных слотов чтобы не было R1/R2 пока грузим из контракта
+ const slots = [];
+ for (let i = 0; i < 3; i++) {
+   const filled = i < realCount;
+   if (!filled) {
+     row.innerHTML += `<div class="tree-node-wrapper" data-slot="${i}"><div class="tree-node empty">+<small>open slot</small></div></div>`;
+     slots.push(null);
+   } else {
+     row.innerHTML += `<div class="tree-node-wrapper" data-slot="${i}"><div class="tree-node filled"><small>loading...</small></div></div>`;
+     slots.push('pending');
+   }
+ }
+
+ // Обновляем стату внизу сразу
+ document.getElementById('treeActiveRefs').textContent = realCount;
+ document.getElementById('treeOpenSlots').textContent = Math.max(0, 3 - realCount);
+ const earned = userState.earnings || (realCount * 5);
+ document.getElementById('treeEarned').textContent = earned.toFixed(1) + ' TON';
+
+ if (!walletAddress || realCount === 0) return;
+
+ // Загружаем адреса каждого реферала через новый get-метод v4 getReferralAt
+ for (let i = 0; i < realCount && i < 3; i++) {
+   try {
+     const refAddr = await getReferralAtIndex(walletAddress, i);
+     if (!refAddr) {
+       // Fallback на локальные данные если контракт не вернул
+       const local = localRefs[i];
+       if (local) renderTreeSlot(i, local.wallet, local.username || namesRegistry[local.wallet.toLowerCase()]?.username, true);
+       else renderTreeSlot(i, null, null, false);
+       continue;
+     }
+     // Ищем имя в реестре (объединяет данные бэкенда + локалки)
+     const nameData = namesRegistry[refAddr.toLowerCase()];
+     const username = nameData?.username || localRefs[i]?.username || null;
+     renderTreeSlot(i, refAddr, username, true);
+   } catch(e) {
+     console.error('Failed to load referral', i, e);
+     renderTreeSlot(i, null, null, false);
+   }
+ }
+}
+
+// Отрисовка одной ячейки дерева — адрес кошелька + кнопки TG / Copy
+function renderTreeSlot(slotIdx, walletAddr, username, knownAddress) {
+  const slot = document.querySelector(`[data-slot="${slotIdx}"]`);
+  if (!slot) return;
+
+  if (!knownAddress || !walletAddr) {
+    // Адрес не удалось получить из контракта
+    slot.innerHTML = `<div class="tree-node filled">R${slotIdx + 1}<small>partner</small></div>`;
+    return;
+  }
+
+  const shortAddr = shortenAddr(walletAddr);
+  const fullFriendlyAddr = getFriendlyAddr(walletAddr);
+
+  // Защита от XSS: эскейпим username и адрес перед вставкой в HTML
+  // username приходит с бэкенда (бот), может содержать malicious данные
+  const safeUsername = escapeHtml(username || '');
+  const safeShortAddr = escapeHtml(shortAddr);
+  const safeFullAddr = escapeHtml(fullFriendlyAddr);
+  // Также санитизация для использования в JS-строке onclick (защита от инъекции)
+  const safeAddrForJs = (fullFriendlyAddr || '').replace(/[^A-Za-z0-9_\-]/g, '');
+
+  // Кнопка TG — только если знаем username и он валиден (только буквенно-цифровой)
+  const usernameClean = (username || '').replace(/[^A-Za-z0-9_]/g, '').slice(0, 32);
+  const tgBtn = usernameClean
+    ? `<a href="https://t.me/${encodeURIComponent(usernameClean)}" target="_blank" rel="noopener noreferrer" class="tree-mini-btn tree-mini-btn--tg" title="@${escapeHtml(usernameClean)}">
+         <svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14"><path d="M22 2L2 11l7 3 9-7-7 9 3 7 8-21z"/></svg>
+       </a>`
+    : '';
+
+  // Кнопка Copy — всегда показываем
+  const copyBtn = `<button class="tree-mini-btn tree-mini-btn--copy" onclick="copyAddrFromTree('${safeAddrForJs}')" title="Copy address">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="13" height="13"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+  </button>`;
+
+  slot.innerHTML = `
+    <div class="tree-node filled" onclick="copyAddrFromTree('${safeAddrForJs}')" title="${safeFullAddr}">
+      <span class="tree-addr">${safeShortAddr}</span>
+      <small>partner</small>
+    </div>
+    <div class="tree-mini-actions">${tgBtn}${copyBtn}</div>
+  `;
+}
+
+// Защита от XSS: эскейпит спецсимволы HTML
+function escapeHtml(text) {
+  if (text == null) return '';
+  return String(text)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+// Get-метод v4: getReferralAt(addr, idx) → адрес N-го реферала или null
+async function getReferralAtIndex(myAddr, idx) {
+  try {
+    const res = await getMethodWithAddress('getReferralAt', myAddr, [['num', String(idx)]]);
+    if (!res?.ok) return null;
+    const stackItem = res.result?.stack?.[0];
+    if (!stackItem) return null;
+    // Контракт возвращает Address? — может быть null (тип tuple = пусто)
+    if (stackItem[0] === 'null' || stackItem[0] === 'tuple') return null;
+    if (stackItem[0] !== 'cell' && stackItem[0] !== 'slice') return null;
+    // Парсим адрес из BOC
+    const cellData = stackItem[1];
+    const boc = typeof cellData === 'string' ? cellData : cellData?.bytes;
+    if (!boc) return null;
+    const cells = TonWeb.boc.Cell.fromBoc(TonWeb.utils.base64ToBytes(boc));
+    const slice = cells[0].beginParse();
+    const addr = slice.loadAddress();
+    return addr ? addr.toString(true, true, false) : null;
+  } catch(e) {
+    console.error('getReferralAtIndex error:', e);
+    return null;
+  }
+}
+
+// Клик по ноде дерева — копировать адрес кошелька реферала
+function copyAddrFromTree(addr) {
+  if (!addr) return;
+  try {
+    navigator.clipboard.writeText(addr);
+    showToast(t('copied') || 'Адрес скопирован', 'success');
+  } catch(e) {}
+}
+// Кодируем referrer ID в короткий обфусцированный хеш для красивой реф-ссылки.
+// Формат: 10-символов hex (типа "00000032c8" для ID=1)
+// Использует BigInt чтобы избежать переполнения 32-bit для больших ID.
+function encodeRefHash(id) {
+  if (!id || id < 1) id = 1;
+  const obfuscated = (BigInt(id) * 7919n + 5081n);
+  return obfuscated.toString(16).padStart(10, '0');
+}
+
+// Раскодирует ref-hash обратно в ID
+function decodeRefHash(hash) {
+  if (!hash) return 1;
+  try {
+    const obfuscated = BigInt('0x' + hash);
+    if (obfuscated < 5081n) return 1;
+    const id = Number((obfuscated - 5081n) / 7919n);
+    // Валидация: проверяем что обратное кодирование совпадает
+    if (encodeRefHash(id) !== hash) return 1;
+    return id > 0 ? id : 1;
+  } catch(e) { return 1; }
+}
+
+function updateRefLink() {
+ const el = document.getElementById('refLink');
+ const myID = (walletAddress && walletAddress.toLowerCase() === OWNER_WALLET_RAW.toLowerCase()) ? 1 : userState.id;
+ if (myID) {
+   const hash = encodeRefHash(myID);
+   el.textContent = `https://t.me/${BOT_USERNAME}?startapp=${hash}`;
+   return;
+ }
+ if (walletAddress) el.textContent = currentLang === 'ru' ? 'Зарегистрируйтесь чтобы получить ссылку' : currentLang === 'en' ? 'Register to get your link' : 'Зареєструйтесь';
+ else el.textContent = '—';
+}
+function copyRef() { const txt = document.getElementById('refLink').textContent; if (txt && txt !== '—') navigator.clipboard.writeText(txt).then(() => showToast(t('copied'), 'success')); }
+function shareRefLink() {
+  const url = document.getElementById('refLink').textContent;
+  if (!url || url === '—' || !url.startsWith('http')) {
+    showToast(t('need_wallet') || 'Подключите кошелёк', 'error');
+    return;
+  }
+
+  // Описание проекта для поделиться (по языку)
+  const descriptions = {
+    ru: `🚀 TonForce — матричная программа на блокчейне TON
+
+💎 8 уровней: от 5 до 10935 TON
+🤝 Матрица 3×3 — выплаты автоматически в TON
+⏰ 365 дней активность пакета
+🔗 On-chain — никаких посредников
+
+Присоединяйся:`,
+    en: `🚀 TonForce — matrix program on TON blockchain
+
+💎 8 levels: from 5 to 10,935 TON
+🤝 3×3 matrix — automatic payouts in TON
+⏰ 365 days package activity
+🔗 On-chain — no middlemen
+
+Join now:`,
+    ua: `🚀 TonForce — матрична програма на блокчейні TON
+
+💎 8 рівнів: від 5 до 10 935 TON
+🤝 Матриця 3×3 — виплати автоматично в TON
+⏰ 365 днів активності пакета
+🔗 On-chain — жодних посередників
+
+Приєднуйся:`
+  };
+
+  const lang = (typeof currentLang !== 'undefined' && descriptions[currentLang]) ? currentLang : 'ru';
+  const description = descriptions[lang];
+  const fullText = description + '\n' + url;
+
+  // Способ 1: Telegram WebApp Share API (когда Mini App запущен в Telegram)
+  // Открывает прямо выбор контакта/чата в Telegram
+  if (tg?.openTelegramLink) {
+    try {
+      const shareText = encodeURIComponent(description);
+      const shareUrl = encodeURIComponent(url);
+      const tgShareUrl = `https://t.me/share/url?url=${shareUrl}&text=${shareText}`;
+      tg.openTelegramLink(tgShareUrl);
+      return;
+    } catch(e) { console.error('TG share failed', e); }
+  }
+
+  // Способ 2: Native share API (мобильные браузеры)
+  if (navigator.share) {
+    navigator.share({
+      title: 'TonForce',
+      text: description,
+      url: url
+    }).catch(err => {
+      // Если юзер отменил шаринг — ничего не делаем; иначе fallback на копирование
+      if (err.name !== 'AbortError') {
+        copyTextToClipboard(fullText);
+      }
+    });
+    return;
+  }
+
+  // Способ 3: Fallback — копируем полный текст в буфер
+  copyTextToClipboard(fullText);
+}
+
+// Helper: копирование с toast-уведомлением
+function copyTextToClipboard(text) {
+  if (navigator.clipboard?.writeText) {
+    navigator.clipboard.writeText(text).then(() => {
+      showToast(t('copied') || 'Скопировано', 'success');
+    }).catch(() => {
+      // Fallback через временный textarea
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      try { document.execCommand('copy'); showToast(t('copied') || 'Скопировано', 'success'); }
+      catch(e) {}
+      document.body.removeChild(ta);
+    });
+  }
+}
+function copyContract() { navigator.clipboard.writeText(CONTRACT_ADDRESS).then(() => showToast(t('copied'), 'success')); }
+function renderPriceTable() {
+  const el = document.getElementById('priceTable');
+  el.innerHTML = LEVELS.map((lvl) => `<div class="info-line"><span class="lbl">L${lvl.level} · ${getLevelName(lvl)}</span><span class="val">${lvl.price} TON</span></div>`).join('');
+}
+function calculateIncome() { const refs = parseInt(document.getElementById('calcRefs').value) || 0; const lvls = parseInt(document.getElementById('calcLevels').value) || 0; let total = 0; for (let i = 1; i <= Math.min(lvls, 8); i++) total += LEVELS[i - 1].price * refs; document.getElementById('calcResult').textContent = total.toFixed(2) + ' TON'; }
+async function register() { if (!walletAddress) { showToast(t('need_wallet'), 'error'); return; } const refID = parseInt(document.getElementById('refInput').value) || 1; const btn = document.getElementById('regBtn'); btn.disabled = true; const oldText = btn.innerHTML; btn.innerHTML = '⏳ ...'; try { const cell = await buildCell(0xc670f579, refID); const regAmount = LEVELS[0].price + 0.2; await tonConnectUI.sendTransaction({ validUntil: Math.floor(Date.now() / 1000) + 600, messages: [{address: CONTRACT_ADDRESS, amount: String(Math.floor(regAmount * 1e9)), payload: cell}] }); showToast(t('tx_sent'), 'success'); saveMyTelegramData(); if (tg?.sendData && refID > 1) { try { const payload = JSON.stringify({ action: 'registered', wallet: walletAddress, referrerID: refID, telegram: tg.initDataUnsafe?.user || null, ts: Date.now() }); setTimeout(() => { try { tg.sendData(payload); } catch(e) {} }, 30000); } catch(e) {} } setTimeout(() => loadUserData(), 8000); setTimeout(() => loadUserData(), 16000); setTimeout(() => loadUserData(), 25000); } catch(e) { showToast(t('tx_error'), 'error'); } btn.disabled = false; btn.innerHTML = oldText; }
+async function buyLevel(level) { if (!walletAddress) { showToast(t('need_wallet'), 'error'); return; } const price = LEVELS[level - 1].price; try { const cell = await buildCellLevel(0x03398cc8, level); await tonConnectUI.sendTransaction({ validUntil: Math.floor(Date.now() / 1000) + 600, messages: [{address: CONTRACT_ADDRESS, amount: String(Math.floor((price + 0.2) * 1e9)), payload: cell}] }); showToast(t('tx_sent'), 'success'); setTimeout(() => loadUserData(), 8000); setTimeout(() => loadUserData(), 16000); setTimeout(() => loadUserData(), 25000); } catch(e) { showToast(t('tx_error'), 'error'); } }
+async function buildCell(op, referrerID) { const cell = new TonWeb.boc.Cell(); cell.bits.writeUint(op, 32); cell.bits.writeUint(referrerID, 32); const boc = await cell.toBoc(false); return TonWeb.utils.bytesToBase64(boc); }
+async function buildCellLevel(op, level) { const cell = new TonWeb.boc.Cell(); cell.bits.writeUint(op, 32); cell.bits.writeUint(level, 8); const boc = await cell.toBoc(false); return TonWeb.utils.bytesToBase64(boc); }
+function showPage(name) { ['matrix', 'tree', 'leaderboard', 'history', 'info', 'admin'].forEach(p => { const page = document.getElementById('page' + capitalize(p)); if (page) page.classList.add('hidden'); }); document.getElementById('page' + capitalize(name)).classList.remove('hidden'); document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active')); document.querySelector(`.nav-item[data-page="${name}"]`)?.classList.add('active'); if (name === 'leaderboard') renderLeaderboard(); if (name === 'history') loadHistory(); if (name === 'info') calculateIncome(); }
+function showToast(msg, type = '') { const el = document.getElementById('toast'); el.textContent = msg; el.className = `toast show ${type}`; clearTimeout(el._t); el._t = setTimeout(() => el.classList.remove('show'), 2800); }
+function shortenAddr(addr) {
+  if (!addr) return '';
+  try {
+    // Конвертируем raw 0:abc... в friendly UQ... формат (как в Tonkeeper)
+    // bounceable=false (UQ префикс), testOnly=false, urlSafe=true
+    const friendly = new TonWeb.utils.Address(addr).toString(true, true, false);
+    return friendly.slice(0, 4) + '...' + friendly.slice(-4);
+  } catch(e) {
+    // Fallback: если адрес не парсится — режем как есть
+    return addr.slice(0, 4) + '...' + addr.slice(-4);
+  }
+}
+// Полная friendly-форма адреса (UQ...) для копирования и отображения
+function getFriendlyAddr(addr) {
+  if (!addr) return '';
+  try { return new TonWeb.utils.Address(addr).toString(true, true, false); }
+  catch(e) { return addr; }
+}
+function capitalize(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+const NAMES_KEY = 'tonforce_names_v1';
+function loadNamesRegistry() { try { return JSON.parse(localStorage.getItem(NAMES_KEY) || '{}'); } catch(e) { return {}; } }
+function saveNamesRegistry(registry) { try { localStorage.setItem(NAMES_KEY, JSON.stringify(registry)); } catch(e) {} }
+function rememberUserName(wallet, telegramData) { if (!wallet || !telegramData) return; const reg = loadNamesRegistry(); reg[wallet.toLowerCase()] = { username: telegramData.username || null, first_name: telegramData.first_name || null, tg_id: telegramData.id || null, saved_at: Date.now() }; saveNamesRegistry(reg); }
+function getUserDisplayName(wallet) { if (!wallet) return '—'; const reg = loadNamesRegistry(); const data = reg[wallet.toLowerCase()]; if (data) { if (data.username) return '@' + data.username; if (data.first_name) return data.first_name; } return shortenAddr(wallet); }
+function saveMyTelegramData() {
+  if (!walletAddress || !tg?.initDataUnsafe?.user) return;
+  const user = tg.initDataUnsafe.user;
+  // Локально (для оффлайна)
+  rememberUserName(walletAddress, user);
+  // На бэкенд (чтобы был виден всем юзерам, не только в этом браузере)
+  registerWithBackend(walletAddress, user);
+}
+
+// Отправляет данные на бот: связка wallet ↔ telegram username
+async function registerWithBackend(wallet, tgUser) {
+  if (!BOT_API_URL || !wallet || !tgUser) return;
+  try {
+    await fetch(BOT_API_URL.replace(/\/$/, '') + '/api/register-user', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        wallet: wallet,
+        tg_id: tgUser.id,
+        username: tgUser.username || null,
+        first_name: tgUser.first_name || null,
+        last_name: tgUser.last_name || null,
+      })
+    });
+  } catch(e) {
+    // Тихо игнорируем — бэкенд опционален, локальная копия работает в любом случае
+  }
+}
+async function syncNamesFromBackend() { if (!BOT_API_URL) return; try { const res = await fetch(BOT_API_URL.replace(/\/$/, '') + '/api/names', { method: 'GET' }); if (!res.ok) return; const remote = await res.json(); const local = loadNamesRegistry(); for (const [wallet, data] of Object.entries(remote)) { const existing = local[wallet]; if (!existing || (data.saved_at || 0) > (existing.saved_at || 0)) local[wallet] = { username: data.username || existing?.username || null, first_name: data.first_name || existing?.first_name || null, tg_id: data.tg_id || existing?.tg_id || null, saved_at: data.saved_at || Date.now() }; } saveNamesRegistry(local); if (walletAddress) renderTree(); } catch(e) {} }
+document.addEventListener('DOMContentLoaded', () => {
+ setLang(currentLang); renderPriceTable(); calculateIncome(); renderTree(); syncNamesFromBackend(); updateNavigationVisibility();
+ // Подставляем цену уровня 1 в кнопку регистрации (динамически из LEVELS[0])
+ const regPriceEl = document.getElementById('regBtnPrice');
+ if (regPriceEl) regPriceEl.textContent = LEVELS[0].price;
+ const params = new URLSearchParams(window.location.search);
+ // start_param из Telegram WebApp API работает для обоих форматов (?start= и ?startapp=)
+ const startParam = tg?.initDataUnsafe?.start_param || params.get('startapp') || params.get('start') || '';
+ if (!startParam) return;
+
+ let refID = 1;
+
+ // Формат 1 (старый): "1" или "1_user" или "1__user" — числовой ID + опционально username
+ const oldMatch = startParam.match(/^(\d+)(?:_+(\w+))?$/);
+ if (oldMatch && !startParam.match(/^[0-9a-f]{10}$/)) {
+   // Если параметр строго цифры — берём как ID. Hex-хеш длиной 10 не должен попадать сюда.
+   refID = parseInt(oldMatch[1]);
+ } else {
+   // Формат 2 (новый): обфусцированный hex-хеш длиной 10
+   refID = decodeRefHash(startParam);
+ }
+
+ if (refID && refID > 0) {
+   document.getElementById('refInput').value = refID;
+   const banner = document.getElementById('refBanner');
+   if (banner) {
+     banner.style.display = 'block';
+     banner.innerHTML = `✨ ${currentLang === 'ru' ? 'Приглашение от' : currentLang === 'ua' ? 'Запрошення від' : 'Invited by'} ID #${refID}`;
+   }
+ }
+});
+</script>
+</body>
+</html>
