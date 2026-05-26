@@ -1718,7 +1718,7 @@ function updateRefLink() {
  const myID = (walletAddress && walletAddress.toLowerCase() === OWNER_WALLET_RAW.toLowerCase()) ? 1 : userState.id;
  if (myID) {
    const hash = encodeRefHash(myID);
-   el.textContent = `https://t.me/${BOT_USERNAME}?startapp=${hash}`;
+   el.textContent = `https://t.me/${BOT_USERNAME}/tonforce?startapp=${hash}`;
    return;
  }
  if (walletAddress) el.textContent = currentLang === 'ru' ? 'Зарегистрируйтесь чтобы получить ссылку' : currentLang === 'en' ? 'Register to get your link' : 'Зареєструйтесь';
