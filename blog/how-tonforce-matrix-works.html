@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Как работает матрица 3×8 в TonForce | TonForce</title>
+<meta name="description" content="Подробное объяснение работы матрицы 3×8 в TonForce: как распределяются выплаты, кто такие R1-R4 и как растёт ваш доход." />
+<meta name="robots" content="index, follow, max-image-preview:large" />
+
+<link rel="canonical" href="https://tonforce.app/blog/how-tonforce-matrix-works.html" />
+<link rel="alternate" hreflang="ru" href="https://tonforce.app/blog/how-tonforce-matrix-works.html" />
+<link rel="alternate" hreflang="en" href="https://tonforce.app/en/blog/how-tonforce-matrix-works.html" />
+<link rel="alternate" hreflang="uk" href="https://tonforce.app/ua/blog/how-tonforce-matrix-works.html" />
+<link rel="alternate" hreflang="x-default" href="https://tonforce.app/blog/how-tonforce-matrix-works.html" />
+
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://tonforce.app/blog/how-tonforce-matrix-works.html" />
+<meta property="og:title" content="Как работает матрица 3×8 в TonForce" />
+<meta property="og:description" content="Простое и понятное объяснение механики матричной структуры и реферальной программы на 4 уровня глубиной." />
+<meta property="og:image" content="https://tonforce.app/og-image.jpg" />
+<meta property="og:locale" content="ru_RU" />
+<meta property="article:published_time" content="2026-05-20T00:00:00Z" />
+<meta property="article:section" content="Гайд" />
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Как работает матрица 3×8 в TonForce" />
+<meta name="twitter:description" content="Простое и понятное объяснение механики матричной структуры и реферальной программы на 4 уровня глубиной." />
+<meta name="twitter:image" content="https://tonforce.app/og-image.jpg" />
+
+<link rel="icon" href="/logo.png" type="image/png" />
+<link rel="apple-touch-icon" href="/logo.png" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Bruno+Ace+SC&family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+
+<link rel="stylesheet" href="/blog/blog.css" />
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Как работает матрица 3×8 в TonForce",
+  "description": "Простое и понятное объяснение механики матричной структуры и реферальной программы на 4 уровня глубиной.",
+  "image": "https://tonforce.app/og-image.jpg",
+  "datePublished": "2026-05-20T00:00:00Z",
+  "dateModified": "2026-05-20T00:00:00Z",
+  "author": {
+    "@type": "Organization",
+    "name": "TonForce",
+    "url": "https://tonforce.app/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "TonForce",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://tonforce.app/logo.png"
+    }
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://tonforce.app/blog/how-tonforce-matrix-works.html"
+  },
+  "inLanguage": "ru"
+}
+</script>
+</head>
+<body>
+
+<nav class="nav" role="navigation">
+  <div class="nav-inner">
+    <a href="/" class="nav-logo" aria-label="TonForce">
+      <img src="/logo.png" alt="TonForce" width="36" height="36" />
+      <span>TONFORCE</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="/#about">О проекте</a></li>
+      <li><a href="/#security">Безопасность</a></li>
+      <li><a href="/#levels">Уровни</a></li>
+      <li><a href="/blog/">Блог</a></li>
+    </ul>
+    <div class="nav-right">
+      <div class="lang-switcher">
+                <a href="/blog/" class="active" hreflang="ru" aria-current="page">RU</a>
+        <a href="/en/blog/" hreflang="en">EN</a>
+        <a href="/ua/blog/" hreflang="uk">UA</a>
+      </div>
+      <a href="https://t.me/tonforce_bot" class="btn" target="_blank" rel="noopener">
+        🚀 Запустить
+      </a>
+    </div>
+  </div>
+</nav>
+
+<main>
+  <article class="post-page">
+    <div class="container">
+      <a href="/blog/" class="post-back">← Назад к блогу</a>
+
+      <div class="post-header">
+        <div class="post-meta">
+          <span class="post-tag">Гайд</span>
+          <span>📅 20 мая 2026</span>
+          <span>⏱ 6 мин</span>
+        </div>
+        <h1 class="post-title">Как работает матрица 3×8 в TonForce</h1>
+        <p class="post-lead">Простое и понятное объяснение механики матричной структуры и реферальной программы на 4 уровня глубиной.</p>
+      </div>
+
+      <div class="post-cover placeholder">💎</div>
+
+      <div class="post-content">
+        <p>Матричная структура — основа TonForce. От того, насколько хорошо вы понимаете её работу, зависит ваш доход. В этой статье разбираем механику простым языком.</p>
+
+<h2>Что такое матрица 3×8</h2>
+<p>Матрица — это структура, где у каждого участника может быть <strong>3 прямых реферала</strong> (это и есть «3» в названии), а сама матрица состоит из <strong>8 уровней</strong> (это «8»). Каждый следующий уровень в 3 раза дороже предыдущего.</p>
+
+<h3>Цены уровней</h3>
+<ul>
+  <li>Уровень 1 — <strong>5 TON</strong> (Стартер)</li>
+  <li>Уровень 2 — <strong>15 TON</strong> (Бронза)</li>
+  <li>Уровень 3 — <strong>45 TON</strong> (Серебро)</li>
+  <li>Уровень 4 — <strong>135 TON</strong> (Золото)</li>
+  <li>Уровень 5 — <strong>405 TON</strong> (Платина)</li>
+  <li>Уровень 6 — <strong>1 215 TON</strong> (Бриллиант)</li>
+  <li>Уровень 7 — <strong>3 645 TON</strong> (VIP)</li>
+  <li>Уровень 8 — <strong>10 935 TON</strong> (Black)</li>
+</ul>
+
+<h2>Реферальная программа: R1, R2, R3, R4</h2>
+<p>Это самая интересная часть. Когда кто-то покупает уровень, выплата идёт не вам напрямую (как в простой партнёрке), а на определённую <strong>глубину</strong> матрицы. Глубина зависит от уровня.</p>
+
+<h3>Логика распределения</h3>
+<ul>
+  <li><strong>Уровни 1 и 5</strong> → выплата идёт прямому рефереру (R1 — тот, кто пригласил вас)</li>
+  <li><strong>Уровни 2 и 6</strong> → выплата идёт рефереру вашего реферера (R2)</li>
+  <li><strong>Уровни 3 и 7</strong> → выплата идёт на 3-й уровень глубины (R3)</li>
+  <li><strong>Уровни 4 и 8</strong> → выплата идёт на 4-й уровень глубины (R4)</li>
+</ul>
+
+<h2>Что происходит, если апплайнер неактивен?</h2>
+<p>Если у апплайнера нужного уровня нет активированного соответствующего уровня, выплата направляется в кошелёк проекта. Это стимулирует участников держать уровни активными.</p>
+
+<h2>Overflow — почему важно</h2>
+<p>Когда у кого-то «выше» вас по матрице приходит 4-й реферал (превышая лимит 3), новый участник «спускается» вниз — потенциально под вас. Это называется <strong>overflow</strong>, и это значит, что вы можете получать выплаты от людей, которых не приглашали лично.</p>
+
+<blockquote>Чем выше вы в матрице и чем больше людей под вами — тем чаще срабатывает overflow в вашу пользу.</blockquote>
+
+<h2>Сколько можно заработать</h2>
+<p>Используйте <a href="/#calc">калькулятор на главной странице</a>, чтобы рассчитать потенциальный доход исходя из числа рефералов и активных уровней.</p>
+      </div>
+
+      <div class="post-share">
+  <div class="post-share-label">Поделиться статьёй</div>
+  <div class="post-share-buttons">
+    <a href="https://t.me/share/url?url=https%3A%2F%2Ftonforce.app%2Fblog%2Fhow-tonforce-matrix-works.html&text=%D0%9A%D0%B0%D0%BA%20%D1%80%D0%B0%D0%B1%D0%BE%D1%82%D0%B0%D0%B5%D1%82%20%D0%BC%D0%B0%D1%82%D1%80%D0%B8%D1%86%D0%B0%203%C3%978%20%D0%B2%20TonForce" target="_blank" rel="noopener" class="share-btn share-tg">Telegram</a>
+    <a href="https://twitter.com/intent/tweet?url=https%3A%2F%2Ftonforce.app%2Fblog%2Fhow-tonforce-matrix-works.html&text=%D0%9A%D0%B0%D0%BA%20%D1%80%D0%B0%D0%B1%D0%BE%D1%82%D0%B0%D0%B5%D1%82%20%D0%BC%D0%B0%D1%82%D1%80%D0%B8%D1%86%D0%B0%203%C3%978%20%D0%B2%20TonForce" target="_blank" rel="noopener" class="share-btn share-tw">Twitter / X</a>
+    <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Ftonforce.app%2Fblog%2Fhow-tonforce-matrix-works.html" target="_blank" rel="noopener" class="share-btn share-fb">Facebook</a>
+    <a href="https://vk.com/share.php?url=https%3A%2F%2Ftonforce.app%2Fblog%2Fhow-tonforce-matrix-works.html&title=%D0%9A%D0%B0%D0%BA%20%D1%80%D0%B0%D0%B1%D0%BE%D1%82%D0%B0%D0%B5%D1%82%20%D0%BC%D0%B0%D1%82%D1%80%D0%B8%D1%86%D0%B0%203%C3%978%20%D0%B2%20TonForce" target="_blank" rel="noopener" class="share-btn share-vk">VK</a>
+    <a href="https://api.whatsapp.com/send?text=%D0%9A%D0%B0%D0%BA%20%D1%80%D0%B0%D0%B1%D0%BE%D1%82%D0%B0%D0%B5%D1%82%20%D0%BC%D0%B0%D1%82%D1%80%D0%B8%D1%86%D0%B0%203%C3%978%20%D0%B2%20TonForce%20https%3A%2F%2Ftonforce.app%2Fblog%2Fhow-tonforce-matrix-works.html" target="_blank" rel="noopener" class="share-btn share-wa">WhatsApp</a>
+    <button onclick="copyLink(this)" class="share-btn share-copy" data-url="https://tonforce.app/blog/how-tonforce-matrix-works.html">🔗 Скопировать ссылку</button>
+  </div>
+</div>
+
+      <div class="post-comments">
+        <div class="post-comments-title">💬 Комментарии</div>
+        <div id="disqus_thread"></div>
+        <script>
+          var disqus_config = function () {
+            this.page.url = 'https://tonforce.app/blog/how-tonforce-matrix-works.html';
+            this.page.identifier = 'how-tonforce-matrix-works-ru';
+          };
+          (function() {
+            var d = document, s = d.createElement('script');
+            s.src = 'https://tonforce.disqus.com/embed.js';
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+          })();
+        </script>
+        <noscript>Please enable JavaScript to view comments powered by Disqus.</noscript>
+      </div>
+    </div>
+  </article>
+
+  <section class="related-posts">
+    <div class="container">
+      <h2><span class="gradient">Похожие статьи</span></h2>
+      <div class="posts-grid">
+            <a href="launch-tonforce-v4.html" class="post-card">
+        <div class="post-card-image placeholder">🚀</div>
+        <div class="post-card-body">
+          <div class="post-card-meta">
+            <span class="post-card-tag">Анонс</span>
+            <span>25 мая 2026</span>
+          </div>
+          <h3 class="post-card-title">TonForce v4 запущен в TON Mainnet</h3>
+          <div class="post-card-readmore">Читать дальше</div>
+        </div>
+      </a>
+      <a href="security-audit-results.html" class="post-card">
+        <div class="post-card-image placeholder">🛡️</div>
+        <div class="post-card-body">
+          <div class="post-card-meta">
+            <span class="post-card-tag">Безопасность</span>
+            <span>15 мая 2026</span>
+          </div>
+          <h3 class="post-card-title">Технический обзор контракта: результаты</h3>
+          <div class="post-card-readmore">Читать дальше</div>
+        </div>
+      </a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer role="contentinfo">
+  <div class="container">
+    <div class="footer-links">
+      <a href="/">TonForce</a>
+      <a href="/blog/">Блог</a>
+      <a href="/#about">О проекте</a>
+      <a href="/#security">Безопасность</a>
+      <a href="https://t.me/tonforce_bot" target="_blank" rel="noopener">Telegram Bot</a>
+      <a href="https://t.me/chat_tonforce" target="_blank" rel="noopener">Telegram Chat</a>
+      <a href="https://github.com/spsonlys/tonforce" target="_blank" rel="noopener">GitHub</a>
+    </div>
+    <div>© 2026 TonForce. Decentralized Matrix on TON Blockchain.</div>
+  </div>
+</footer>
+
+<script>
+function copyLink(btn) {
+  var url = btn.getAttribute('data-url');
+  var original = btn.textContent;
+  navigator.clipboard.writeText(url).then(function() {
+    btn.classList.add('copied');
+    btn.textContent = '✓ Скопировано';
+    setTimeout(function() {
+      btn.classList.remove('copied');
+      btn.textContent = original;
+    }, 2000);
+  });
+}
+</script>
+
+</body>
+</html>

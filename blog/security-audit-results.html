@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Технический обзор контракта: результаты | TonForce</title>
+<meta name="description" content="Результаты технического обзора смарт-контракта TonForce v4: проверки безопасности, защита от reentrancy, integer overflow и DoS." />
+<meta name="robots" content="index, follow, max-image-preview:large" />
+
+<link rel="canonical" href="https://tonforce.app/blog/security-audit-results.html" />
+<link rel="alternate" hreflang="ru" href="https://tonforce.app/blog/security-audit-results.html" />
+<link rel="alternate" hreflang="en" href="https://tonforce.app/en/blog/security-audit-results.html" />
+<link rel="alternate" hreflang="uk" href="https://tonforce.app/ua/blog/security-audit-results.html" />
+<link rel="alternate" hreflang="x-default" href="https://tonforce.app/blog/security-audit-results.html" />
+
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://tonforce.app/blog/security-audit-results.html" />
+<meta property="og:title" content="Технический обзор контракта: результаты" />
+<meta property="og:description" content="Полный анализ безопасности TonForce v4 завершён. Все 9 ключевых проверок пройдены успешно." />
+<meta property="og:image" content="https://tonforce.app/og-image.jpg" />
+<meta property="og:locale" content="ru_RU" />
+<meta property="article:published_time" content="2026-05-15T00:00:00Z" />
+<meta property="article:section" content="Безопасность" />
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Технический обзор контракта: результаты" />
+<meta name="twitter:description" content="Полный анализ безопасности TonForce v4 завершён. Все 9 ключевых проверок пройдены успешно." />
+<meta name="twitter:image" content="https://tonforce.app/og-image.jpg" />
+
+<link rel="icon" href="/logo.png" type="image/png" />
+<link rel="apple-touch-icon" href="/logo.png" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Bruno+Ace+SC&family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+
+<link rel="stylesheet" href="/blog/blog.css" />
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Технический обзор контракта: результаты",
+  "description": "Полный анализ безопасности TonForce v4 завершён. Все 9 ключевых проверок пройдены успешно.",
+  "image": "https://tonforce.app/og-image.jpg",
+  "datePublished": "2026-05-15T00:00:00Z",
+  "dateModified": "2026-05-15T00:00:00Z",
+  "author": {
+    "@type": "Organization",
+    "name": "TonForce",
+    "url": "https://tonforce.app/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "TonForce",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://tonforce.app/logo.png"
+    }
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://tonforce.app/blog/security-audit-results.html"
+  },
+  "inLanguage": "ru"
+}
+</script>
+</head>
+<body>
+
+<nav class="nav" role="navigation">
+  <div class="nav-inner">
+    <a href="/" class="nav-logo" aria-label="TonForce">
+      <img src="/logo.png" alt="TonForce" width="36" height="36" />
+      <span>TONFORCE</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="/#about">О проекте</a></li>
+      <li><a href="/#security">Безопасность</a></li>
+      <li><a href="/#levels">Уровни</a></li>
+      <li><a href="/blog/">Блог</a></li>
+    </ul>
+    <div class="nav-right">
+      <div class="lang-switcher">
+                <a href="/blog/" class="active" hreflang="ru" aria-current="page">RU</a>
+        <a href="/en/blog/" hreflang="en">EN</a>
+        <a href="/ua/blog/" hreflang="uk">UA</a>
+      </div>
+      <a href="https://t.me/tonforce_bot" class="btn" target="_blank" rel="noopener">
+        🚀 Запустить
+      </a>
+    </div>
+  </div>
+</nav>
+
+<main>
+  <article class="post-page">
+    <div class="container">
+      <a href="/blog/" class="post-back">← Назад к блогу</a>
+
+      <div class="post-header">
+        <div class="post-meta">
+          <span class="post-tag">Безопасность</span>
+          <span>📅 15 мая 2026</span>
+          <span>⏱ 5 мин</span>
+        </div>
+        <h1 class="post-title">Технический обзор контракта: результаты</h1>
+        <p class="post-lead">Полный анализ безопасности TonForce v4 завершён. Все 9 ключевых проверок пройдены успешно.</p>
+      </div>
+
+      <div class="post-cover placeholder">🛡️</div>
+
+      <div class="post-content">
+        <p>Команда TonForce завершила <strong>внутренний технический обзор</strong> смарт-контракта v4. В этой статье делимся результатами и тем, что они означают для участников.</p>
+
+<h2>Что проверяли</h2>
+<p>Обзор охватил 9 ключевых направлений безопасности смарт-контрактов в сети TON:</p>
+
+<ul>
+  <li>✓ <strong>Reentrancy attack</strong> — TON использует асинхронные сообщения, классический reentrancy невозможен</li>
+  <li>✓ <strong>Integer overflow / underflow</strong> — все числа в безопасных типах (uint32, uint64, coins)</li>
+  <li>✓ <strong>Unauthorized withdrawal</strong> — Withdraw защищён <code>require(sender() == owner)</code></li>
+  <li>✓ <strong>Denial of Service</strong> — лимит рекурсии 5 уровней, SendIgnoreErrors на выплатах</li>
+  <li>✓ <strong>Валидация входных данных</strong> — все обработчики проверяют параметры, при ошибке делают refund</li>
+  <li>✓ <strong>Защита от повторной регистрации</strong> — контракт возвращает средства, не выполняя дубль</li>
+  <li>✓ <strong>Time manipulation</strong> — now() в TON предоставляют валидаторы, манипуляция невозможна</li>
+  <li>✓ <strong>Rug pull (custodial)</strong> — контракт не хранит средства пользователей, все выплаты мгновенны</li>
+  <li>✓ <strong>Owner manipulation</strong> — цены, дерево и подписки невозможно изменить после деплоя</li>
+</ul>
+
+<h2>Адрес контракта</h2>
+<p>Контракт развёрнут в TON Mainnet по адресу:</p>
+<pre><code>EQD9w0u-1pXUF3YWHA8b5YRG_CdDhjlyZAJ37uoT1YvljZLb</code></pre>
+
+<p>Проверить можно в любом блокчейн-эксплорере:</p>
+<ul>
+  <li><a href="https://tonscan.org/address/EQD9w0u-1pXUF3YWHA8b5YRG_CdDhjlyZAJ37uoT1YvljZLb" target="_blank" rel="noopener">Tonscan</a></li>
+  <li><a href="https://tonviewer.com/EQD9w0u-1pXUF3YWHA8b5YRG_CdDhjlyZAJ37uoT1YvljZLb" target="_blank" rel="noopener">Tonviewer</a></li>
+</ul>
+
+<h2>Важное уведомление</h2>
+<blockquote>Это <strong>внутренний</strong> технический обзор, выполненный командой проекта. Он не является сторонним аудитом от независимой компании (CertiK, Hacken, OtterSec). Перед использованием рекомендуем самостоятельно проанализировать код, опубликованный на <a href="https://github.com/spsonlys/tonforce" target="_blank" rel="noopener">GitHub</a>.</blockquote>
+
+<p>Участие в матричной MLM-программе сопряжено с экономическим риском. Инвестируйте только те средства, потеря которых не повлияет на ваше финансовое благополучие.</p>
+
+<h2>Полный отчёт</h2>
+<p>Полный PDF-отчёт о техническом обзоре доступен <a href="/TonForce_Technical_Review.pdf" target="_blank" rel="noopener">по этой ссылке</a>.</p>
+      </div>
+
+      <div class="post-share">
+  <div class="post-share-label">Поделиться статьёй</div>
+  <div class="post-share-buttons">
+    <a href="https://t.me/share/url?url=https%3A%2F%2Ftonforce.app%2Fblog%2Fsecurity-audit-results.html&text=%D0%A2%D0%B5%D1%85%D0%BD%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B8%D0%B9%20%D0%BE%D0%B1%D0%B7%D0%BE%D1%80%20%D0%BA%D0%BE%D0%BD%D1%82%D1%80%D0%B0%D0%BA%D1%82%D0%B0%3A%20%D1%80%D0%B5%D0%B7%D1%83%D0%BB%D1%8C%D1%82%D0%B0%D1%82%D1%8B" target="_blank" rel="noopener" class="share-btn share-tg">Telegram</a>
+    <a href="https://twitter.com/intent/tweet?url=https%3A%2F%2Ftonforce.app%2Fblog%2Fsecurity-audit-results.html&text=%D0%A2%D0%B5%D1%85%D0%BD%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B8%D0%B9%20%D0%BE%D0%B1%D0%B7%D0%BE%D1%80%20%D0%BA%D0%BE%D0%BD%D1%82%D1%80%D0%B0%D0%BA%D1%82%D0%B0%3A%20%D1%80%D0%B5%D0%B7%D1%83%D0%BB%D1%8C%D1%82%D0%B0%D1%82%D1%8B" target="_blank" rel="noopener" class="share-btn share-tw">Twitter / X</a>
+    <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Ftonforce.app%2Fblog%2Fsecurity-audit-results.html" target="_blank" rel="noopener" class="share-btn share-fb">Facebook</a>
+    <a href="https://vk.com/share.php?url=https%3A%2F%2Ftonforce.app%2Fblog%2Fsecurity-audit-results.html&title=%D0%A2%D0%B5%D1%85%D0%BD%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B8%D0%B9%20%D0%BE%D0%B1%D0%B7%D0%BE%D1%80%20%D0%BA%D0%BE%D0%BD%D1%82%D1%80%D0%B0%D0%BA%D1%82%D0%B0%3A%20%D1%80%D0%B5%D0%B7%D1%83%D0%BB%D1%8C%D1%82%D0%B0%D1%82%D1%8B" target="_blank" rel="noopener" class="share-btn share-vk">VK</a>
+    <a href="https://api.whatsapp.com/send?text=%D0%A2%D0%B5%D1%85%D0%BD%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B8%D0%B9%20%D0%BE%D0%B1%D0%B7%D0%BE%D1%80%20%D0%BA%D0%BE%D0%BD%D1%82%D1%80%D0%B0%D0%BA%D1%82%D0%B0%3A%20%D1%80%D0%B5%D0%B7%D1%83%D0%BB%D1%8C%D1%82%D0%B0%D1%82%D1%8B%20https%3A%2F%2Ftonforce.app%2Fblog%2Fsecurity-audit-results.html" target="_blank" rel="noopener" class="share-btn share-wa">WhatsApp</a>
+    <button onclick="copyLink(this)" class="share-btn share-copy" data-url="https://tonforce.app/blog/security-audit-results.html">🔗 Скопировать ссылку</button>
+  </div>
+</div>
+
+      <div class="post-comments">
+        <div class="post-comments-title">💬 Комментарии</div>
+        <div id="disqus_thread"></div>
+        <script>
+          var disqus_config = function () {
+            this.page.url = 'https://tonforce.app/blog/security-audit-results.html';
+            this.page.identifier = 'security-audit-results-ru';
+          };
+          (function() {
+            var d = document, s = d.createElement('script');
+            s.src = 'https://tonforce.disqus.com/embed.js';
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+          })();
+        </script>
+        <noscript>Please enable JavaScript to view comments powered by Disqus.</noscript>
+      </div>
+    </div>
+  </article>
+
+  <section class="related-posts">
+    <div class="container">
+      <h2><span class="gradient">Похожие статьи</span></h2>
+      <div class="posts-grid">
+            <a href="launch-tonforce-v4.html" class="post-card">
+        <div class="post-card-image placeholder">🚀</div>
+        <div class="post-card-body">
+          <div class="post-card-meta">
+            <span class="post-card-tag">Анонс</span>
+            <span>25 мая 2026</span>
+          </div>
+          <h3 class="post-card-title">TonForce v4 запущен в TON Mainnet</h3>
+          <div class="post-card-readmore">Читать дальше</div>
+        </div>
+      </a>
+      <a href="how-tonforce-matrix-works.html" class="post-card">
+        <div class="post-card-image placeholder">💎</div>
+        <div class="post-card-body">
+          <div class="post-card-meta">
+            <span class="post-card-tag">Гайд</span>
+            <span>20 мая 2026</span>
+          </div>
+          <h3 class="post-card-title">Как работает матрица 3×8 в TonForce</h3>
+          <div class="post-card-readmore">Читать дальше</div>
+        </div>
+      </a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer role="contentinfo">
+  <div class="container">
+    <div class="footer-links">
+      <a href="/">TonForce</a>
+      <a href="/blog/">Блог</a>
+      <a href="/#about">О проекте</a>
+      <a href="/#security">Безопасность</a>
+      <a href="https://t.me/tonforce_bot" target="_blank" rel="noopener">Telegram Bot</a>
+      <a href="https://t.me/chat_tonforce" target="_blank" rel="noopener">Telegram Chat</a>
+      <a href="https://github.com/spsonlys/tonforce" target="_blank" rel="noopener">GitHub</a>
+    </div>
+    <div>© 2026 TonForce. Decentralized Matrix on TON Blockchain.</div>
+  </div>
+</footer>
+
+<script>
+function copyLink(btn) {
+  var url = btn.getAttribute('data-url');
+  var original = btn.textContent;
+  navigator.clipboard.writeText(url).then(function() {
+    btn.classList.add('copied');
+    btn.textContent = '✓ Скопировано';
+    setTimeout(function() {
+      btn.classList.remove('copied');
+      btn.textContent = original;
+    }, 2000);
+  });
+}
+</script>
+
+</body>
+</html>

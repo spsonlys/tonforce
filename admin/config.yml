@@ -1,0 +1,112 @@
+backend:
+  name: github
+  repo: spsonlys/tonforce  # ⚠️ Замени на свой репозиторий username/repo
+  branch: main
+  base_url: https://api.netlify.com
+  auth_endpoint: auth
+
+# Локально для теста (раскомментируй для локальной работы):
+# local_backend: true
+
+media_folder: "images/blog"
+public_folder: "/images/blog"
+
+# Можно публиковать сразу или с предварительным черновиком
+publish_mode: editorial_workflow
+
+locale: 'ru'
+
+# Коллекции — каждая = тип контента
+collections:
+  # ─── Русские посты ─────────────────────
+  - name: "posts_ru"
+    label: "📝 Посты (Русский)"
+    label_singular: "пост"
+    folder: "blog/posts"
+    create: true
+    slug: "{{slug}}"
+    extension: "md"
+    format: "frontmatter"
+    summary: "{{title}} — {{date | date('DD.MM.YYYY')}}"
+    fields:
+      - {label: "Заголовок", name: "title", widget: "string"}
+      - {label: "Подзаголовок (краткое описание)", name: "lead", widget: "text"}
+      - {label: "Дата публикации", name: "date", widget: "datetime"}
+      - label: "Категория"
+        name: "category"
+        widget: "select"
+        options:
+          - {label: "📢 Анонс", value: "announcements"}
+          - {label: "📚 Гайд", value: "guides"}
+          - {label: "🛡️ Безопасность", value: "security"}
+          - {label: "💎 Кейсы", value: "case-studies"}
+          - {label: "📊 Аналитика", value: "analytics"}
+          - {label: "🎉 Истории успеха", value: "success-stories"}
+      - {label: "Иконка обложки (эмодзи)", name: "cover_emoji", widget: "string", default: "🚀"}
+      - {label: "Изображение обложки (опционально)", name: "cover_image", widget: "image", required: false}
+      - {label: "Время чтения (минут)", name: "read_time", widget: "number", default: 5, min: 1, max: 60}
+      - {label: "Meta description (для SEO)", name: "meta_description", widget: "text", hint: "140-160 символов, для поисковиков"}
+      - {label: "Текст статьи (Markdown)", name: "body", widget: "markdown"}
+      - {label: "Опубликовать", name: "published", widget: "boolean", default: true}
+
+  # ─── Английские посты ──────────────────
+  - name: "posts_en"
+    label: "📝 Posts (English)"
+    label_singular: "post"
+    folder: "en/blog/posts"
+    create: true
+    slug: "{{slug}}"
+    extension: "md"
+    format: "frontmatter"
+    summary: "{{title}} — {{date | date('YYYY-MM-DD')}}"
+    fields:
+      - {label: "Title", name: "title", widget: "string"}
+      - {label: "Lead (short summary)", name: "lead", widget: "text"}
+      - {label: "Publication date", name: "date", widget: "datetime"}
+      - label: "Category"
+        name: "category"
+        widget: "select"
+        options:
+          - {label: "📢 Announcement", value: "announcements"}
+          - {label: "📚 Guide", value: "guides"}
+          - {label: "🛡️ Security", value: "security"}
+          - {label: "💎 Case studies", value: "case-studies"}
+          - {label: "📊 Analytics", value: "analytics"}
+          - {label: "🎉 Success stories", value: "success-stories"}
+      - {label: "Cover emoji", name: "cover_emoji", widget: "string", default: "🚀"}
+      - {label: "Cover image (optional)", name: "cover_image", widget: "image", required: false}
+      - {label: "Read time (minutes)", name: "read_time", widget: "number", default: 5, min: 1, max: 60}
+      - {label: "Meta description (SEO)", name: "meta_description", widget: "text", hint: "140-160 chars, for search engines"}
+      - {label: "Article body (Markdown)", name: "body", widget: "markdown"}
+      - {label: "Publish", name: "published", widget: "boolean", default: true}
+
+  # ─── Украинские посты ──────────────────
+  - name: "posts_ua"
+    label: "📝 Пости (Українська)"
+    label_singular: "піст"
+    folder: "ua/blog/posts"
+    create: true
+    slug: "{{slug}}"
+    extension: "md"
+    format: "frontmatter"
+    summary: "{{title}} — {{date | date('DD.MM.YYYY')}}"
+    fields:
+      - {label: "Заголовок", name: "title", widget: "string"}
+      - {label: "Підзаголовок (короткий опис)", name: "lead", widget: "text"}
+      - {label: "Дата публікації", name: "date", widget: "datetime"}
+      - label: "Категорія"
+        name: "category"
+        widget: "select"
+        options:
+          - {label: "📢 Анонс", value: "announcements"}
+          - {label: "📚 Гайд", value: "guides"}
+          - {label: "🛡️ Безпека", value: "security"}
+          - {label: "💎 Кейси", value: "case-studies"}
+          - {label: "📊 Аналітика", value: "analytics"}
+          - {label: "🎉 Історії успіху", value: "success-stories"}
+      - {label: "Іконка обкладинки (емодзі)", name: "cover_emoji", widget: "string", default: "🚀"}
+      - {label: "Зображення обкладинки (опціонально)", name: "cover_image", widget: "image", required: false}
+      - {label: "Час читання (хвилин)", name: "read_time", widget: "number", default: 5, min: 1, max: 60}
+      - {label: "Meta description (для SEO)", name: "meta_description", widget: "text"}
+      - {label: "Текст статті (Markdown)", name: "body", widget: "markdown"}
+      - {label: "Опублікувати", name: "published", widget: "boolean", default: true}

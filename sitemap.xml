@@ -3,85 +3,156 @@
         xmlns:xhtml="http://www.w3.org/1999/xhtml"
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
 
-  <!-- ═══════════ РУССКАЯ ВЕРСИЯ (Главная / по умолчанию) ═══════════ -->
+  <!-- ═══════════ ГЛАВНАЯ — 3 ЯЗЫКА ═══════════ -->
   <url>
     <loc>https://tonforce.app/</loc>
-    <lastmod>2026-05-25</lastmod>
+    <lastmod>2026-05-26</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
     <xhtml:link rel="alternate" hreflang="ru" href="https://tonforce.app/" />
     <xhtml:link rel="alternate" hreflang="en" href="https://tonforce.app/en/" />
     <xhtml:link rel="alternate" hreflang="uk" href="https://tonforce.app/ua/" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tonforce.app/" />
-    <image:image>
-      <image:loc>https://tonforce.app/og-image.jpg</image:loc>
-      <image:title>TonForce — Заработок на TON блокчейне</image:title>
-    </image:image>
-    <image:image>
-      <image:loc>https://tonforce.app/logo.png</image:loc>
-      <image:title>TonForce Logo</image:title>
-    </image:image>
   </url>
-
-  <!-- ═══════════ АНГЛИЙСКАЯ ВЕРСИЯ ═══════════ -->
   <url>
     <loc>https://tonforce.app/en/</loc>
-    <lastmod>2026-05-25</lastmod>
+    <lastmod>2026-05-26</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
     <xhtml:link rel="alternate" hreflang="ru" href="https://tonforce.app/" />
     <xhtml:link rel="alternate" hreflang="en" href="https://tonforce.app/en/" />
     <xhtml:link rel="alternate" hreflang="uk" href="https://tonforce.app/ua/" />
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://tonforce.app/" />
-    <image:image>
-      <image:loc>https://tonforce.app/og-image.jpg</image:loc>
-      <image:title>TonForce — Earn on TON Blockchain</image:title>
-    </image:image>
   </url>
-
-  <!-- ═══════════ УКРАИНСКАЯ ВЕРСИЯ ═══════════ -->
   <url>
     <loc>https://tonforce.app/ua/</loc>
-    <lastmod>2026-05-25</lastmod>
+    <lastmod>2026-05-26</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
     <xhtml:link rel="alternate" hreflang="ru" href="https://tonforce.app/" />
     <xhtml:link rel="alternate" hreflang="en" href="https://tonforce.app/en/" />
     <xhtml:link rel="alternate" hreflang="uk" href="https://tonforce.app/ua/" />
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://tonforce.app/" />
-    <image:image>
-      <image:loc>https://tonforce.app/og-image.jpg</image:loc>
-      <image:title>TonForce — Заробіток на блокчейні TON</image:title>
-    </image:image>
   </url>
 
-  <!-- ═══════════ ЯКОРНЫЕ ССЫЛКИ — RU ═══════════ -->
-  <url><loc>https://tonforce.app/#about</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://tonforce.app/#how</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://tonforce.app/#levels</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://tonforce.app/#security</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://tonforce.app/#calc</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://tonforce.app/#faq</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
-
-  <!-- ═══════════ ЯКОРНЫЕ ССЫЛКИ — EN ═══════════ -->
-  <url><loc>https://tonforce.app/en/#about</loc><changefreq>weekly</changefreq><priority>0.6</priority></url>
-  <url><loc>https://tonforce.app/en/#how</loc><changefreq>weekly</changefreq><priority>0.6</priority></url>
-  <url><loc>https://tonforce.app/en/#levels</loc><changefreq>weekly</changefreq><priority>0.6</priority></url>
-  <url><loc>https://tonforce.app/en/#security</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://tonforce.app/en/#faq</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
-
-  <!-- ═══════════ ЯКОРНЫЕ ССЫЛКИ — UA ═══════════ -->
-  <url><loc>https://tonforce.app/ua/#about</loc><changefreq>weekly</changefreq><priority>0.6</priority></url>
-  <url><loc>https://tonforce.app/ua/#how</loc><changefreq>weekly</changefreq><priority>0.6</priority></url>
-  <url><loc>https://tonforce.app/ua/#levels</loc><changefreq>weekly</changefreq><priority>0.6</priority></url>
-  <url><loc>https://tonforce.app/ua/#security</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://tonforce.app/ua/#faq</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
-
-  <!-- ═══════════ PDF ОТЧЁТА ═══════════ -->
+  <!-- ═══════════ БЛОГ — ГЛАВНЫЕ СТРАНИЦЫ ═══════════ -->
   <url>
-    <loc>https://tonforce.app/TonForce_Technical_Review.pdf</loc>
+    <loc>https://tonforce.app/blog/</loc>
+    <lastmod>2026-05-26</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://tonforce.app/blog/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://tonforce.app/en/blog/" />
+    <xhtml:link rel="alternate" hreflang="uk" href="https://tonforce.app/ua/blog/" />
+  </url>
+  <url>
+    <loc>https://tonforce.app/en/blog/</loc>
+    <lastmod>2026-05-26</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://tonforce.app/blog/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://tonforce.app/en/blog/" />
+    <xhtml:link rel="alternate" hreflang="uk" href="https://tonforce.app/ua/blog/" />
+  </url>
+  <url>
+    <loc>https://tonforce.app/ua/blog/</loc>
+    <lastmod>2026-05-26</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://tonforce.app/blog/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://tonforce.app/en/blog/" />
+    <xhtml:link rel="alternate" hreflang="uk" href="https://tonforce.app/ua/blog/" />
+  </url>
+
+  <!-- ═══════════ ПОСТ: Launch TonForce v4 ═══════════ -->
+  <url>
+    <loc>https://tonforce.app/blog/launch-tonforce-v4.html</loc>
     <lastmod>2026-05-25</lastmod>
     <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://tonforce.app/blog/launch-tonforce-v4.html" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://tonforce.app/en/blog/launch-tonforce-v4.html" />
+    <xhtml:link rel="alternate" hreflang="uk" href="https://tonforce.app/ua/blog/launch-tonforce-v4.html" />
+  </url>
+  <url>
+    <loc>https://tonforce.app/en/blog/launch-tonforce-v4.html</loc>
+    <lastmod>2026-05-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://tonforce.app/ua/blog/launch-tonforce-v4.html</loc>
+    <lastmod>2026-05-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- ═══════════ ПОСТ: How matrix works ═══════════ -->
+  <url>
+    <loc>https://tonforce.app/blog/how-tonforce-matrix-works.html</loc>
+    <lastmod>2026-05-20</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://tonforce.app/blog/how-tonforce-matrix-works.html" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://tonforce.app/en/blog/how-tonforce-matrix-works.html" />
+    <xhtml:link rel="alternate" hreflang="uk" href="https://tonforce.app/ua/blog/how-tonforce-matrix-works.html" />
+  </url>
+  <url>
+    <loc>https://tonforce.app/en/blog/how-tonforce-matrix-works.html</loc>
+    <lastmod>2026-05-20</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://tonforce.app/ua/blog/how-tonforce-matrix-works.html</loc>
+    <lastmod>2026-05-20</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- ═══════════ ПОСТ: Security audit ═══════════ -->
+  <url>
+    <loc>https://tonforce.app/blog/security-audit-results.html</loc>
+    <lastmod>2026-05-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://tonforce.app/blog/security-audit-results.html" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://tonforce.app/en/blog/security-audit-results.html" />
+    <xhtml:link rel="alternate" hreflang="uk" href="https://tonforce.app/ua/blog/security-audit-results.html" />
+  </url>
+  <url>
+    <loc>https://tonforce.app/en/blog/security-audit-results.html</loc>
+    <lastmod>2026-05-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://tonforce.app/ua/blog/security-audit-results.html</loc>
+    <lastmod>2026-05-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- ═══════════ RSS-ФИДЫ ═══════════ -->
+  <url>
+    <loc>https://tonforce.app/blog/rss.xml</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://tonforce.app/en/blog/rss.xml</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.4</priority>
+  </url>
+  <url>
+    <loc>https://tonforce.app/ua/blog/rss.xml</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.4</priority>
+  </url>
+
+  <!-- ═══════════ ТЕХНИЧЕСКИЙ ОТЧЁТ PDF ═══════════ -->
+  <url>
+    <loc>https://tonforce.app/TonForce_Technical_Review.pdf</loc>
+    <lastmod>2026-05-15</lastmod>
+    <changefreq>yearly</changefreq>
     <priority>0.6</priority>
   </url>
 

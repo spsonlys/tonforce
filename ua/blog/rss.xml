@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+<channel>
+  <title>Блог TonForce</title>
+  <link>https://tonforce.app/ua/blog/</link>
+  <atom:link href="https://tonforce.app/ua/blog/rss.xml" rel="self" type="application/rss+xml" />
+  <description>Свіжі новини TonForce: оновлення смартконтракту, аналітика блокчейну TON, історії успіху учасників, огляди та інструкції.</description>
+  <language>uk</language>
+  <lastBuildDate>Tue, 26 May 2026 15:21:22 +0000</lastBuildDate>
+  <item>
+    <title><![CDATA[TonForce v4 запущено в TON Mainnet]]></title>
+    <link>https://tonforce.app/ua/blog/launch-tonforce-v4.html</link>
+    <guid isPermaLink="true">https://tonforce.app/ua/blog/launch-tonforce-v4.html</guid>
+    <pubDate>Mon, 25 May 2026 00:00:00 +0000</pubDate>
+    <description><![CDATA[Контракт нового покоління з покращеною безпекою, що пройшов внутрішній технічний огляд, доступний просто зараз.]]></description>
+    <category>Анонс</category>
+  </item>
+  <item>
+    <title><![CDATA[Як працює матриця 3×8 у TonForce]]></title>
+    <link>https://tonforce.app/ua/blog/how-tonforce-matrix-works.html</link>
+    <guid isPermaLink="true">https://tonforce.app/ua/blog/how-tonforce-matrix-works.html</guid>
+    <pubDate>Wed, 20 May 2026 00:00:00 +0000</pubDate>
+    <description><![CDATA[Просте та зрозуміле пояснення механіки матричної структури та реферальної програми глибиною 4 рівні.]]></description>
+    <category>Гайд</category>
+  </item>
+  <item>
+    <title><![CDATA[Технічний огляд контракту: результати]]></title>
+    <link>https://tonforce.app/ua/blog/security-audit-results.html</link>
+    <guid isPermaLink="true">https://tonforce.app/ua/blog/security-audit-results.html</guid>
+    <pubDate>Fri, 15 May 2026 00:00:00 +0000</pubDate>
+    <description><![CDATA[Повний аналіз безпеки TonForce v4 завершено. Усі 9 ключових перевірок пройдено успішно.]]></description>
+    <category>Безпека</category>
+  </item>
+</channel>
+</rss>

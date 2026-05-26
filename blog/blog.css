@@ -1,0 +1,537 @@
+/* ═══════════ TONFORCE BLOG STYLES ═══════════ */
+/* Используется на всех страницах блога: главной и постах */
+
+:root {
+  --bg-0: #050813;
+  --bg-1: #0A0F1C;
+  --bg-2: #14182a;
+  --accent-1: #00D1FF;
+  --accent-2: #7B61FF;
+  --accent-3: #FF2DD0;
+  --gold: #FFD700;
+  --green: #00FF9D;
+  --text: #F0E8FF;
+  --muted: #6B7794;
+  --border: rgba(123, 97, 255, 0.2);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; scroll-padding-top: 80px; }
+
+body {
+  font-family: 'Manrope', sans-serif;
+  background: var(--bg-0);
+  color: var(--text);
+  line-height: 1.6;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+}
+
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background:
+    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(123, 97, 255, 0.2), transparent),
+    radial-gradient(ellipse 60% 40% at 80% 50%, rgba(0, 209, 255, 0.12), transparent),
+    radial-gradient(ellipse 50% 40% at 20% 80%, rgba(255, 45, 208, 0.08), transparent);
+  z-index: -2;
+  pointer-events: none;
+}
+
+body::after {
+  content: '';
+  position: fixed; inset: 0;
+  background-image:
+    linear-gradient(rgba(0, 209, 255, 0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 209, 255, 0.025) 1px, transparent 1px);
+  background-size: 60px 60px;
+  z-index: -1;
+  pointer-events: none;
+  mask-image: radial-gradient(ellipse at center, black 30%, transparent 80%);
+}
+
+.container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+
+/* ─── NAVIGATION ─── */
+.nav {
+  position: fixed; top: 0; left: 0; right: 0;
+  background: rgba(5, 8, 19, 0.7);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  z-index: 100; padding: 14px 0;
+}
+.nav-inner {
+  display: flex; align-items: center; justify-content: space-between;
+  max-width: 1200px; margin: 0 auto; padding: 0 24px;
+}
+.nav-right { display: flex; align-items: center; }
+.nav-logo {
+  display: flex; align-items: center; gap: 10px;
+  font-family: 'Bruno Ace SC', sans-serif;
+  font-size: 18px; letter-spacing: 2px;
+  text-decoration: none; color: inherit;
+}
+.nav-logo img {
+  height: 36px;
+  filter: drop-shadow(0 0 10px rgba(0, 209, 255, 0.5));
+}
+.nav-logo span {
+  background: linear-gradient(90deg, var(--accent-1), var(--accent-2));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.nav-links { display: flex; gap: 28px; list-style: none; }
+.nav-links a {
+  color: var(--muted); text-decoration: none;
+  font-size: 14px; font-weight: 500;
+  letter-spacing: 0.5px; transition: 0.2s;
+}
+.nav-links a:hover { color: var(--accent-1); }
+.nav-links a.active { color: var(--accent-1); }
+
+.lang-switcher {
+  display: flex; align-items: center; gap: 4px;
+  background: rgba(20, 24, 42, 0.6);
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  padding: 4px;
+  margin-right: 12px;
+}
+.lang-switcher a {
+  display: inline-flex; align-items: center;
+  padding: 5px 11px;
+  border-radius: 100px;
+  font-size: 11px; font-weight: 700;
+  letter-spacing: 1px;
+  color: var(--muted);
+  text-decoration: none;
+  transition: 0.2s;
+  text-transform: uppercase;
+}
+.lang-switcher a:hover { color: var(--text); }
+.lang-switcher a.active {
+  background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+  color: white;
+  box-shadow: 0 2px 8px rgba(0, 209, 255, 0.3);
+}
+
+.btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+  color: white; padding: 10px 22px;
+  border-radius: 30px; text-decoration: none;
+  font-weight: 700; font-size: 13px;
+  letter-spacing: 1px; text-transform: uppercase;
+  border: none; cursor: pointer;
+  box-shadow: 0 8px 24px rgba(0, 209, 255, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  transition: 0.3s;
+}
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 32px rgba(0, 209, 255, 0.5);
+}
+.btn-outline {
+  background: transparent;
+  border: 1px solid var(--accent-1);
+  box-shadow: none;
+}
+.btn-outline:hover { background: rgba(0, 209, 255, 0.1); }
+
+@media (max-width: 768px) { .nav-links { display: none; } }
+@media (max-width: 540px) {
+  .lang-switcher a { padding: 5px 8px; font-size: 10px; }
+  .lang-switcher { margin-right: 8px; }
+}
+
+/* ─── BLOG HERO ─── */
+.blog-hero {
+  padding: 140px 0 60px;
+  text-align: center;
+}
+.blog-hero h1 {
+  font-family: 'Bruno Ace SC', sans-serif;
+  font-size: clamp(36px, 6vw, 64px);
+  line-height: 1; letter-spacing: -1px;
+  margin-bottom: 20px;
+}
+.blog-hero h1 .gradient {
+  background: linear-gradient(90deg, var(--accent-1), var(--accent-2), var(--accent-3));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.blog-hero p {
+  color: var(--muted);
+  font-size: clamp(15px, 2vw, 18px);
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+/* ─── POST GRID ─── */
+.posts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 24px;
+  padding: 40px 0 80px;
+}
+
+.post-card {
+  position: relative;
+  background: rgba(20, 24, 42, 0.5);
+  backdrop-filter: blur(20px);
+  border-radius: 20px;
+  overflow: hidden;
+  transition: 0.3s;
+  display: flex;
+  flex-direction: column;
+  text-decoration: none;
+  color: inherit;
+}
+.post-card::before {
+  content: '';
+  position: absolute; inset: 0;
+  border-radius: 20px; padding: 1px;
+  background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor; mask-composite: exclude;
+  pointer-events: none;
+}
+.post-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 40px rgba(0, 209, 255, 0.2);
+}
+
+.post-card-image {
+  width: 100%;
+  aspect-ratio: 16/9;
+  background: linear-gradient(135deg, var(--accent-2), var(--accent-1));
+  overflow: hidden;
+  position: relative;
+}
+.post-card-image img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.post-card-image.placeholder {
+  background: linear-gradient(135deg, rgba(123, 97, 255, 0.3), rgba(0, 209, 255, 0.2));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 64px;
+}
+
+.post-card-body { padding: 24px; flex: 1; display: flex; flex-direction: column; }
+.post-card-meta {
+  display: flex; gap: 12px; align-items: center;
+  font-size: 11px;
+  color: var(--muted);
+  letter-spacing: 1px; text-transform: uppercase;
+  margin-bottom: 12px;
+}
+.post-card-tag {
+  background: rgba(0, 209, 255, 0.1);
+  color: var(--accent-1);
+  padding: 3px 10px;
+  border-radius: 6px;
+  font-weight: 700;
+}
+.post-card-title {
+  font-family: 'Bruno Ace SC', sans-serif;
+  font-size: 18px;
+  line-height: 1.3;
+  margin-bottom: 12px;
+  color: var(--text);
+}
+.post-card:hover .post-card-title {
+  background: linear-gradient(90deg, var(--accent-1), var(--accent-2));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.post-card-excerpt {
+  color: var(--muted);
+  font-size: 14px;
+  flex: 1;
+  margin-bottom: 14px;
+}
+.post-card-readmore {
+  color: var(--accent-1);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+.post-card-readmore::after {
+  content: ' →';
+  transition: 0.2s;
+  display: inline-block;
+}
+.post-card:hover .post-card-readmore::after {
+  transform: translateX(4px);
+}
+
+/* ─── SINGLE POST PAGE ─── */
+.post-page { padding: 120px 0 60px; }
+
+.post-back {
+  display: inline-flex; align-items: center; gap: 8px;
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 13px;
+  margin-bottom: 32px;
+  transition: 0.2s;
+}
+.post-back:hover { color: var(--accent-1); }
+
+.post-header {
+  text-align: center;
+  max-width: 800px;
+  margin: 0 auto 40px;
+}
+.post-meta {
+  display: flex; gap: 16px;
+  justify-content: center;
+  font-size: 12px;
+  color: var(--muted);
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+.post-meta span { display: inline-flex; align-items: center; gap: 6px; }
+.post-tag {
+  background: linear-gradient(135deg, rgba(0, 209, 255, 0.15), rgba(123, 97, 255, 0.15));
+  border: 1px solid rgba(0, 209, 255, 0.3);
+  color: var(--accent-1);
+  padding: 4px 12px;
+  border-radius: 100px;
+  font-weight: 700;
+}
+
+.post-title {
+  font-family: 'Bruno Ace SC', sans-serif;
+  font-size: clamp(28px, 5vw, 48px);
+  line-height: 1.1; letter-spacing: -0.5px;
+  margin-bottom: 20px;
+}
+.post-title .gradient {
+  background: linear-gradient(90deg, var(--accent-1), var(--accent-2));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.post-lead {
+  color: var(--muted);
+  font-size: clamp(16px, 2vw, 19px);
+  line-height: 1.6;
+}
+
+.post-cover {
+  max-width: 900px;
+  margin: 0 auto 40px;
+  border-radius: 24px;
+  overflow: hidden;
+  position: relative;
+}
+.post-cover::before {
+  content: '';
+  position: absolute; inset: 0;
+  border-radius: 24px; padding: 1px;
+  background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor; mask-composite: exclude;
+  pointer-events: none;
+  z-index: 2;
+}
+.post-cover img { width: 100%; display: block; }
+.post-cover.placeholder {
+  aspect-ratio: 16/9;
+  background: linear-gradient(135deg, rgba(123, 97, 255, 0.3), rgba(0, 209, 255, 0.2));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 120px;
+}
+
+.post-content {
+  max-width: 760px;
+  margin: 0 auto;
+  font-size: 17px;
+  line-height: 1.85;
+}
+.post-content p { margin-bottom: 22px; color: var(--text); }
+.post-content h2 {
+  font-family: 'Bruno Ace SC', sans-serif;
+  font-size: clamp(22px, 3vw, 30px);
+  margin: 44px 0 18px;
+  color: var(--accent-1);
+  letter-spacing: -0.3px;
+}
+.post-content h3 {
+  font-family: 'Bruno Ace SC', sans-serif;
+  font-size: 20px;
+  margin: 32px 0 14px;
+  color: white;
+}
+.post-content ul, .post-content ol {
+  padding-left: 24px;
+  margin-bottom: 24px;
+}
+.post-content li {
+  color: var(--text);
+  margin-bottom: 10px;
+}
+.post-content strong { color: white; font-weight: 700; }
+.post-content a {
+  color: var(--accent-1);
+  text-decoration: none;
+  border-bottom: 1px dashed var(--accent-1);
+  transition: 0.2s;
+}
+.post-content a:hover {
+  color: var(--accent-2);
+  border-bottom-color: var(--accent-2);
+}
+.post-content img {
+  width: 100%;
+  border-radius: 16px;
+  margin: 24px 0;
+}
+.post-content blockquote {
+  border-left: 3px solid var(--accent-1);
+  background: rgba(0, 209, 255, 0.04);
+  padding: 16px 22px;
+  margin: 24px 0;
+  border-radius: 0 12px 12px 0;
+  font-style: italic;
+  color: var(--muted);
+}
+.post-content code {
+  background: rgba(20, 24, 42, 0.6);
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-size: 0.9em;
+  color: var(--green);
+  border: 1px solid var(--border);
+}
+.post-content pre {
+  background: rgba(5, 8, 19, 0.8);
+  padding: 20px;
+  border-radius: 12px;
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  margin: 24px 0;
+}
+.post-content pre code {
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--text);
+}
+
+/* ─── SHARE BUTTONS ─── */
+.post-share {
+  max-width: 760px;
+  margin: 60px auto 40px;
+  padding: 28px;
+  background: rgba(20, 24, 42, 0.4);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  text-align: center;
+}
+.post-share-label {
+  font-family: 'Bruno Ace SC', sans-serif;
+  font-size: 12px;
+  letter-spacing: 2px;
+  color: var(--muted);
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+.post-share-buttons {
+  display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;
+}
+.share-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 9px 18px;
+  border-radius: 100px;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  color: white;
+  transition: 0.2s;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+.share-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+}
+.share-btn svg { width: 16px; height: 16px; fill: currentColor; }
+.share-tg { background: linear-gradient(135deg, #2AABEE, #229ED9); }
+.share-tw { background: #000; }
+.share-fb { background: #1877F2; }
+.share-vk { background: #0077FF; }
+.share-wa { background: #25D366; }
+.share-copy {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.15);
+  cursor: pointer;
+}
+.share-copy.copied {
+  background: rgba(0, 255, 157, 0.15);
+  color: var(--green);
+  border-color: rgba(0, 255, 157, 0.4);
+}
+
+/* ─── COMMENTS ─── */
+.post-comments {
+  max-width: 800px;
+  margin: 0 auto 80px;
+  padding: 32px 24px;
+  background: rgba(20, 24, 42, 0.3);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+}
+.post-comments-title {
+  font-family: 'Bruno Ace SC', sans-serif;
+  font-size: 22px;
+  margin-bottom: 24px;
+  text-align: center;
+  color: var(--accent-1);
+  letter-spacing: 1px;
+}
+
+/* ─── RELATED POSTS ─── */
+.related-posts {
+  padding: 40px 0 80px;
+  border-top: 1px solid var(--border);
+}
+.related-posts h2 {
+  font-family: 'Bruno Ace SC', sans-serif;
+  font-size: 26px;
+  text-align: center;
+  margin-bottom: 30px;
+}
+.related-posts h2 .gradient {
+  background: linear-gradient(90deg, var(--accent-1), var(--accent-2));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+
+/* ─── FOOTER ─── */
+footer {
+  border-top: 1px solid var(--border);
+  padding: 40px 0; text-align: center;
+  color: var(--muted); font-size: 13px;
+}
+footer .footer-links {
+  display: flex; gap: 24px; justify-content: center;
+  margin-bottom: 16px; flex-wrap: wrap;
+}
+footer a {
+  color: var(--muted); text-decoration: none; transition: 0.2s;
+}
+footer a:hover { color: var(--accent-1); }
+
+/* ─── EMPTY STATE ─── */
+.empty-state {
+  text-align: center;
+  padding: 60px 24px;
+  color: var(--muted);
+}
+.empty-state-icon { font-size: 64px; margin-bottom: 20px; }
+.empty-state h3 {
+  font-family: 'Bruno Ace SC', sans-serif;
+  font-size: 22px;
+  margin-bottom: 12px;
+  color: var(--text);
+}

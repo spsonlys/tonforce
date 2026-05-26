@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TonForce v4 launched on TON Mainnet | TonForce</title>
+<meta name="description" content="TonForce v4 launch on TON Mainnet — a new smart contract with enhanced security, 8 levels and a 3×8 matrix." />
+<meta name="robots" content="index, follow, max-image-preview:large" />
+
+<link rel="canonical" href="https://tonforce.app/en/blog/launch-tonforce-v4.html" />
+<link rel="alternate" hreflang="ru" href="https://tonforce.app/blog/launch-tonforce-v4.html" />
+<link rel="alternate" hreflang="en" href="https://tonforce.app/en/blog/launch-tonforce-v4.html" />
+<link rel="alternate" hreflang="uk" href="https://tonforce.app/ua/blog/launch-tonforce-v4.html" />
+<link rel="alternate" hreflang="x-default" href="https://tonforce.app/blog/launch-tonforce-v4.html" />
+
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://tonforce.app/en/blog/launch-tonforce-v4.html" />
+<meta property="og:title" content="TonForce v4 launched on TON Mainnet" />
+<meta property="og:description" content="The next-generation contract with enhanced security, having passed an internal technical review, is available right now." />
+<meta property="og:image" content="https://tonforce.app/og-image.jpg" />
+<meta property="og:locale" content="en_US" />
+<meta property="article:published_time" content="2026-05-25T00:00:00Z" />
+<meta property="article:section" content="Announcement" />
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="TonForce v4 launched on TON Mainnet" />
+<meta name="twitter:description" content="The next-generation contract with enhanced security, having passed an internal technical review, is available right now." />
+<meta name="twitter:image" content="https://tonforce.app/og-image.jpg" />
+
+<link rel="icon" href="/logo.png" type="image/png" />
+<link rel="apple-touch-icon" href="/logo.png" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Bruno+Ace+SC&family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+
+<link rel="stylesheet" href="/blog/blog.css" />
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "TonForce v4 launched on TON Mainnet",
+  "description": "The next-generation contract with enhanced security, having passed an internal technical review, is available right now.",
+  "image": "https://tonforce.app/og-image.jpg",
+  "datePublished": "2026-05-25T00:00:00Z",
+  "dateModified": "2026-05-25T00:00:00Z",
+  "author": {
+    "@type": "Organization",
+    "name": "TonForce",
+    "url": "https://tonforce.app/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "TonForce",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://tonforce.app/logo.png"
+    }
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://tonforce.app/en/blog/launch-tonforce-v4.html"
+  },
+  "inLanguage": "en"
+}
+</script>
+</head>
+<body>
+
+<nav class="nav" role="navigation">
+  <div class="nav-inner">
+    <a href="/en/" class="nav-logo" aria-label="TonForce">
+      <img src="/logo.png" alt="TonForce" width="36" height="36" />
+      <span>TONFORCE</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="/en/#about">About</a></li>
+      <li><a href="/en/#security">Security</a></li>
+      <li><a href="/en/#levels">Levels</a></li>
+      <li><a href="/en/blog/">Blog</a></li>
+    </ul>
+    <div class="nav-right">
+      <div class="lang-switcher">
+                <a href="/blog/" hreflang="ru">RU</a>
+        <a href="/en/blog/" class="active" hreflang="en" aria-current="page">EN</a>
+        <a href="/ua/blog/" hreflang="uk">UA</a>
+      </div>
+      <a href="https://t.me/tonforce_bot" class="btn" target="_blank" rel="noopener">
+        🚀 Launch
+      </a>
+    </div>
+  </div>
+</nav>
+
+<main>
+  <article class="post-page">
+    <div class="container">
+      <a href="/en/blog/" class="post-back">← Back to blog</a>
+
+      <div class="post-header">
+        <div class="post-meta">
+          <span class="post-tag">Announcement</span>
+          <span>📅 May 25, 2026</span>
+          <span>⏱ 4 min</span>
+        </div>
+        <h1 class="post-title">TonForce v4 launched on TON Mainnet</h1>
+        <p class="post-lead">The next-generation contract with enhanced security, having passed an internal technical review, is available right now.</p>
+      </div>
+
+      <div class="post-cover placeholder">🚀</div>
+
+      <div class="post-content">
+        <p>The <strong>TonForce</strong> team announces the launch of the fourth version of the smart contract on the TON blockchain mainnet. The new contract implements a 3×8 matrix system with a referral program 4 levels deep and has passed an internal technical security review.</p>
+
+<h2>What's new in version v4</h2>
+<p>In the new version, the team focused on three key areas: security, gas optimization and transparency.</p>
+
+<h3>Enhanced protection</h3>
+<ul>
+  <li><strong>Reentrancy protection</strong> — thanks to TON's async message model</li>
+  <li><strong>Integer overflow / underflow</strong> — all numbers in safe types (uint32, uint64, coins)</li>
+  <li><strong>Unauthorized withdrawal</strong> — Withdraw is protected by <code>require(sender() == owner)</code></li>
+  <li><strong>DoS protection</strong> — recursion limit of 5 levels + SendIgnoreErrors</li>
+</ul>
+
+<h3>Open source</h3>
+<p>The full source code of the contract is published on <a href="https://github.com/spsonlys/tonforce" target="_blank" rel="noopener">GitHub</a>. Anyone can verify the logic on their own — it's 537 lines in <strong>Tact 1.6.13</strong>.</p>
+
+<h2>How to start right now</h2>
+<ol>
+  <li>Install a Tonkeeper wallet or use Wallet in Telegram</li>
+  <li>Buy at least 6 TON via an exchange</li>
+  <li>Open <a href="https://t.me/tonforce_bot" target="_blank" rel="noopener">@tonforce_bot</a></li>
+  <li>Activate the first level for 5.2 TON</li>
+</ol>
+
+<blockquote>The v4 launch is the result of several months of development and testing. We are grateful to the community for feedback and continue to improve the platform.</blockquote>
+
+<p>Join our <a href="https://t.me/chat_tonforce" target="_blank" rel="noopener">Telegram chat</a> to stay up to date with updates and communicate with other participants.</p>
+      </div>
+
+      <div class="post-share">
+  <div class="post-share-label">Share this article</div>
+  <div class="post-share-buttons">
+    <a href="https://t.me/share/url?url=https%3A%2F%2Ftonforce.app%2Fen%2Fblog%2Flaunch-tonforce-v4.html&text=TonForce%20v4%20launched%20on%20TON%20Mainnet" target="_blank" rel="noopener" class="share-btn share-tg">Telegram</a>
+    <a href="https://twitter.com/intent/tweet?url=https%3A%2F%2Ftonforce.app%2Fen%2Fblog%2Flaunch-tonforce-v4.html&text=TonForce%20v4%20launched%20on%20TON%20Mainnet" target="_blank" rel="noopener" class="share-btn share-tw">Twitter / X</a>
+    <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Ftonforce.app%2Fen%2Fblog%2Flaunch-tonforce-v4.html" target="_blank" rel="noopener" class="share-btn share-fb">Facebook</a>
+    <a href="https://vk.com/share.php?url=https%3A%2F%2Ftonforce.app%2Fen%2Fblog%2Flaunch-tonforce-v4.html&title=TonForce%20v4%20launched%20on%20TON%20Mainnet" target="_blank" rel="noopener" class="share-btn share-vk">VK</a>
+    <a href="https://api.whatsapp.com/send?text=TonForce%20v4%20launched%20on%20TON%20Mainnet%20https%3A%2F%2Ftonforce.app%2Fen%2Fblog%2Flaunch-tonforce-v4.html" target="_blank" rel="noopener" class="share-btn share-wa">WhatsApp</a>
+    <button onclick="copyLink(this)" class="share-btn share-copy" data-url="https://tonforce.app/en/blog/launch-tonforce-v4.html">🔗 Copy link</button>
+  </div>
+</div>
+
+      <div class="post-comments">
+        <div class="post-comments-title">💬 Comments</div>
+        <div id="disqus_thread"></div>
+        <script>
+          var disqus_config = function () {
+            this.page.url = 'https://tonforce.app/en/blog/launch-tonforce-v4.html';
+            this.page.identifier = 'launch-tonforce-v4-en';
+          };
+          (function() {
+            var d = document, s = d.createElement('script');
+            s.src = 'https://tonforce.disqus.com/embed.js';
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+          })();
+        </script>
+        <noscript>Please enable JavaScript to view comments powered by Disqus.</noscript>
+      </div>
+    </div>
+  </article>
+
+  <section class="related-posts">
+    <div class="container">
+      <h2><span class="gradient">Related articles</span></h2>
+      <div class="posts-grid">
+            <a href="how-tonforce-matrix-works.html" class="post-card">
+        <div class="post-card-image placeholder">💎</div>
+        <div class="post-card-body">
+          <div class="post-card-meta">
+            <span class="post-card-tag">Guide</span>
+            <span>May 20, 2026</span>
+          </div>
+          <h3 class="post-card-title">How the 3×8 matrix works in TonForce</h3>
+          <div class="post-card-readmore">Read more</div>
+        </div>
+      </a>
+      <a href="security-audit-results.html" class="post-card">
+        <div class="post-card-image placeholder">🛡️</div>
+        <div class="post-card-body">
+          <div class="post-card-meta">
+            <span class="post-card-tag">Security</span>
+            <span>May 15, 2026</span>
+          </div>
+          <h3 class="post-card-title">Technical contract review: results</h3>
+          <div class="post-card-readmore">Read more</div>
+        </div>
+      </a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer role="contentinfo">
+  <div class="container">
+    <div class="footer-links">
+      <a href="/en/">TonForce</a>
+      <a href="/en/blog/">Blog</a>
+      <a href="/en/#about">About</a>
+      <a href="/en/#security">Security</a>
+      <a href="https://t.me/tonforce_bot" target="_blank" rel="noopener">Telegram Bot</a>
+      <a href="https://t.me/chat_tonforce" target="_blank" rel="noopener">Telegram Chat</a>
+      <a href="https://github.com/spsonlys/tonforce" target="_blank" rel="noopener">GitHub</a>
+    </div>
+    <div>© 2026 TonForce. Decentralized Matrix on TON Blockchain.</div>
+  </div>
+</footer>
+
+<script>
+function copyLink(btn) {
+  var url = btn.getAttribute('data-url');
+  var original = btn.textContent;
+  navigator.clipboard.writeText(url).then(function() {
+    btn.classList.add('copied');
+    btn.textContent = '✓ Copied';
+    setTimeout(function() {
+      btn.classList.remove('copied');
+      btn.textContent = original;
+    }, 2000);
+  });
+}
+</script>
+
+</body>
+</html>

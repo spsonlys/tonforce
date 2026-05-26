@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Technical contract review: results | TonForce</title>
+<meta name="description" content="Results of the TonForce v4 smart contract technical review: security checks, protection against reentrancy, integer overflow and DoS." />
+<meta name="robots" content="index, follow, max-image-preview:large" />
+
+<link rel="canonical" href="https://tonforce.app/en/blog/security-audit-results.html" />
+<link rel="alternate" hreflang="ru" href="https://tonforce.app/blog/security-audit-results.html" />
+<link rel="alternate" hreflang="en" href="https://tonforce.app/en/blog/security-audit-results.html" />
+<link rel="alternate" hreflang="uk" href="https://tonforce.app/ua/blog/security-audit-results.html" />
+<link rel="alternate" hreflang="x-default" href="https://tonforce.app/blog/security-audit-results.html" />
+
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://tonforce.app/en/blog/security-audit-results.html" />
+<meta property="og:title" content="Technical contract review: results" />
+<meta property="og:description" content="The full security analysis of TonForce v4 is complete. All 9 key checks have been successfully passed." />
+<meta property="og:image" content="https://tonforce.app/og-image.jpg" />
+<meta property="og:locale" content="en_US" />
+<meta property="article:published_time" content="2026-05-15T00:00:00Z" />
+<meta property="article:section" content="Security" />
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Technical contract review: results" />
+<meta name="twitter:description" content="The full security analysis of TonForce v4 is complete. All 9 key checks have been successfully passed." />
+<meta name="twitter:image" content="https://tonforce.app/og-image.jpg" />
+
+<link rel="icon" href="/logo.png" type="image/png" />
+<link rel="apple-touch-icon" href="/logo.png" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Bruno+Ace+SC&family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+
+<link rel="stylesheet" href="/blog/blog.css" />
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Technical contract review: results",
+  "description": "The full security analysis of TonForce v4 is complete. All 9 key checks have been successfully passed.",
+  "image": "https://tonforce.app/og-image.jpg",
+  "datePublished": "2026-05-15T00:00:00Z",
+  "dateModified": "2026-05-15T00:00:00Z",
+  "author": {
+    "@type": "Organization",
+    "name": "TonForce",
+    "url": "https://tonforce.app/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "TonForce",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://tonforce.app/logo.png"
+    }
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://tonforce.app/en/blog/security-audit-results.html"
+  },
+  "inLanguage": "en"
+}
+</script>
+</head>
+<body>
+
+<nav class="nav" role="navigation">
+  <div class="nav-inner">
+    <a href="/en/" class="nav-logo" aria-label="TonForce">
+      <img src="/logo.png" alt="TonForce" width="36" height="36" />
+      <span>TONFORCE</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="/en/#about">About</a></li>
+      <li><a href="/en/#security">Security</a></li>
+      <li><a href="/en/#levels">Levels</a></li>
+      <li><a href="/en/blog/">Blog</a></li>
+    </ul>
+    <div class="nav-right">
+      <div class="lang-switcher">
+                <a href="/blog/" hreflang="ru">RU</a>
+        <a href="/en/blog/" class="active" hreflang="en" aria-current="page">EN</a>
+        <a href="/ua/blog/" hreflang="uk">UA</a>
+      </div>
+      <a href="https://t.me/tonforce_bot" class="btn" target="_blank" rel="noopener">
+        🚀 Launch
+      </a>
+    </div>
+  </div>
+</nav>
+
+<main>
+  <article class="post-page">
+    <div class="container">
+      <a href="/en/blog/" class="post-back">← Back to blog</a>
+
+      <div class="post-header">
+        <div class="post-meta">
+          <span class="post-tag">Security</span>
+          <span>📅 May 15, 2026</span>
+          <span>⏱ 5 min</span>
+        </div>
+        <h1 class="post-title">Technical contract review: results</h1>
+        <p class="post-lead">The full security analysis of TonForce v4 is complete. All 9 key checks have been successfully passed.</p>
+      </div>
+
+      <div class="post-cover placeholder">🛡️</div>
+
+      <div class="post-content">
+        <p>The TonForce team has completed an <strong>internal technical review</strong> of the v4 smart contract. In this article, we share the results and what they mean for participants.</p>
+
+<h2>What was checked</h2>
+<p>The review covered 9 key areas of smart contract security on the TON network:</p>
+
+<ul>
+  <li>✓ <strong>Reentrancy attack</strong> — TON uses async messages, classic reentrancy is impossible</li>
+  <li>✓ <strong>Integer overflow / underflow</strong> — all numbers in safe types (uint32, uint64, coins)</li>
+  <li>✓ <strong>Unauthorized withdrawal</strong> — Withdraw protected by <code>require(sender() == owner)</code></li>
+  <li>✓ <strong>Denial of Service</strong> — recursion limit of 5 levels, SendIgnoreErrors on payouts</li>
+  <li>✓ <strong>Input validation</strong> — all handlers validate parameters, refund on error</li>
+  <li>✓ <strong>Duplicate registration protection</strong> — contract refunds without re-execution</li>
+  <li>✓ <strong>Time manipulation</strong> — now() in TON is provided by validators, manipulation is impossible</li>
+  <li>✓ <strong>Rug pull (custodial)</strong> — contract holds no user funds, all payouts are instant</li>
+  <li>✓ <strong>Owner manipulation</strong> — prices, tree and subscriptions cannot be changed after deployment</li>
+</ul>
+
+<h2>Contract address</h2>
+<p>The contract is deployed on TON Mainnet at:</p>
+<pre><code>EQD9w0u-1pXUF3YWHA8b5YRG_CdDhjlyZAJ37uoT1YvljZLb</code></pre>
+
+<p>You can verify it in any blockchain explorer:</p>
+<ul>
+  <li><a href="https://tonscan.org/address/EQD9w0u-1pXUF3YWHA8b5YRG_CdDhjlyZAJ37uoT1YvljZLb" target="_blank" rel="noopener">Tonscan</a></li>
+  <li><a href="https://tonviewer.com/EQD9w0u-1pXUF3YWHA8b5YRG_CdDhjlyZAJ37uoT1YvljZLb" target="_blank" rel="noopener">Tonviewer</a></li>
+</ul>
+
+<h2>Important notice</h2>
+<blockquote>This is an <strong>internal</strong> technical review performed by the project team. It is not a third-party audit from an independent firm (CertiK, Hacken, OtterSec). Before using the platform, we recommend analyzing the code published on <a href="https://github.com/spsonlys/tonforce" target="_blank" rel="noopener">GitHub</a> yourself.</blockquote>
+
+<p>Participation in a matrix MLM program involves economic risk. Only invest funds whose loss won't affect your financial well-being.</p>
+
+<h2>Full report</h2>
+<p>The full PDF report of the technical review is available <a href="/TonForce_Technical_Review.pdf" target="_blank" rel="noopener">at this link</a>.</p>
+      </div>
+
+      <div class="post-share">
+  <div class="post-share-label">Share this article</div>
+  <div class="post-share-buttons">
+    <a href="https://t.me/share/url?url=https%3A%2F%2Ftonforce.app%2Fen%2Fblog%2Fsecurity-audit-results.html&text=Technical%20contract%20review%3A%20results" target="_blank" rel="noopener" class="share-btn share-tg">Telegram</a>
+    <a href="https://twitter.com/intent/tweet?url=https%3A%2F%2Ftonforce.app%2Fen%2Fblog%2Fsecurity-audit-results.html&text=Technical%20contract%20review%3A%20results" target="_blank" rel="noopener" class="share-btn share-tw">Twitter / X</a>
+    <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Ftonforce.app%2Fen%2Fblog%2Fsecurity-audit-results.html" target="_blank" rel="noopener" class="share-btn share-fb">Facebook</a>
+    <a href="https://vk.com/share.php?url=https%3A%2F%2Ftonforce.app%2Fen%2Fblog%2Fsecurity-audit-results.html&title=Technical%20contract%20review%3A%20results" target="_blank" rel="noopener" class="share-btn share-vk">VK</a>
+    <a href="https://api.whatsapp.com/send?text=Technical%20contract%20review%3A%20results%20https%3A%2F%2Ftonforce.app%2Fen%2Fblog%2Fsecurity-audit-results.html" target="_blank" rel="noopener" class="share-btn share-wa">WhatsApp</a>
+    <button onclick="copyLink(this)" class="share-btn share-copy" data-url="https://tonforce.app/en/blog/security-audit-results.html">🔗 Copy link</button>
+  </div>
+</div>
+
+      <div class="post-comments">
+        <div class="post-comments-title">💬 Comments</div>
+        <div id="disqus_thread"></div>
+        <script>
+          var disqus_config = function () {
+            this.page.url = 'https://tonforce.app/en/blog/security-audit-results.html';
+            this.page.identifier = 'security-audit-results-en';
+          };
+          (function() {
+            var d = document, s = d.createElement('script');
+            s.src = 'https://tonforce.disqus.com/embed.js';
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+          })();
+        </script>
+        <noscript>Please enable JavaScript to view comments powered by Disqus.</noscript>
+      </div>
+    </div>
+  </article>
+
+  <section class="related-posts">
+    <div class="container">
+      <h2><span class="gradient">Related articles</span></h2>
+      <div class="posts-grid">
+            <a href="launch-tonforce-v4.html" class="post-card">
+        <div class="post-card-image placeholder">🚀</div>
+        <div class="post-card-body">
+          <div class="post-card-meta">
+            <span class="post-card-tag">Announcement</span>
+            <span>May 25, 2026</span>
+          </div>
+          <h3 class="post-card-title">TonForce v4 launched on TON Mainnet</h3>
+          <div class="post-card-readmore">Read more</div>
+        </div>
+      </a>
+      <a href="how-tonforce-matrix-works.html" class="post-card">
+        <div class="post-card-image placeholder">💎</div>
+        <div class="post-card-body">
+          <div class="post-card-meta">
+            <span class="post-card-tag">Guide</span>
+            <span>May 20, 2026</span>
+          </div>
+          <h3 class="post-card-title">How the 3×8 matrix works in TonForce</h3>
+          <div class="post-card-readmore">Read more</div>
+        </div>
+      </a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer role="contentinfo">
+  <div class="container">
+    <div class="footer-links">
+      <a href="/en/">TonForce</a>
+      <a href="/en/blog/">Blog</a>
+      <a href="/en/#about">About</a>
+      <a href="/en/#security">Security</a>
+      <a href="https://t.me/tonforce_bot" target="_blank" rel="noopener">Telegram Bot</a>
+      <a href="https://t.me/chat_tonforce" target="_blank" rel="noopener">Telegram Chat</a>
+      <a href="https://github.com/spsonlys/tonforce" target="_blank" rel="noopener">GitHub</a>
+    </div>
+    <div>© 2026 TonForce. Decentralized Matrix on TON Blockchain.</div>
+  </div>
+</footer>
+
+<script>
+function copyLink(btn) {
+  var url = btn.getAttribute('data-url');
+  var original = btn.textContent;
+  navigator.clipboard.writeText(url).then(function() {
+    btn.classList.add('copied');
+    btn.textContent = '✓ Copied';
+    setTimeout(function() {
+      btn.classList.remove('copied');
+      btn.textContent = original;
+    }, 2000);
+  });
+}
+</script>
+
+</body>
+</html>
