@@ -5,26 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>TonForce CMS — Управление контентом</title>
   <meta name="robots" content="noindex, nofollow" />
-  <link rel="icon" href="/logo.png" type="image/png" />
+  <link rel="icon" href="/favicon.png" type="image/png" />
 </head>
 <body>
-  <!-- Netlify Identity Widget — для логина через Netlify -->
-  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
-
-  <!-- Decap CMS (бывший Netlify CMS) -->
+  <!-- Подключаем Decap CMS (бывший Netlify CMS) -->
   <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
-
   <script>
-    // Если пользователь только что прошёл приглашение — редирект на /admin/
-    if (window.netlifyIdentity) {
-      window.netlifyIdentity.on("init", user => {
-        if (!user) {
-          window.netlifyIdentity.on("login", () => {
-            document.location.href = "/admin/";
-          });
-        }
-      });
-    }
+    // Регистрируем кастомный preview для постов (опционально)
+    // CMS.registerPreviewStyle('/blog/blog.css');
   </script>
 </body>
 </html>
