@@ -1,9 +1,6 @@
 backend:
-  name: github
-  repo: spsonlys/tonforce  # ⚠️ Замени на свой репозиторий username/repo
+  name: git-gateway
   branch: main
-  base_url: https://api.netlify.com
-  auth_endpoint: auth
 
 # Локально для теста (раскомментируй для локальной работы):
 # local_backend: true
@@ -15,6 +12,11 @@ public_folder: "/images/blog"
 publish_mode: editorial_workflow
 
 locale: 'ru'
+
+# URL основного сайта (для preview)
+site_url: https://tonforce.app
+display_url: https://tonforce.app
+logo_url: https://tonforce.app/logo.png
 
 # Коллекции — каждая = тип контента
 collections:

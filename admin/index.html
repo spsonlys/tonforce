@@ -8,11 +8,23 @@
   <link rel="icon" href="/logo.png" type="image/png" />
 </head>
 <body>
-  <!-- Подключаем Decap CMS (бывший Netlify CMS) -->
+  <!-- Netlify Identity Widget — для логина через Netlify -->
+  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+
+  <!-- Decap CMS (бывший Netlify CMS) -->
   <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
+
   <script>
-    // Регистрируем кастомный preview для постов (опционально)
-    // CMS.registerPreviewStyle('/blog/blog.css');
+    // Если пользователь только что прошёл приглашение — редирект на /admin/
+    if (window.netlifyIdentity) {
+      window.netlifyIdentity.on("init", user => {
+        if (!user) {
+          window.netlifyIdentity.on("login", () => {
+            document.location.href = "/admin/";
+          });
+        }
+      });
+    }
   </script>
 </body>
 </html>
