@@ -3,33 +3,33 @@
 <channel>
   <title>TonForce Blog</title>
   <link>https://tonforce.app/en/blog/</link>
-  <atom:link href="https://tonforce.app/en/blog/rss.xml" rel="self" type="application/rss+xml" />
-  <description>Latest TonForce news: smart contract updates, TON blockchain analytics, member success stories, reviews and tutorials.</description>
+  <description>News and updates from the TonForce decentralized matrix platform</description>
   <language>en</language>
-  <lastBuildDate>Tue, 26 May 2026 15:21:22 +0000</lastBuildDate>
+  <lastBuildDate>Thu, 28 May 2026 19:12:17 +0000</lastBuildDate>
+  <atom:link href="https://tonforce.app/en/blog/rss.xml" rel="self" type="application/rss+xml" />
   <item>
-    <title><![CDATA[TonForce v4 launched on TON Mainnet]]></title>
+    <title>TonForce v4 launched on TON Mainnet</title>
     <link>https://tonforce.app/en/blog/launch-tonforce-v4.html</link>
     <guid isPermaLink="true">https://tonforce.app/en/blog/launch-tonforce-v4.html</guid>
-    <pubDate>Mon, 25 May 2026 00:00:00 +0000</pubDate>
-    <description><![CDATA[The next-generation contract with enhanced security, having passed an internal technical review, is available right now.]]></description>
+    <description>Next-generation contract with enhanced security, internal technical review passed, available right now.</description>
     <category>Announcement</category>
+    <pubDate>Mon, 25 May 2026 00:00:00 +0000</pubDate>
   </item>
   <item>
-    <title><![CDATA[How the 3×8 matrix works in TonForce]]></title>
+    <title>How the 3×8 matrix works in TonForce</title>
     <link>https://tonforce.app/en/blog/how-tonforce-matrix-works.html</link>
     <guid isPermaLink="true">https://tonforce.app/en/blog/how-tonforce-matrix-works.html</guid>
-    <pubDate>Wed, 20 May 2026 00:00:00 +0000</pubDate>
-    <description><![CDATA[A simple and clear explanation of the matrix structure mechanics and the 4-level deep referral program.]]></description>
+    <description>Simple and clear explanation of the matrix structure mechanics and the 4-level-deep referral program.</description>
     <category>Guide</category>
+    <pubDate>Wed, 20 May 2026 00:00:00 +0000</pubDate>
   </item>
   <item>
-    <title><![CDATA[Technical contract review: results]]></title>
+    <title>Technical contract review: results</title>
     <link>https://tonforce.app/en/blog/security-audit-results.html</link>
     <guid isPermaLink="true">https://tonforce.app/en/blog/security-audit-results.html</guid>
-    <pubDate>Fri, 15 May 2026 00:00:00 +0000</pubDate>
-    <description><![CDATA[The full security analysis of TonForce v4 is complete. All 9 key checks have been successfully passed.]]></description>
+    <description>Complete TonForce v4 security analysis finished. All 9 key checks passed successfully.</description>
     <category>Security</category>
+    <pubDate>Fri, 15 May 2026 00:00:00 +0000</pubDate>
   </item>
 </channel>
 </rss>
