@@ -1,0 +1,98 @@
+{
+  "ru": [
+    {
+      "slug": "launch-tonforce-v4",
+      "title": "TonForce v4 запущен в TON Mainnet",
+      "lead": "Контракт нового поколения с улучшенной безопасностью, прошедший внутренний технический обзор, доступен прямо сейчас.",
+      "date": "2026-05-25T00:00:00Z",
+      "category": "announcements",
+      "cover_emoji": "🚀",
+      "cover_image": null,
+      "read_time": 4
+    },
+    {
+      "slug": "how-tonforce-matrix-works",
+      "title": "Как работает матрица 3×8 в TonForce",
+      "lead": "Простое и понятное объяснение механики матричной структуры и реферальной программы на 4 уровня глубиной.",
+      "date": "2026-05-20T00:00:00Z",
+      "category": "guides",
+      "cover_emoji": "💎",
+      "cover_image": null,
+      "read_time": 6
+    },
+    {
+      "slug": "security-audit-results",
+      "title": "Технический обзор контракта: результаты",
+      "lead": "Полный анализ безопасности TonForce v4 завершён. Все 9 ключевых проверок пройдены успешно.",
+      "date": "2026-05-15T00:00:00Z",
+      "category": "security",
+      "cover_emoji": "🛡️",
+      "cover_image": null,
+      "read_time": 5
+    }
+  ],
+  "en": [
+    {
+      "slug": "launch-tonforce-v4",
+      "title": "TonForce v4 launched on TON Mainnet",
+      "lead": "Next-generation contract with enhanced security, internal technical review passed, available right now.",
+      "date": "2026-05-25T00:00:00Z",
+      "category": "announcements",
+      "cover_emoji": "🚀",
+      "cover_image": null,
+      "read_time": 4
+    },
+    {
+      "slug": "how-tonforce-matrix-works",
+      "title": "How the 3×8 matrix works in TonForce",
+      "lead": "Simple and clear explanation of the matrix structure mechanics and the 4-level-deep referral program.",
+      "date": "2026-05-20T00:00:00Z",
+      "category": "guides",
+      "cover_emoji": "💎",
+      "cover_image": null,
+      "read_time": 6
+    },
+    {
+      "slug": "security-audit-results",
+      "title": "Technical contract review: results",
+      "lead": "Complete TonForce v4 security analysis finished. All 9 key checks passed successfully.",
+      "date": "2026-05-15T00:00:00Z",
+      "category": "security",
+      "cover_emoji": "🛡️",
+      "cover_image": null,
+      "read_time": 5
+    }
+  ],
+  "ua": [
+    {
+      "slug": "launch-tonforce-v4",
+      "title": "TonForce v4 запущено в TON Mainnet",
+      "lead": "Контракт нового покоління з покращеною безпекою, що пройшов внутрішній технічний огляд, доступний просто зараз.",
+      "date": "2026-05-25T00:00:00Z",
+      "category": "announcements",
+      "cover_emoji": "🚀",
+      "cover_image": null,
+      "read_time": 4
+    },
+    {
+      "slug": "how-tonforce-matrix-works",
+      "title": "Як працює матриця 3×8 у TonForce",
+      "lead": "Просте та зрозуміле пояснення механіки матричної структури та реферальної програми на 4 рівні глибиною.",
+      "date": "2026-05-20T00:00:00Z",
+      "category": "guides",
+      "cover_emoji": "💎",
+      "cover_image": null,
+      "read_time": 6
+    },
+    {
+      "slug": "security-audit-results",
+      "title": "Технічний огляд контракту: результати",
+      "lead": "Повний аналіз безпеки TonForce v4 завершено. Усі 9 ключових перевірок пройдено успішно.",
+      "date": "2026-05-15T00:00:00Z",
+      "category": "security",
+      "cover_emoji": "🛡️",
+      "cover_image": null,
+      "read_time": 5
+    }
+  ]
+}

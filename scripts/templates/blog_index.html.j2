@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="{{ lang_cfg.html_lang }}">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>{{ labels.blog_title }} | TonForce</title>
+<meta name="description" content="{{ labels.blog_subtitle }}" />
+<meta name="robots" content="index, follow" />
+
+<link rel="canonical" href="{{ site_url }}{{ blog_base }}" />
+<link rel="alternate" hreflang="ru" href="{{ site_url }}/blog/" />
+<link rel="alternate" hreflang="en" href="{{ site_url }}/en/blog/" />
+<link rel="alternate" hreflang="uk" href="{{ site_url }}/ua/blog/" />
+<link rel="alternate" hreflang="x-default" href="{{ site_url }}/blog/" />
+
+<meta property="og:type" content="website" />
+<meta property="og:url" content="{{ site_url }}{{ blog_base }}" />
+<meta property="og:title" content="{{ labels.blog_title }}" />
+<meta property="og:description" content="{{ labels.blog_subtitle }}" />
+<meta property="og:image" content="{{ site_url }}/og-image.jpg" />
+<meta property="og:locale" content="{{ lang_cfg.og_locale }}" />
+
+<link rel="icon" href="/favicon.png" type="image/png" />
+<link rel="apple-touch-icon" href="/favicon.png" />
+<link rel="alternate" type="application/rss+xml" title="{{ labels.blog_title }} RSS" href="{{ site_url }}{{ blog_base }}rss.xml" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Bruno+Ace+SC&family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+
+<link rel="stylesheet" href="/blog/blog.css" />
+</head>
+<body>
+
+<nav class="nav" role="navigation">
+  <div class="nav-inner">
+    <a href="/{% if lang != 'ru' %}{{ lang }}/{% endif %}" class="nav-logo" aria-label="TonForce">
+      <img src="/logo-white.png" alt="TonForce" width="36" height="36" />
+      <span>TONFORCE</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="/{% if lang != 'ru' %}{{ lang }}/{% endif %}#about">{{ labels.nav_about }}</a></li>
+      <li><a href="/{% if lang != 'ru' %}{{ lang }}/{% endif %}#security">{{ labels.nav_security }}</a></li>
+      <li><a href="/{% if lang != 'ru' %}{{ lang }}/{% endif %}#levels">{{ labels.nav_levels }}</a></li>
+      <li><a href="{{ blog_base }}" class="active">{{ labels.nav_blog }}</a></li>
+    </ul>
+    <div class="nav-right">
+      <div class="lang-switcher">
+        <a href="/blog/" {% if lang == 'ru' %}class="active" aria-current="page"{% endif %} hreflang="ru">RU</a>
+        <a href="/en/blog/" {% if lang == 'en' %}class="active" aria-current="page"{% endif %} hreflang="en">EN</a>
+        <a href="/ua/blog/" {% if lang == 'ua' %}class="active" aria-current="page"{% endif %} hreflang="uk">UA</a>
+      </div>
+      <a href="https://t.me/tonforce_bot/tonforce" class="btn" target="_blank" rel="noopener">
+        {{ labels.launch_btn }}
+      </a>
+    </div>
+  </div>
+</nav>
+
+<main>
+  <section class="blog-hero">
+    <div class="container">
+      <h1><span class="gradient">{{ labels.blog_title }}</span></h1>
+      <p>{{ labels.blog_subtitle }}</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="container">
+      {% if posts %}
+      <div class="posts-grid">
+        {% for post in posts %}
+        <a href="{{ post.slug }}.html" class="post-card">
+          {% if post.cover_image %}
+          <div class="post-card-image"><img src="{{ post.cover_image }}" alt="{{ post.title }}" loading="lazy" /></div>
+          {% else %}
+          <div class="post-card-image placeholder">{{ post.cover_emoji }}</div>
+          {% endif %}
+          <div class="post-card-body">
+            <div class="post-card-meta">
+              <span class="post-card-tag">{{ post.category_label }}</span>
+              <span>{{ post.formatted_date }}</span>
+              <span>· {{ post.read_time }} {{ labels.min_label }}</span>
+            </div>
+            <h2 class="post-card-title">{{ post.title }}</h2>
+            <p class="post-card-excerpt">{{ post.lead }}</p>
+            <div class="post-card-readmore">{{ labels.read_more }}</div>
+          </div>
+        </a>
+        {% endfor %}
+      </div>
+      {% else %}
+      <p style="text-align: center; padding: 60px 20px; color: var(--muted);">{{ labels.no_posts }}</p>
+      {% endif %}
+    </div>
+  </section>
+</main>
+
+<footer role="contentinfo">
+  <div class="container">
+    <div class="footer-links">
+      <a href="/{% if lang != 'ru' %}{{ lang }}/{% endif %}">{{ labels.footer_brand }}</a>
+      <a href="{{ blog_base }}">{{ labels.footer_blog }}</a>
+      <a href="/{% if lang != 'ru' %}{{ lang }}/{% endif %}#about">{{ labels.footer_about }}</a>
+      <a href="/{% if lang != 'ru' %}{{ lang }}/{% endif %}#security">{{ labels.footer_security }}</a>
+      <a href="https://t.me/tonforce_bot" target="_blank" rel="noopener">Telegram Bot</a>
+      <a href="https://t.me/chat_tonforce" target="_blank" rel="noopener">Telegram Chat</a>
+      <a href="https://github.com/spsonlys/tonforce" target="_blank" rel="noopener">GitHub</a>
+    </div>
+    <div>{{ labels.footer_copy }}</div>
+  </div>
+</footer>
+
+</body>
+</html>
