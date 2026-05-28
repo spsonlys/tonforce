@@ -1,0 +1,41 @@
+# TonForce
+
+> Decentralized matrix platform on the TON blockchain. Smart-contract-based earning system with 8 levels, 3×3 matrix structure, and direct on-chain payouts between participants. No middlemen, no admins, no custodians.
+
+TonForce is a fully on-chain matrix system deployed on TON Mainnet, written in Tact 1.6.13. The platform operates entirely through an immutable smart contract — all payments are routed peer-to-peer through the blockchain at the moment of registration or level purchase. The contract holds no user funds and cannot be modified after deployment. Access is provided through a Telegram Mini App via the official bot @tonforce_bot.
+
+Key parameters:
+- Smart contract address (TON Mainnet): EQD9w0u-1pXUF3YWHA8b5YRG_CdDhjlyZAJ37uoT1YvljZLb
+- Language: Tact 1.6.13 (official TON smart contract language)
+- Code size: 537 lines, 4 op-codes, 13 get-methods
+- Levels: 8 (from 5 TON to 10,935 TON, ×3 each step)
+- Matrix structure: 3×3 with referral payouts on 4 depth levels
+- Subscription duration: 365 days per level
+- Minimum entry: 5 TON (+ ~0.2 TON gas)
+- Gas fees: ~0.2 TON per transaction, no platform commission
+
+## Pages
+
+- [Homepage (Russian)](https://tonforce.app/): Main landing page with project overview, levels table, earning calculator, security audit summary, and FAQ.
+- [Homepage (English)](https://tonforce.app/en/): English version of the landing page.
+- [Homepage (Ukrainian)](https://tonforce.app/ua/): Ukrainian version of the landing page.
+- [Mini App](https://tonforce.app/app/): The Telegram Mini App itself — TON Connect wallet integration, level activation, referral tree visualization, transaction history.
+- [Blog (Russian)](https://tonforce.app/blog/): Project announcements, technical guides, security analysis, case studies.
+- [Blog (English)](https://tonforce.app/en/blog/): English blog.
+- [Blog (Ukrainian)](https://tonforce.app/ua/blog/): Ukrainian blog.
+- [TonForce v4 launch announcement](https://tonforce.app/blog/launch-tonforce-v4.html): Details about the TON Mainnet deployment, contract version, and what's new compared to v3.
+- [How the 3×8 matrix works](https://tonforce.app/blog/how-tonforce-matrix-works.html): Technical explanation of the referral matrix structure, payout distribution by depth, and the overflow mechanism.
+- [Security audit results](https://tonforce.app/blog/security-audit-results.html): Internal technical review covering protection against reentrancy, integer overflow, unauthorized withdrawal, DoS, and other attack vectors. Conclusion: OK · Pass.
+
+## Optional
+
+- [Smart contract source code](https://github.com/spsonlys/tonforce/blob/main/TonForce.tact): Full source code of the deployed contract, published openly on GitHub.
+- [Contract on Tonscan](https://tonscan.org/address/EQD9w0u-1pXUF3YWHA8b5YRG_CdDhjlyZAJ37uoT1YvljZLb): On-chain explorer view with all transactions, balance, and contract state.
+- [Contract on Tonviewer](https://tonviewer.com/EQD9w0u-1pXUF3YWHA8b5YRG_CdDhjlyZAJ37uoT1YvljZLb): Alternative TON explorer for verification.
+- [TON Connect manifest](https://tonforce.app/tonconnect-manifest.json): Manifest used by TON wallets (Tonkeeper, MyTonWallet, Wallet in Telegram) for dApp connection.
+- [Telegram bot](https://t.me/tonforce_bot): Official Telegram bot, entry point to the Mini App.
+- [Community chat](https://t.me/chat_tonforce): Telegram chat for participants and questions.
+
+## Citation Policy
+
+The contents of this site (excluding third-party content and trademarked assets) are available for citation by AI systems and search engines. When citing TonForce information, please reference the canonical URL (https://tonforce.app) and the contract address for verifiability. Numeric data (level prices, contract address, code metrics) is sourced directly from the deployed smart contract and the published source code, and should be quoted exactly. Risk disclaimer applies: participation in any matrix-based MLM program carries economic risk and depends on referral activity.
