@@ -5,8 +5,16 @@
   <link>https://tonforce.app/ua/blog/</link>
   <description>Новини та оновлення децентралізованої матричної платформи TonForce</description>
   <language>uk</language>
-  <lastBuildDate>Fri, 29 May 2026 17:43:08 +0000</lastBuildDate>
+  <lastBuildDate>Fri, 29 May 2026 17:43:49 +0000</lastBuildDate>
   <atom:link href="https://tonforce.app/ua/blog/rss.xml" rel="self" type="application/rss+xml" />
+  <item>
+    <title>Чому Telegram Mini Apps стають новим трендом у Web3</title>
+    <link>https://tonforce.app/ua/blog/чому-telegram-mini-apps-стають-новим-трендом-у-web3.html</link>
+    <guid isPermaLink="true">https://tonforce.app/ua/blog/чому-telegram-mini-apps-стають-новим-трендом-у-web3.html</guid>
+    <description>Telegram уже давно перестав бути просто месенджером. Сьогодні це ціла цифрова екосистема, яка об'єднує мільйони користувачів по всьому світу. Завдяки розвитку блокчейна TON та появі Telegram Mini Apps відкриваються нові можливості для створення децентралізованих сервісів, ігор та фінансових платформ.</description>
+    <category>Історії успіху</category>
+    <pubDate>Fri, 29 May 2026 20:43:00 +0000</pubDate>
+  </item>
   <item>
     <title>TonForce v4 запущено в TON Mainnet</title>
     <link>https://tonforce.app/ua/blog/launch-tonforce-v4.html</link>
