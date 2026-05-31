@@ -1332,6 +1332,19 @@ body::before {
   color: #fff;
 }
 .tree-mini-btn--tg svg { flex-shrink: 0; }
+/* Кнопка без контакта реферала — приглушённая (не синяя), чтобы было видно: прямой связи пока нет */
+.tree-mini-btn--off {
+  background: rgba(255,255,255,0.07) !important;
+  color: rgba(255,255,255,0.6) !important;
+  border-color: rgba(255,255,255,0.12) !important;
+  box-shadow: none !important;
+}
+.ft-tg--off {
+  background: rgba(255,255,255,0.08) !important;
+  color: rgba(255,255,255,0.5) !important;
+  box-shadow: none !important;
+  border: 1px solid rgba(255,255,255,0.12);
+}
 
 .tree-mini-btn--copy {
   width: 36px;
@@ -1638,7 +1651,7 @@ const I18N = {
  rule_5:'▸ Всё на TON блокчейне',
  prices:'ЦЕНЫ УРОВНЕЙ', admin:'АДМИН ПАНЕЛЬ', total_users:'ВСЕГО УЧАСТНИКОВ', contract_balance:'БАЛАНС КОНТРАКТА',
  my_earnings:'МОЙ ЗАРАБОТОК', contract_addr:'АДРЕС КОНТРАКТА', copy_addr:'СКОПИРОВАТЬ АДРЕС',
- nav_matrix:'МАТРИЦА', nav_tree:'ДЕРЕВО', nav_top:'ТОП', nav_history:'ИСТОРИЯ', nav_info:'КАЛЬК', nav_admin:'АДМИН', nav_more:'ЕЩЁ', write_tg:'Написать в Telegram', tree_you_sub:'Вы', tree_partner:'Партнёр', tree_open_slot:'Свободно', invite_tg:'Пригласить', tree_active:'Активен', show_full_tree:'ПОКАЗАТЬ ВСЁ ДЕРЕВО', hide_full_tree:'СКРЫТЬ ДЕРЕВО', full_tree:'ВСЯ СТРУКТУРА', ft_loading:'Загрузка структуры...', ft_empty:'Пока нет партнёров в структуре', ft_error:'Не удалось загрузить дерево', ft_level:'Уровень', ft_people:'чел.',
+ nav_matrix:'МАТРИЦА', nav_tree:'ДЕРЕВО', nav_top:'ТОП', nav_history:'ИСТОРИЯ', nav_info:'КАЛЬК', nav_admin:'АДМИН', nav_more:'ЕЩЁ', write_tg:'Написать в Telegram', tree_you_sub:'Вы', tree_partner:'Партнёр', tree_open_slot:'Свободно', invite_tg:'Пригласить', tree_active:'Активен', show_full_tree:'ПОКАЗАТЬ ВСЁ ДЕРЕВО', hide_full_tree:'СКРЫТЬ ДЕРЕВО', full_tree:'ВСЯ СТРУКТУРА', ft_loading:'Загрузка структуры...', ft_empty:'Пока нет партнёров в структуре', ft_error:'Не удалось загрузить дерево', ft_level:'Уровень', ft_people:'чел.', no_contact:'Контакт реферала пока неизвестен. Адрес скопирован. Он появится для связи после того, как реферал зайдёт в приложение.', no_contact_short:'Контакт неизвестен',
  ref_link_used:'ВЫ ПЕРЕШЛИ ПО РЕФЕРАЛЬНОЙ ССЫЛКЕ', auto_filled:'АВТОЗАПОЛНЕНО',
  wallet_connected:'Кошелёк подключён!', tx_sent:'Транзакция отправлена!', tx_error:'Ошибка транзакции',
  copied:'Скопировано!', need_wallet:'Сначала подключите кошелёк', days_left:'дн.',
@@ -1661,7 +1674,7 @@ const I18N = {
  rule_5:'▸ All on TON blockchain',
  prices:'LEVEL PRICES', admin:'ADMIN PANEL', total_users:'TOTAL USERS', contract_balance:'CONTRACT BALANCE',
  my_earnings:'MY EARNINGS', contract_addr:'CONTRACT ADDRESS', copy_addr:'COPY ADDRESS',
- nav_matrix:'MATRIX', nav_tree:'TREE', nav_top:'TOP', nav_history:'HISTORY', nav_info:'CALC', nav_admin:'ADMIN', nav_more:'MORE', write_tg:'Message on Telegram', tree_you_sub:'You', tree_partner:'Partner', tree_open_slot:'Open slot', invite_tg:'Invite', tree_active:'Active', show_full_tree:'SHOW FULL TREE', hide_full_tree:'HIDE TREE', full_tree:'FULL STRUCTURE', ft_loading:'Loading structure...', ft_empty:'No partners in structure yet', ft_error:'Failed to load tree', ft_level:'Level', ft_people:'ppl',
+ nav_matrix:'MATRIX', nav_tree:'TREE', nav_top:'TOP', nav_history:'HISTORY', nav_info:'CALC', nav_admin:'ADMIN', nav_more:'MORE', write_tg:'Message on Telegram', tree_you_sub:'You', tree_partner:'Partner', tree_open_slot:'Open slot', invite_tg:'Invite', tree_active:'Active', show_full_tree:'SHOW FULL TREE', hide_full_tree:'HIDE TREE', full_tree:'FULL STRUCTURE', ft_loading:'Loading structure...', ft_empty:'No partners in structure yet', ft_error:'Failed to load tree', ft_level:'Level', ft_people:'ppl', no_contact:'Referral contact is not available yet. Address copied. It will appear once the referral opens the app.', no_contact_short:'No contact yet',
  ref_link_used:'YOU JOINED VIA REFERRAL LINK', auto_filled:'AUTO-FILLED',
  wallet_connected:'Wallet connected!', tx_sent:'Transaction sent!', tx_error:'Transaction error',
  copied:'Copied!', need_wallet:'Connect wallet first', days_left:'days',
@@ -1684,7 +1697,7 @@ const I18N = {
  rule_5:'▸ Все на TON блокчейні',
  prices:'ЦІНИ РІВНІВ', admin:'АДМІН ПАНЕЛЬ', total_users:'ВСЬОГО УЧАСНИКІВ', contract_balance:'БАЛАНС КОНТРАКТУ',
  my_earnings:'МІЙ ЗАРОБІТОК', contract_addr:'АДРЕСА КОНТРАКТУ', copy_addr:'СКОПІЮВАТИ',
- nav_matrix:'МАТРИЦЯ', nav_tree:'ДЕРЕВО', nav_top:'ТОП', nav_history:'ІСТОРІЯ', nav_info:'КАЛЬК', nav_admin:'АДМІН', nav_more:'ЩЕ', write_tg:'Написати в Telegram', tree_you_sub:'Ви', tree_partner:'Партнер', tree_open_slot:'Вільно', invite_tg:'Запросити', tree_active:'Активний', show_full_tree:'ПОКАЗАТИ ВСЕ ДЕРЕВО', hide_full_tree:'СХОВАТИ ДЕРЕВО', full_tree:'УСЯ СТРУКТУРА', ft_loading:'Завантаження структури...', ft_empty:'Поки немає партнерів у структурі', ft_error:'Не вдалося завантажити дерево', ft_level:'Рівень', ft_people:'осіб',
+ nav_matrix:'МАТРИЦЯ', nav_tree:'ДЕРЕВО', nav_top:'ТОП', nav_history:'ІСТОРІЯ', nav_info:'КАЛЬК', nav_admin:'АДМІН', nav_more:'ЩЕ', write_tg:'Написати в Telegram', tree_you_sub:'Ви', tree_partner:'Партнер', tree_open_slot:'Вільно', invite_tg:'Запросити', tree_active:'Активний', show_full_tree:'ПОКАЗАТИ ВСЕ ДЕРЕВО', hide_full_tree:'СХОВАТИ ДЕРЕВО', full_tree:'УСЯ СТРУКТУРА', ft_loading:'Завантаження структури...', ft_empty:'Поки немає партнерів у структурі', ft_error:'Не вдалося завантажити дерево', ft_level:'Рівень', ft_people:'осіб', no_contact:'Контакт реферала поки невідомий. Адресу скопійовано. Він з’явиться після того, як реферал зайде в додаток.', no_contact_short:'Контакт невідомий',
  ref_link_used:'ВИ ПЕРЕЙШЛИ ЗА ПОСИЛАННЯМ', auto_filled:'АВТОЗАПОВНЕНО',
  wallet_connected:'Гаманець підключено!', tx_sent:'Транзакція надіслана!', tx_error:'Помилка',
  copied:'Скопійовано!', need_wallet:'Спочатку підключіть гаманець', days_left:'дн.',
@@ -2136,7 +2149,7 @@ function renderTreeSlot(slotIdx, walletAddr, username, knownAddress, tgId) {
   // Строим кнопку "Написать":
   //  1) есть @username → t.me/username (личка)
   //  2) есть tg_id → tg://user?id=... (личка по ID, без username)
-  //  3) контакта нет → открываем бота (через него можно связаться). Кнопка всё равно "Написать".
+  //  3) контакта нет → уведомление + копирование адреса (без выброса из приложения)
   function buildTgButton() {
     if (usernameClean) {
       return `<a href="https://t.me/${encodeURIComponent(usernameClean)}" onclick="openTgChat(event,'${usernameClean}','')" target="_blank" rel="noopener noreferrer" class="tree-mini-btn tree-mini-btn--tg" title="@${escapeHtml(usernameClean)}">${tgIconSvg}<span>${tgText}</span></a>`;
@@ -2144,8 +2157,9 @@ function renderTreeSlot(slotIdx, walletAddr, username, knownAddress, tgId) {
     if (tgIdClean) {
       return `<a href="tg://user?id=${tgIdClean}" onclick="openTgChat(event,'','${tgIdClean}')" class="tree-mini-btn tree-mini-btn--tg" title="${tgText}">${tgIconSvg}<span>${tgText}</span></a>`;
     }
-    // Контакт реферала неизвестен (бэкенд не отдал username/tg_id) — ведём в бота
-    return `<a href="https://t.me/${BOT_USERNAME}" onclick="openTgChat(event,'${BOT_USERNAME}','')" target="_blank" rel="noopener noreferrer" class="tree-mini-btn tree-mini-btn--tg" title="${tgText}">${tgIconSvg}<span>${tgText}</span></a>`;
+    // Контакт реферала неизвестен — не выбрасываем из приложения
+    const addrSafe = escapeHtml(shortenAddr(walletAddr || ''));
+    return `<button class="tree-mini-btn tree-mini-btn--tg tree-mini-btn--off" onclick="noContactToast(event,'${addrSafe}')" title="${escapeHtml(t('no_contact_short') || 'Контакт неизвестен')}">${tgIconSvg}<span>${tgText}</span></button>`;
   }
 
   if (!knownAddress || !walletAddr) {
@@ -2305,7 +2319,7 @@ function renderFtNode(node, reg) {
   let tgBtn;
   if (username) tgBtn = `<a class="ft-tg" href="https://t.me/${encodeURIComponent(username)}" onclick="openTgChat(event,'${username}','')" target="_blank" rel="noopener noreferrer" title="@${escapeHtml(username)}">${tgIcon}</a>`;
   else if (tgId) tgBtn = `<a class="ft-tg" href="tg://user?id=${tgId}" onclick="openTgChat(event,'','${tgId}')" title="Telegram">${tgIcon}</a>`;
-  else tgBtn = `<a class="ft-tg" href="https://t.me/${BOT_USERNAME}" onclick="openTgChat(event,'${BOT_USERNAME}','')" target="_blank" rel="noopener noreferrer" title="Telegram">${tgIcon}</a>`;
+  else tgBtn = `<button class="ft-tg ft-tg--off" onclick="noContactToast(event,'${escapeHtml(shortenAddr(addr))}')" title="${t('no_contact_short') || 'Контакт неизвестен'}">${tgIcon}</button>`;
 
   const row = `<div class="ft-node">
     <div class="ft-avatar">${photo}</div>
@@ -2352,6 +2366,14 @@ function openTgChat(event, username, tgId) {
 }
 // Обратная совместимость
 function openTg(event, username) { openTgChat(event, username, ''); }
+
+// Контакт реферала неизвестен: не выбрасываем из приложения, а показываем
+// уведомление и копируем адрес кошелька, чтобы можно было найти человека.
+function noContactToast(event, addr) {
+  if (event) { try { event.preventDefault(); event.stopPropagation(); } catch(e) {} }
+  if (addr) { try { navigator.clipboard.writeText(addr); } catch(e) {} }
+  showToast(t('no_contact') || 'Контакт пока неизвестен. Адрес скопирован — реферал появится в списке после входа в приложение.', '');
+}
 
 // Защита от XSS: эскейпит спецсимволы HTML
 function escapeHtml(text) {
