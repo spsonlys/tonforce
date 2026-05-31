@@ -150,7 +150,10 @@ body::before {
  border: 1px solid rgba(255,255,255,0.08);
  background: rgba(255,255,255,0.04);
  transition: 0.25s;
+ cursor: pointer;
+ user-select: none;
 }
+.conn-status:active { transform: scale(0.96); }
 .conn-status .conn-dot {
  width: 8px; height: 8px; border-radius: 50%;
  flex-shrink: 0;
@@ -526,6 +529,19 @@ body::before {
  border-radius: 26px;
  color: #fff;
 }
+#treeYouName {
+ display: block;
+ max-width: 150px;
+ font-size: 15px;
+ font-weight: 800;
+ line-height: 1.15;
+ word-break: break-all;
+ overflow-wrap: anywhere;
+ hyphens: none;
+}
+/* длинные имена ещё меньше */
+#treeYouName.long { font-size: 12px; }
+#treeYouName.vlong { font-size: 10.5px; letter-spacing: -0.01em; }
 .tree-node.you .tree-avatar {
  width: 46px; height: 46px;
  border-radius: 14px;
@@ -588,6 +604,65 @@ body::before {
  color: var(--muted);
  text-transform: uppercase;
  letter-spacing: 0.08em;
+}
+/* Кнопка "Показать всё дерево" */
+.full-tree-btn {
+ margin-top: 14px;
+ display: flex; align-items: center; justify-content: center;
+ font-size: 12px; letter-spacing: 0.04em;
+}
+/* Полное дерево — вложенный список */
+.full-tree { display: flex; flex-direction: column; gap: 4px; }
+.ft-node {
+ display: flex; align-items: center; gap: 10px;
+ padding: 9px 10px;
+ border-radius: 12px;
+ background: rgba(255,255,255,0.025);
+ border: 1px solid rgba(255,255,255,0.05);
+ position: relative;
+}
+.ft-node.me {
+ background: linear-gradient(135deg, rgba(72,207,255,0.16), rgba(124,109,255,0.12));
+ border-color: rgba(120,210,255,0.35);
+}
+.ft-children { display: flex; flex-direction: column; gap: 4px; margin-top: 4px; }
+/* отступ-вложенность через левую линию */
+.ft-branch {
+ margin-left: 16px;
+ padding-left: 12px;
+ border-left: 1.5px solid rgba(112,157,255,0.18);
+ display: flex; flex-direction: column; gap: 4px; margin-top: 4px;
+}
+.ft-avatar {
+ width: 32px; height: 32px; border-radius: 9px; flex-shrink: 0;
+ background: linear-gradient(145deg, rgba(72,207,255,0.22), rgba(124,109,255,0.2));
+ display: flex; align-items: center; justify-content: center;
+ box-shadow: inset 0 0 0 1px rgba(122,203,255,0.22);
+ overflow: hidden;
+}
+.ft-avatar svg { width: 18px; height: 18px; color: #cfe9ff; }
+.ft-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.ft-info { flex: 1; min-width: 0; }
+.ft-name { font-size: 13px; font-weight: 700; color: #eaf4ff; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ft-sub { font-size: 10px; color: var(--muted); margin-top: 2px; }
+.ft-level-badge {
+ font-size: 9px; font-weight: 800; letter-spacing: 0.06em;
+ padding: 3px 8px; border-radius: 999px; flex-shrink: 0;
+ background: rgba(72,207,255,0.14); color: var(--cyan);
+ border: 1px solid rgba(72,207,255,0.28);
+}
+.ft-tg {
+ width: 30px; height: 30px; border-radius: 9px; flex-shrink: 0;
+ display: inline-flex; align-items: center; justify-content: center;
+ background: linear-gradient(135deg, #229ED9, #2AABEE);
+ color: #fff; text-decoration: none;
+ box-shadow: 0 3px 8px rgba(34,158,217,0.35);
+}
+.ft-tg svg { width: 15px; height: 15px; }
+.ft-loading { text-align: center; padding: 20px; color: var(--muted); font-size: 12px; }
+.ft-count-pill {
+ display: inline-flex; align-items: center; gap: 4px;
+ font-size: 9px; color: var(--green); margin-left: 6px;
 }
 .ref-link-box {
  display: flex;
@@ -943,6 +1018,12 @@ body::before {
  .tree-addr { font-size: 10px; letter-spacing: 0.2px; }
  .tree-node small { font-size: 8px; letter-spacing: 0.06em; }
  .tree-row.few .tree-mini-btn { font-size: 9px; height: 30px; }
+ /* нижняя панель: помещаем 5-6 кнопок */
+ .bottom-nav { padding: 5px 4px; gap: 0; }
+ .nav-item { padding: 5px 1px 4px; font-size: 8px; letter-spacing: 0; }
+ .nav-item .nav-icon { width: 20px; height: 20px; }
+ .nav-item .nav-icon svg { width: 19px; height: 19px; }
+ .nav-item.active .nav-icon { width: 38px; height: 28px; }
 }
 /* ═══════════════════════════════════════════════════════════════
    TIER SYSTEM — финансовые тиры с цветовой дифференциацией
@@ -1282,7 +1363,7 @@ body::before {
  <button class="lang-btn" data-lang="en" onclick="setLang('en')">EN</button>
  <button class="lang-btn" data-lang="ua" onclick="setLang('ua')">UA</button>
  </div>
- <div class="conn-status offline" id="connStatus">
+ <div class="conn-status offline" id="connStatus" onclick="connectWallet()" role="button" title="Подключить / отключить кошелёк">
  <span class="conn-dot"></span>
  <span class="conn-text" data-i18n="not_connected">Не подключено</span>
  </div>
@@ -1355,7 +1436,7 @@ body::before {
  <div class="tree">
  <div class="tree-shell">
  <div class="tree-top">
- <div class="tree-node you"><div class="tree-avatar" id="treeYouAvatar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.4"/><path d="M5 20c0-3.6 3.1-5.5 7-5.5s7 1.9 7 5.5"/></svg></div><span id="treeYouName">YOU</span><small data-i18n="tree_you_sub">Владелец</small></div>
+ <div class="tree-node you"><div class="tree-avatar" id="treeYouAvatar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.4"/><path d="M5 20c0-3.6 3.1-5.5 7-5.5s7 1.9 7 5.5"/></svg></div><span id="treeYouName">YOU</span><small data-i18n="tree_you_sub">Вы</small></div>
  </div>
  <div class="tree-row" id="treeRow"></div>
  </div>
@@ -1364,6 +1445,17 @@ body::before {
  <div class="tree-summary-item"><div class="tree-summary-value" id="treeOpenSlots">3</div><div class="tree-summary-label">Open slots</div></div>
  <div class="tree-summary-item"><div class="tree-summary-value" id="treeEarned">0 TON</div><div class="tree-summary-label">Earned</div></div>
  </div>
+ <button class="button secondary full-tree-btn" id="fullTreeBtn" onclick="toggleFullTree()">
+ <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px;margin-right:6px"><circle cx="12" cy="5" r="2"/><circle cx="6" cy="12" r="2"/><circle cx="18" cy="12" r="2"/><circle cx="6" cy="19" r="2"/><circle cx="18" cy="19" r="2"/><path d="M12 7v1.5M12 8.5H6v1.5M12 8.5h6v1.5M6 14v3M18 14v3"/></svg>
+ <span data-i18n="show_full_tree">ПОКАЗАТЬ ВСЁ ДЕРЕВО</span>
+ </button>
+ </div>
+ </div>
+
+ <div id="fullTreeWrap" class="hidden">
+ <div class="section-title"><span data-i18n="full_tree">ВСЯ СТРУКТУРА</span><span class="section-note" id="fullTreeStats">—</span></div>
+ <div class="card">
+ <div id="fullTreeList" class="full-tree"></div>
  </div>
  </div>
 
@@ -1490,25 +1582,17 @@ body::before {
  <span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M7 4h10v3a5 5 0 0 1-10 0V4Z"/><path d="M7 5H4.5a1 1 0 0 0-1 1c0 2 1.5 3.5 3.5 3.5M17 5h2.5a1 1 0 0 1 1 1c0 2-1.5 3.5-3.5 3.5"/><path d="M12 12v3M9 20h6M10 17h4l.5 3h-5l.5-3Z"/></svg></span>
  <span class="nav-label" data-i18n="nav_top">ТОП</span>
  </button>
+ <button class="nav-item" data-page="info" onclick="showPage('info')">
+ <span class="nav-icon"><svg viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 7h8M8 11h8M8 15h4"/></svg></span>
+ <span class="nav-label" data-i18n="nav_info">КАЛЬК</span>
+ </button>
  <button class="nav-item" data-page="history" onclick="showPage('history')">
  <span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M3.5 12a8.5 8.5 0 1 0 2.6-6.1"/><path d="M5.2 3.5v3.2h3.2"/><path d="M12 7.5V12l3 2"/></svg></span>
  <span class="nav-label" data-i18n="nav_history">ИСТОРИЯ</span>
  </button>
- <button class="nav-item" id="navMore" onclick="toggleMoreMenu()">
- <span class="nav-icon"><svg viewBox="0 0 24 24"><circle cx="6" cy="12" r="1.3" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.3" fill="currentColor" stroke="none"/><circle cx="18" cy="12" r="1.3" fill="currentColor" stroke="none"/></svg></span>
- <span class="nav-label" data-i18n="nav_more">ЕЩЁ</span>
- </button>
-</div>
-
-<div class="nav-more-backdrop" id="navMoreBackdrop" onclick="closeMoreMenu()"></div>
-<div class="nav-more-menu" id="navMoreMenu">
- <button class="nav-more-item" data-page="info" onclick="showPage('info'); closeMoreMenu()">
- <span class="nav-icon"><svg viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 7h8M8 11h8M8 15h4"/></svg></span>
- <span data-i18n="nav_info">КАЛЬКУЛЯТОР</span>
- </button>
- <button class="nav-more-item hidden" id="navAdmin" data-page="admin" onclick="showPage('admin'); closeMoreMenu()">
+ <button class="nav-item hidden" id="navAdmin" data-page="admin" onclick="showPage('admin')">
  <span class="nav-icon"><svg viewBox="0 0 24 24"><path d="m4 8 3.5 3L12 5l4.5 6L20 8l-1.5 9h-13L4 8Z"/></svg></span>
- <span data-i18n="nav_admin">АДМИН</span>
+ <span class="nav-label" data-i18n="nav_admin">АДМИН</span>
  </button>
 </div>
 
@@ -1554,7 +1638,7 @@ const I18N = {
  rule_5:'▸ Всё на TON блокчейне',
  prices:'ЦЕНЫ УРОВНЕЙ', admin:'АДМИН ПАНЕЛЬ', total_users:'ВСЕГО УЧАСТНИКОВ', contract_balance:'БАЛАНС КОНТРАКТА',
  my_earnings:'МОЙ ЗАРАБОТОК', contract_addr:'АДРЕС КОНТРАКТА', copy_addr:'СКОПИРОВАТЬ АДРЕС',
- nav_matrix:'МАТРИЦА', nav_tree:'ДЕРЕВО', nav_top:'ТОП', nav_history:'ИСТОРИЯ', nav_info:'КАЛЬКУЛЯТОР', nav_admin:'АДМИН', nav_more:'ЕЩЁ', write_tg:'Написать в Telegram', tree_you_sub:'Владелец', tree_partner:'Партнёр', tree_open_slot:'Свободно', invite_tg:'Пригласить', tree_active:'Активен',
+ nav_matrix:'МАТРИЦА', nav_tree:'ДЕРЕВО', nav_top:'ТОП', nav_history:'ИСТОРИЯ', nav_info:'КАЛЬК', nav_admin:'АДМИН', nav_more:'ЕЩЁ', write_tg:'Написать в Telegram', tree_you_sub:'Вы', tree_partner:'Партнёр', tree_open_slot:'Свободно', invite_tg:'Пригласить', tree_active:'Активен', show_full_tree:'ПОКАЗАТЬ ВСЁ ДЕРЕВО', hide_full_tree:'СКРЫТЬ ДЕРЕВО', full_tree:'ВСЯ СТРУКТУРА', ft_loading:'Загрузка структуры...', ft_empty:'Пока нет партнёров в структуре', ft_error:'Не удалось загрузить дерево', ft_level:'Уровень', ft_people:'чел.',
  ref_link_used:'ВЫ ПЕРЕШЛИ ПО РЕФЕРАЛЬНОЙ ССЫЛКЕ', auto_filled:'АВТОЗАПОЛНЕНО',
  wallet_connected:'Кошелёк подключён!', tx_sent:'Транзакция отправлена!', tx_error:'Ошибка транзакции',
  copied:'Скопировано!', need_wallet:'Сначала подключите кошелёк', days_left:'дн.',
@@ -1577,7 +1661,7 @@ const I18N = {
  rule_5:'▸ All on TON blockchain',
  prices:'LEVEL PRICES', admin:'ADMIN PANEL', total_users:'TOTAL USERS', contract_balance:'CONTRACT BALANCE',
  my_earnings:'MY EARNINGS', contract_addr:'CONTRACT ADDRESS', copy_addr:'COPY ADDRESS',
- nav_matrix:'MATRIX', nav_tree:'TREE', nav_top:'TOP', nav_history:'HISTORY', nav_info:'CALCULATOR', nav_admin:'ADMIN', nav_more:'MORE', write_tg:'Message on Telegram', tree_you_sub:'Owner', tree_partner:'Partner', tree_open_slot:'Open slot', invite_tg:'Invite', tree_active:'Active',
+ nav_matrix:'MATRIX', nav_tree:'TREE', nav_top:'TOP', nav_history:'HISTORY', nav_info:'CALC', nav_admin:'ADMIN', nav_more:'MORE', write_tg:'Message on Telegram', tree_you_sub:'You', tree_partner:'Partner', tree_open_slot:'Open slot', invite_tg:'Invite', tree_active:'Active', show_full_tree:'SHOW FULL TREE', hide_full_tree:'HIDE TREE', full_tree:'FULL STRUCTURE', ft_loading:'Loading structure...', ft_empty:'No partners in structure yet', ft_error:'Failed to load tree', ft_level:'Level', ft_people:'ppl',
  ref_link_used:'YOU JOINED VIA REFERRAL LINK', auto_filled:'AUTO-FILLED',
  wallet_connected:'Wallet connected!', tx_sent:'Transaction sent!', tx_error:'Transaction error',
  copied:'Copied!', need_wallet:'Connect wallet first', days_left:'days',
@@ -1600,7 +1684,7 @@ const I18N = {
  rule_5:'▸ Все на TON блокчейні',
  prices:'ЦІНИ РІВНІВ', admin:'АДМІН ПАНЕЛЬ', total_users:'ВСЬОГО УЧАСНИКІВ', contract_balance:'БАЛАНС КОНТРАКТУ',
  my_earnings:'МІЙ ЗАРОБІТОК', contract_addr:'АДРЕСА КОНТРАКТУ', copy_addr:'СКОПІЮВАТИ',
- nav_matrix:'МАТРИЦЯ', nav_tree:'ДЕРЕВО', nav_top:'ТОП', nav_history:'ІСТОРІЯ', nav_info:'КАЛЬКУЛЯТОР', nav_admin:'АДМІН', nav_more:'ЩЕ', write_tg:'Написати в Telegram', tree_you_sub:'Власник', tree_partner:'Партнер', tree_open_slot:'Вільно', invite_tg:'Запросити', tree_active:'Активний',
+ nav_matrix:'МАТРИЦЯ', nav_tree:'ДЕРЕВО', nav_top:'ТОП', nav_history:'ІСТОРІЯ', nav_info:'КАЛЬК', nav_admin:'АДМІН', nav_more:'ЩЕ', write_tg:'Написати в Telegram', tree_you_sub:'Ви', tree_partner:'Партнер', tree_open_slot:'Вільно', invite_tg:'Запросити', tree_active:'Активний', show_full_tree:'ПОКАЗАТИ ВСЕ ДЕРЕВО', hide_full_tree:'СХОВАТИ ДЕРЕВО', full_tree:'УСЯ СТРУКТУРА', ft_loading:'Завантаження структури...', ft_empty:'Поки немає партнерів у структурі', ft_error:'Не вдалося завантажити дерево', ft_level:'Рівень', ft_people:'осіб',
  ref_link_used:'ВИ ПЕРЕЙШЛИ ЗА ПОСИЛАННЯМ', auto_filled:'АВТОЗАПОВНЕНО',
  wallet_connected:'Гаманець підключено!', tx_sent:'Транзакція надіслана!', tx_error:'Помилка',
  copied:'Скопійовано!', need_wallet:'Спочатку підключіть гаманець', days_left:'дн.',
@@ -1680,6 +1764,7 @@ tonConnectUI.onStatusChange(wallet => {
  // КРИТИЧНО: сбрасываем userState от предыдущего кошелька — иначе UI покажет
  // данные старого юзера (или owner-а) пока loadUserData асинхронно не отработает
  userState = { registered: false, id: 0, referrerID: 0, referralCount: 0, levels: Array(8).fill(0) };
+ resetFullTree();
  const statRefsEl = document.getElementById('statRefs'); if (statRefsEl) statRefsEl.textContent = '0';
  const statLevelEl = document.getElementById('statLevel'); if (statLevelEl) statLevelEl.textContent = '0';
  const statIncEl = document.getElementById('statIncome'); if (statIncEl) statIncEl.textContent = '0';
@@ -1706,6 +1791,7 @@ tonConnectUI.onStatusChange(wallet => {
  document.getElementById('userInfo').innerHTML = '⚡ ' + t('not_connected');
  document.getElementById('navAdmin').classList.add('hidden');
  userState = { registered: false, id: 0, referrerID: 0, referralCount: 0, levels: Array(8).fill(0) };
+ resetFullTree();
  // Очищаем все статы UI чтобы не показывать данные предыдущего юзера
  const statRefsEl = document.getElementById('statRefs'); if (statRefsEl) statRefsEl.textContent = '0';
  const statLevelEl = document.getElementById('statLevel'); if (statLevelEl) statLevelEl.textContent = '0';
@@ -1974,7 +2060,12 @@ async function renderTree() {
  const youName = document.getElementById('treeYouName');
  if (youName) {
    const myName = walletAddress ? getUserDisplayName(walletAddress) : 'YOU';
-   youName.textContent = (myName && myName !== '—' && myName !== shortenAddr(walletAddress)) ? myName : 'YOU';
+   const finalName = (myName && myName !== '—' && myName !== shortenAddr(walletAddress)) ? myName : 'YOU';
+   youName.textContent = finalName;
+   // Подгоняем размер шрифта под длину имени, чтобы влезало в квадрат
+   youName.classList.remove('long', 'vlong');
+   if (finalName.length > 16) youName.classList.add('vlong');
+   else if (finalName.length > 11) youName.classList.add('long');
  }
 
  // Дерево уровня 1 показывает максимум 3 слота — они всегда помещаются в ряд
@@ -2045,7 +2136,7 @@ function renderTreeSlot(slotIdx, walletAddr, username, knownAddress, tgId) {
   // Строим кнопку "Написать":
   //  1) есть @username → t.me/username (личка)
   //  2) есть tg_id → tg://user?id=... (личка по ID, без username)
-  //  3) ничего нет → "Пригласить" (поделиться реф-ссылкой)
+  //  3) контакта нет → открываем бота (через него можно связаться). Кнопка всё равно "Написать".
   function buildTgButton() {
     if (usernameClean) {
       return `<a href="https://t.me/${encodeURIComponent(usernameClean)}" onclick="openTgChat(event,'${usernameClean}','')" target="_blank" rel="noopener noreferrer" class="tree-mini-btn tree-mini-btn--tg" title="@${escapeHtml(usernameClean)}">${tgIconSvg}<span>${tgText}</span></a>`;
@@ -2053,7 +2144,8 @@ function renderTreeSlot(slotIdx, walletAddr, username, knownAddress, tgId) {
     if (tgIdClean) {
       return `<a href="tg://user?id=${tgIdClean}" onclick="openTgChat(event,'','${tgIdClean}')" class="tree-mini-btn tree-mini-btn--tg" title="${tgText}">${tgIconSvg}<span>${tgText}</span></a>`;
     }
-    return `<button class="tree-mini-btn tree-mini-btn--tg" onclick="shareRefLink()" title="${inviteText}">${tgIconSvg}<span>${inviteText}</span></button>`;
+    // Контакт реферала неизвестен (бэкенд не отдал username/tg_id) — ведём в бота
+    return `<a href="https://t.me/${BOT_USERNAME}" onclick="openTgChat(event,'${BOT_USERNAME}','')" target="_blank" rel="noopener noreferrer" class="tree-mini-btn tree-mini-btn--tg" title="${tgText}">${tgIconSvg}<span>${tgText}</span></a>`;
   }
 
   if (!knownAddress || !walletAddr) {
@@ -2093,6 +2185,140 @@ function renderTreeSlot(slotIdx, walletAddr, username, knownAddress, tgId) {
     </div>
     <div class="tree-mini-actions">${tgBtn}${copyBtn}</div>
   `;
+}
+
+// ─────────────────────────────────────────────────────────────
+// ПОЛНОЕ ДЕРЕВО В ГЛУБИНУ
+// Рекурсивно обходит структуру: рефералы → их рефералы → ... до конца.
+// ─────────────────────────────────────────────────────────────
+let fullTreeLoaded = false;
+let fullTreeLoading = false;
+// Сброс состояния полного дерева (при смене/отключении кошелька)
+function resetFullTree() {
+  fullTreeLoaded = false;
+  fullTreeLoading = false;
+  const wrap = document.getElementById('fullTreeWrap');
+  if (wrap) wrap.classList.add('hidden');
+  const list = document.getElementById('fullTreeList');
+  if (list) list.innerHTML = '';
+  const btn = document.getElementById('fullTreeBtn');
+  const label = btn?.querySelector('span');
+  if (label) label.textContent = (typeof t === 'function' ? t('show_full_tree') : '') || 'ПОКАЗАТЬ ВСЁ ДЕРЕВО';
+}
+const FT_MAX_DEPTH = 8;       // максимум 8 уровней (как в матрице)
+const FT_MAX_NODES = 400;     // защита от слишком больших обходов
+let ftNodeCounter = 0;
+
+async function toggleFullTree() {
+  const wrap = document.getElementById('fullTreeWrap');
+  const btn = document.getElementById('fullTreeBtn');
+  const label = btn?.querySelector('span');
+  if (!wrap) return;
+
+  // Если уже открыто — сворачиваем
+  if (!wrap.classList.contains('hidden')) {
+    wrap.classList.add('hidden');
+    if (label) label.textContent = t('show_full_tree') || 'ПОКАЗАТЬ ВСЁ ДЕРЕВО';
+    return;
+  }
+
+  wrap.classList.remove('hidden');
+  if (label) label.textContent = t('hide_full_tree') || 'СКРЫТЬ ДЕРЕВО';
+  wrap.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+  if (fullTreeLoaded || fullTreeLoading) return;
+  if (!walletAddress) return;
+
+  fullTreeLoading = true;
+  ftNodeCounter = 0;
+  const list = document.getElementById('fullTreeList');
+  const statsEl = document.getElementById('fullTreeStats');
+  list.innerHTML = `<div class="ft-loading">${t('ft_loading') || 'Загрузка структуры...'}</div>`;
+
+  try {
+    const namesRegistry = loadNamesRegistry();
+    const visited = new Set([walletAddress.toLowerCase()]); // защита от циклов
+    const root = await buildSubtree(walletAddress, 1, visited, namesRegistry);
+    const total = countDescendants(root);
+    list.innerHTML = renderFtChildren(root.children, namesRegistry);
+    if (!root.children.length) {
+      list.innerHTML = `<div class="ft-loading">${t('ft_empty') || 'Пока нет партнёров в структуре'}</div>`;
+    }
+    if (statsEl) statsEl.textContent = `${total} ${t('ft_people') || 'чел.'}`;
+    fullTreeLoaded = true;
+  } catch(e) {
+    console.error('full tree error', e);
+    list.innerHTML = `<div class="ft-loading">${t('ft_error') || 'Не удалось загрузить дерево'}</div>`;
+  }
+  fullTreeLoading = false;
+}
+
+// Рекурсивно собирает поддерево для адреса
+async function buildSubtree(addr, depth, visited, namesRegistry) {
+  const node = { addr, depth, children: [] };
+  if (depth > FT_MAX_DEPTH || ftNodeCounter >= FT_MAX_NODES) return node;
+  let count = 0;
+  try {
+    const cntRes = await getMethodWithAddress('getUserReferralCount', addr);
+    count = parseStackNum(cntRes) || 0;
+  } catch(e) { return node; }
+
+  for (let i = 0; i < count; i++) {
+    if (ftNodeCounter >= FT_MAX_NODES) break;
+    let childAddr = null;
+    try { childAddr = await getReferralAtIndex(addr, i); } catch(e) {}
+    if (!childAddr) continue;
+    const key = childAddr.toLowerCase();
+    if (visited.has(key)) continue; // не зацикливаемся
+    visited.add(key);
+    ftNodeCounter++;
+    const childNode = await buildSubtree(childAddr, depth + 1, visited, namesRegistry);
+    node.children.push(childNode);
+  }
+  return node;
+}
+
+function countDescendants(node) {
+  let n = node.children.length;
+  for (const c of node.children) n += countDescendants(c);
+  return n;
+}
+
+// Рендер списка детей (рекурсивно)
+function renderFtChildren(children, reg) {
+  if (!children || !children.length) return '';
+  return `<div class="ft-children">` + children.map(ch => renderFtNode(ch, reg)).join('') + `</div>`;
+}
+
+function renderFtNode(node, reg) {
+  const addr = node.addr;
+  const data = reg[addr.toLowerCase()] || {};
+  const username = (data.username || '').replace(/[^A-Za-z0-9_]/g, '').slice(0, 32);
+  const tgId = (data.tg_id != null && /^\d+$/.test(String(data.tg_id))) ? String(data.tg_id) : '';
+  const name = data.username ? '@' + escapeHtml(username) : (data.first_name ? escapeHtml(data.first_name) : escapeHtml(shortenAddr(addr)));
+  const photo = data.photo_url ? `<img src="${escapeHtml(data.photo_url)}" referrerpolicy="no-referrer" onerror="this.remove()" />` : `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.4"/><path d="M5 20c0-3.6 3.1-5.5 7-5.5s7 1.9 7 5.5"/></svg>`;
+  const childCount = node.children.length;
+  const countPill = childCount ? `<span class="ft-count-pill">▸ ${childCount}</span>` : '';
+
+  // Кнопка "написать": username → ЛС, tg_id → по ID, иначе бот
+  const tgIcon = `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M22 2L2 11l7 3 9-7-7 9 3 7 8-21z"/></svg>`;
+  let tgBtn;
+  if (username) tgBtn = `<a class="ft-tg" href="https://t.me/${encodeURIComponent(username)}" onclick="openTgChat(event,'${username}','')" target="_blank" rel="noopener noreferrer" title="@${escapeHtml(username)}">${tgIcon}</a>`;
+  else if (tgId) tgBtn = `<a class="ft-tg" href="tg://user?id=${tgId}" onclick="openTgChat(event,'','${tgId}')" title="Telegram">${tgIcon}</a>`;
+  else tgBtn = `<a class="ft-tg" href="https://t.me/${BOT_USERNAME}" onclick="openTgChat(event,'${BOT_USERNAME}','')" target="_blank" rel="noopener noreferrer" title="Telegram">${tgIcon}</a>`;
+
+  const row = `<div class="ft-node">
+    <div class="ft-avatar">${photo}</div>
+    <div class="ft-info">
+      <div class="ft-name">${name}${countPill}</div>
+      <div class="ft-sub">${t('ft_level') || 'Уровень'} ${node.depth} · ${escapeHtml(shortenAddr(addr))}</div>
+    </div>
+    ${tgBtn}
+  </div>`;
+
+  // Вложенные дети — в ветке с отступом
+  const childrenHtml = childCount ? `<div class="ft-branch">${node.children.map(c => renderFtNode(c, reg)).join('')}</div>` : '';
+  return row + childrenHtml;
 }
 
 // Открытие чата Telegram с рефералом.
@@ -2303,7 +2529,7 @@ async function register() { if (!walletAddress) { showToast(t('need_wallet'), 'e
 async function buyLevel(level) { if (!walletAddress) { showToast(t('need_wallet'), 'error'); return; } const price = LEVELS[level - 1].price; try { const cell = await buildCellLevel(0x03398cc8, level); await tonConnectUI.sendTransaction({ validUntil: Math.floor(Date.now() / 1000) + 600, messages: [{address: CONTRACT_ADDRESS, amount: String(Math.floor((price + 0.2) * 1e9)), payload: cell}] }); showToast(t('tx_sent'), 'success'); setTimeout(() => loadUserData(), 8000); setTimeout(() => loadUserData(), 16000); setTimeout(() => loadUserData(), 25000); } catch(e) { showToast(t('tx_error'), 'error'); } }
 async function buildCell(op, referrerID) { const cell = new TonWeb.boc.Cell(); cell.bits.writeUint(op, 32); cell.bits.writeUint(referrerID, 32); const boc = await cell.toBoc(false); return TonWeb.utils.bytesToBase64(boc); }
 async function buildCellLevel(op, level) { const cell = new TonWeb.boc.Cell(); cell.bits.writeUint(op, 32); cell.bits.writeUint(level, 8); const boc = await cell.toBoc(false); return TonWeb.utils.bytesToBase64(boc); }
-function showPage(name) { ['matrix', 'tree', 'leaderboard', 'history', 'info', 'admin'].forEach(p => { const page = document.getElementById('page' + capitalize(p)); if (page) page.classList.add('hidden'); }); document.getElementById('page' + capitalize(name)).classList.remove('hidden'); document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active')); document.querySelectorAll('.nav-more-item').forEach(n => n.classList.remove('active')); const directBtn = document.querySelector(`.nav-item[data-page="${name}"]`); if (directBtn) { directBtn.classList.add('active'); } else { const moreItem = document.querySelector(`.nav-more-item[data-page="${name}"]`); if (moreItem) moreItem.classList.add('active'); const moreBtn = document.getElementById('navMore'); if (moreBtn) moreBtn.classList.add('active'); } if (name === 'leaderboard') renderLeaderboard(); if (name === 'history') loadHistory(); if (name === 'info') calculateIncome(); }
+function showPage(name) { ['matrix', 'tree', 'leaderboard', 'history', 'info', 'admin'].forEach(p => { const page = document.getElementById('page' + capitalize(p)); if (page) page.classList.add('hidden'); }); document.getElementById('page' + capitalize(name)).classList.remove('hidden'); document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active')); const directBtn = document.querySelector(`.nav-item[data-page="${name}"]`); if (directBtn) directBtn.classList.add('active'); if (name === 'leaderboard') renderLeaderboard(); if (name === 'history') loadHistory(); if (name === 'info') calculateIncome(); }
 function showToast(msg, type = '') { const el = document.getElementById('toast'); el.textContent = msg; el.className = `toast show ${type}`; clearTimeout(el._t); el._t = setTimeout(() => el.classList.remove('show'), 2800); }
 function shortenAddr(addr) {
   if (!addr) return '';
