@@ -33,8 +33,8 @@ body {
  margin: 0;
  font-family: Inter, Arial, sans-serif;
  background:
- radial-gradient(circle at top left, rgba(124,109,255,0.16), transparent 28%),
- radial-gradient(circle at top right, rgba(72,207,255,0.12), transparent 32%),
+ radial-gradient(circle at top left, rgba(124,109,255,0.09), transparent 26%),
+ radial-gradient(circle at top right, rgba(72,207,255,0.07), transparent 30%),
  linear-gradient(180deg, #040913 0%, #091120 52%, #060c18 100%);
  color: var(--text);
  min-height: 100vh;
@@ -45,10 +45,11 @@ body::before {
  content: '';
  position: fixed; inset: 0;
  background:
- linear-gradient(rgba(255,255,255,0.018) 1px, transparent 1px),
- linear-gradient(90deg, rgba(255,255,255,0.018) 1px, transparent 1px);
- background-size: 28px 28px;
- mask-image: radial-gradient(circle at center, black 45%, transparent 88%);
+ linear-gradient(rgba(255,255,255,0.01) 1px, transparent 1px),
+ linear-gradient(90deg, rgba(255,255,255,0.01) 1px, transparent 1px);
+ background-size: 34px 34px;
+ mask-image: radial-gradient(circle at center, black 30%, transparent 75%);
+ opacity: 0.6;
  z-index: -1;
  pointer-events: none;
 }
@@ -74,8 +75,17 @@ body::before {
  border-radius: 14px;
  padding: 6px;
  background: linear-gradient(145deg, rgba(72,207,255,0.18), rgba(124,109,255,0.14));
- border: 1px solid rgba(132, 196, 255, 0.18);
- box-shadow: inset 0 1px 0 rgba(255,255,255,0.08), 0 12px 26px rgba(24, 94, 255, 0.14);
+ border: 1px solid rgba(132, 196, 255, 0.22);
+ box-shadow:
+   inset 0 1px 0 rgba(255,255,255,0.1),
+   0 0 18px rgba(46, 160, 255, 0.45),
+   0 0 38px rgba(46, 160, 255, 0.22),
+   0 10px 24px rgba(24, 94, 255, 0.2);
+ animation: logoGlow 3.6s ease-in-out infinite;
+}
+@keyframes logoGlow {
+ 0%, 100% { box-shadow: inset 0 1px 0 rgba(255,255,255,0.1), 0 0 16px rgba(46,160,255,0.4), 0 0 34px rgba(46,160,255,0.18), 0 10px 24px rgba(24,94,255,0.2); }
+ 50% { box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 0 26px rgba(46,160,255,0.6), 0 0 50px rgba(46,160,255,0.32), 0 10px 24px rgba(24,94,255,0.24); }
 }
 .header-title {
  font-size: 20px; font-weight: 700;
@@ -130,6 +140,26 @@ body::before {
  background: linear-gradient(135deg, rgba(68,225,166,0.18), rgba(72,207,255,0.18));
  border-color: rgba(68,225,166,0.24);
 }
+/* Статус подключения в шапке */
+.conn-status {
+ display: inline-flex; align-items: center; gap: 7px;
+ padding: 7px 12px;
+ border-radius: 14px;
+ font-size: 11px; font-weight: 700;
+ white-space: nowrap;
+ border: 1px solid rgba(255,255,255,0.08);
+ background: rgba(255,255,255,0.04);
+ transition: 0.25s;
+}
+.conn-status .conn-dot {
+ width: 8px; height: 8px; border-radius: 50%;
+ flex-shrink: 0;
+}
+.conn-status.offline { color: #ff8aa0; border-color: rgba(255,95,134,0.25); background: rgba(255,95,134,0.08); }
+.conn-status.offline .conn-dot { background: #ff5f86; box-shadow: 0 0 8px rgba(255,95,134,0.7); }
+.conn-status.online { color: #7df0c4; border-color: rgba(68,225,166,0.3); background: rgba(68,225,166,0.1); }
+.conn-status.online .conn-dot { background: #44e1a6; box-shadow: 0 0 8px rgba(68,225,166,0.8); animation: pulse 1.8s ease-in-out infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.45} }
 .card {
  position: relative;
  background: var(--panel);
@@ -211,9 +241,9 @@ body::before {
 .hero {
  position: relative;
  background: linear-gradient(180deg, rgba(14,25,47,0.94), rgba(11,20,38,0.88));
- border-radius: 28px;
- padding: 22px;
- margin-bottom: 14px;
+ border-radius: 24px;
+ padding: 18px 18px 16px;
+ margin-bottom: 12px;
  overflow: hidden;
  box-shadow: var(--shadow);
  border: 1px solid rgba(104, 154, 255, 0.18);
@@ -222,23 +252,23 @@ body::before {
  content: "";
  position: absolute;
  inset: auto -50px -70px auto;
- width: 180px;
- height: 180px;
- background: radial-gradient(circle, rgba(72,207,255,0.24), transparent 65%);
+ width: 160px;
+ height: 160px;
+ background: radial-gradient(circle, rgba(72,207,255,0.2), transparent 65%);
 }
 .hero-title {
- font-size: 11px;
+ font-size: 10px;
  color: var(--cyan);
  letter-spacing: 0.18em;
- margin-bottom: 10px;
+ margin-bottom: 8px;
  text-transform: uppercase;
  font-weight: 700;
 }
 .hero-sub {
- font-size: 28px;
+ font-size: 23px;
  font-weight: 800;
  letter-spacing: -0.02em;
- line-height: 1.08;
+ line-height: 1.12;
  max-width: 320px;
  background: linear-gradient(135deg, #fff 0%, #c9defc 60%, #8fb6ff 100%);
  -webkit-background-clip: text;
@@ -254,14 +284,14 @@ body::before {
 }
 .hero-badges {
  display: flex;
- gap: 8px;
+ gap: 7px;
  flex-wrap: wrap;
- margin-top: 18px;
+ margin-top: 14px;
 }
 .hero-badge {
- padding: 8px 12px;
+ padding: 7px 11px;
  border-radius: 999px;
- font-size: 11px;
+ font-size: 10px;
  font-weight: 600;
  color: #d9ecff;
  background: rgba(255, 255, 255, 0.05);
@@ -315,6 +345,12 @@ body::before {
  color: var(--green);
  box-shadow: inset 0 0 0 1px rgba(68,225,166,0.3);
 }
+.stat-icon--income {
+ background: linear-gradient(145deg, rgba(68,225,166,0.26), rgba(72,207,255,0.12));
+ color: var(--green);
+ box-shadow: inset 0 0 0 1px rgba(68,225,166,0.3);
+}
+/* Общий доход — крупная плашка под шапкой */
 .stat-value {
  font-size: 18px;
  font-weight: 800;
@@ -466,6 +502,18 @@ body::before {
  letter-spacing: 0.12em;
  text-transform: uppercase;
  color: var(--muted);
+}
+.node-status {
+ display: inline-flex; align-items: center; gap: 5px;
+ color: var(--green);
+ font-weight: 800;
+ letter-spacing: 0.04em;
+}
+.node-status-dot {
+ width: 6px; height: 6px; border-radius: 50%;
+ background: var(--green);
+ box-shadow: 0 0 6px rgba(68,225,166,0.8);
+ flex-shrink: 0;
 }
 /* центральная нода YOU */
 .tree-node.you {
@@ -629,17 +677,56 @@ body::before {
 .lb-rank-badge.gold { background: linear-gradient(145deg, #ffd87a, #ff9d42); }
 .lb-rank-badge.silver { background: linear-gradient(145deg, #e6edf9, #9aa9c4); }
 .lb-rank-badge.bronze { background: linear-gradient(145deg, #e0985a, #b5703a); color: #fff; }
+/* Медали для топ-3 */
+.lb-medal {
+ position: absolute; bottom: -6px; right: -8px;
+ font-size: 22px; line-height: 1;
+ filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
+}
+.lb-card.gold { border-color: rgba(255,200,97,0.4); box-shadow: inset 0 1px 0 rgba(255,255,255,0.06), 0 12px 30px rgba(255,170,60,0.12); }
+.lb-card.silver { border-color: rgba(210,220,240,0.32); }
+.lb-card.bronze { border-color: rgba(205,127,50,0.34); }
+.lb-card.gold .lb-value { color: var(--gold); }
 .history-icon.in { background: rgba(68,225,166,0.14); color: var(--green); }
 .history-icon.out { background: rgba(255,95,134,0.12); color: var(--danger); }
+.history-title { display: inline-flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.history-badge {
+ font-size: 9px; font-weight: 800; letter-spacing: 0.06em;
+ padding: 2px 7px; border-radius: 999px; text-transform: uppercase;
+}
+.history-badge.in { background: rgba(68,225,166,0.14); color: var(--green); border: 1px solid rgba(68,225,166,0.3); }
+.history-badge.out { background: rgba(255,95,134,0.12); color: var(--danger); border: 1px solid rgba(255,95,134,0.28); }
 .history-amount { font-size: 13px; font-weight: 800; flex-shrink: 0; }
 .history-amount.in { color: var(--green); }
 .history-amount.out { color: var(--danger); }
-.calc-inputs {
- display: grid;
- grid-template-columns: 1fr 1fr;
+.calc-row {
+ display: flex;
+ align-items: center;
  gap: 12px;
+ padding: 12px 14px;
+ background: rgba(4,10,20,0.4);
+ border: 1px solid rgba(255,255,255,0.06);
+ border-radius: 14px;
+ margin-bottom: 10px;
 }
-.calc-inputs .input-group { margin-bottom: 0; }
+.calc-row-label {
+ flex: 1;
+ min-width: 0;
+ font-size: 11px;
+ letter-spacing: 0.08em;
+ color: var(--muted);
+ text-transform: uppercase;
+ font-weight: 700;
+ line-height: 1.3;
+}
+.calc-row-input {
+ width: 76px;
+ flex-shrink: 0;
+ text-align: center;
+ padding: 10px 8px;
+ font-size: 18px;
+ border-radius: 12px;
+}
 .calc-result {
  background: rgba(68,225,166,0.08);
  border: 1px solid rgba(68,225,166,0.2);
@@ -746,17 +833,21 @@ body::before {
 .nav-item:active { transform: scale(0.94); }
 .nav-item.active {
  color: #ffffff;
+ font-weight: 800;
 }
+.nav-item.active .nav-label { color: #ffffff; }
 .nav-item.active .nav-icon {
- color: var(--cyan);
- background: linear-gradient(135deg, rgba(72,207,255,0.22), rgba(124,109,255,0.22));
- border-radius: 12px;
- box-shadow: 0 5px 14px rgba(40, 150, 255, 0.28), inset 0 0 0 1px rgba(122, 203, 255, 0.32);
- width: 40px; height: 28px;
+ color: #ffffff;
+ background: linear-gradient(135deg, var(--cyan), #2f7bff);
+ border-radius: 14px;
+ box-shadow: 0 8px 22px rgba(40, 150, 255, 0.55), 0 0 0 1px rgba(122, 203, 255, 0.5), inset 0 1px 0 rgba(255,255,255,0.25);
+ width: 46px; height: 34px;
+ transform: translateY(-2px);
 }
 .nav-item.active .nav-icon svg {
- stroke-width: 2;
- filter: drop-shadow(0 0 6px rgba(72,207,255,0.55));
+ stroke-width: 2.2;
+ width: 24px; height: 24px;
+ filter: drop-shadow(0 0 8px rgba(150, 220, 255, 0.9));
 }
 /* Всплывающее меню "Ещё" */
 .nav-more-menu {
@@ -1179,7 +1270,7 @@ body::before {
 
  <div class="header">
  <div class="header-left">
- <img src="logo.png" alt="TonForce" />
+ <img src="data:image/png;base64,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" alt="TonForce" />
  <div>
  <div class="header-title">TonForce</div>
  <div class="balance" id="userInfo">⚡ <span data-i18n="not_connected">Не подключено</span></div>
@@ -1191,7 +1282,10 @@ body::before {
  <button class="lang-btn" data-lang="en" onclick="setLang('en')">EN</button>
  <button class="lang-btn" data-lang="ua" onclick="setLang('ua')">UA</button>
  </div>
- <button class="wallet-btn" id="walletBtn" onclick="connectWallet()" data-i18n="connect">CONNECT</button>
+ <div class="conn-status offline" id="connStatus">
+ <span class="conn-dot"></span>
+ <span class="conn-text" data-i18n="not_connected">Не подключено</span>
+ </div>
  </div>
  </div>
 
@@ -1199,7 +1293,7 @@ body::before {
  <div class="hero" id="heroBlock">
  <div class="hero-title" data-i18n="welcome">TONFORCE • МАТРИЦА 3×8</div>
  <div class="hero-sub" data-i18n="hero_sub">Сила сети. Свобода дохода.</div>
- <div class="hero-copy" data-i18n="hero_copy">Зарабатывай на блокчейне TON через матричную программу. 8 уровней, выплаты идут вверх по дереву автоматически.</div>
+ <div class="hero-copy" data-i18n="hero_copy">Матричная программа на блокчейне TON с 8 уровнями и автоматическим распределением выплат через смарт-контракт.</div>
  <div class="hero-badges">
  <div class="hero-badge" data-i18n="badge_matrix">⚡ Матрица 3×8</div>
  <div class="hero-badge" data-i18n="badge_days">📅 365 дней</div>
@@ -1207,21 +1301,21 @@ body::before {
  </div>
  </div>
 
- <div class="stats">
+ <div class="stats hidden" id="statsBlock">
  <div class="stat">
  <div class="stat-icon stat-icon--users"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><path d="M3.5 19c0-3 2.5-4.8 5.5-4.8s5.5 1.8 5.5 4.8"/><path d="M16 5.2a3 3 0 0 1 0 5.6M20.5 19c0-2.6-1.7-4.3-4-4.7"/></svg></div>
- <div class="stat-value" id="statUsers">—</div>
- <div class="stat-label" data-i18n="participants">УЧАСТНИКОВ</div>
+ <div class="stat-value" id="statRefs">0</div>
+ <div class="stat-label" data-i18n="active_partners_short">АКТИВНЫХ</div>
  </div>
  <div class="stat">
  <div class="stat-icon stat-icon--level"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 3.2l2.5 5.2 5.7.8-4.1 4 1 5.7-5.1-2.7-5.1 2.7 1-5.7-4.1-4 5.7-.8z"/></svg></div>
- <div class="stat-value" id="statLevel">—</div>
- <div class="stat-label" data-i18n="my_level">МОЙ УРОВЕНЬ</div>
+ <div class="stat-value" id="statLevel">0</div>
+ <div class="stat-label" data-i18n="my_level">УРОВЕНЬ</div>
  </div>
  <div class="stat">
- <div class="stat-icon stat-icon--refs"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21c-5-2.5-7.5-6-7.5-10A4.5 4.5 0 0 1 12 8.2 4.5 4.5 0 0 1 19.5 11c0 4-2.5 7.5-7.5 10z"/><path d="M12 8.2V21"/></svg></div>
- <div class="stat-value" id="statRefs">—</div>
- <div class="stat-label" data-i18n="referrals">РЕФЕРАЛОВ</div>
+ <div class="stat-icon stat-icon--income"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
+ <div class="stat-value" id="statIncome">0</div>
+ <div class="stat-label" data-i18n="income_short">TON ДОХОД</div>
  </div>
  </div>
 
@@ -1308,15 +1402,13 @@ body::before {
 
  <div class="section-title"><span data-i18n="calc_title">КАЛЬКУЛЯТОР ДОХОДА</span><span class="section-note">Estimate your upside</span></div>
  <div class="card">
- <div class="calc-inputs">
- <div class="input-group">
- <label class="input-label" data-i18n="refs_count">КОЛ-ВО РЕФЕРАЛОВ В МЕСЯЦ</label>
- <input class="input-field" id="calcRefs" type="number" value="3" min="1" max="100" oninput="calculateIncome()" />
+ <div class="calc-row">
+ <label class="calc-row-label" data-i18n="refs_count">КОЛ-ВО РЕФЕРАЛОВ В МЕСЯЦ</label>
+ <input class="input-field calc-row-input" id="calcRefs" type="number" value="3" min="1" max="100" oninput="calculateIncome()" />
  </div>
- <div class="input-group">
- <label class="input-label" data-i18n="active_levels">АКТИВНЫХ УРОВНЕЙ</label>
- <input class="input-field" id="calcLevels" type="number" value="3" min="1" max="8" oninput="calculateIncome()" />
- </div>
+ <div class="calc-row">
+ <label class="calc-row-label" data-i18n="active_levels">АКТИВНЫХ УРОВНЕЙ</label>
+ <input class="input-field calc-row-input" id="calcLevels" type="number" value="3" min="1" max="8" oninput="calculateIncome()" />
  </div>
  <div class="calc-result">
  <div class="calc-result-value" id="calcResult">0 TON</div>
@@ -1449,8 +1541,8 @@ function getLevelName(lvlObj) {
 
 const I18N = {
  ru: {
- connect:'CONNECT', not_connected:'Не подключено', welcome:'TONFORCE • МАТРИЦА 3×8', hero_sub:'Сила сети. Свобода дохода.', hero_copy:'Зарабатывай на блокчейне TON через матричную программу. 8 уровней, выплаты идут вверх по дереву автоматически.', badge_matrix:'⚡ Матрица 3×8', badge_days:'📅 365 дней', badge_onchain:'🔗 On-chain выплаты',
- participants:'УЧАСТНИКОВ', my_level:'МОЙ УРОВЕНЬ', referrals:'РЕФЕРАЛОВ', join:'ПРИСОЕДИНИТЬСЯ',
+ connect:'CONNECT', not_connected:'Не подключено', welcome:'TONFORCE • МАТРИЦА 3×8', hero_sub:'Сила сети. Свобода дохода.', hero_copy:'Матричная программа на блокчейне TON с 8 уровнями и автоматическим распределением выплат через смарт-контракт.', badge_matrix:'⚡ Матрица 3×8', badge_days:'📅 365 дней', badge_onchain:'🔗 On-chain выплаты',
+ participants:'УЧАСТНИКОВ', my_level:'УРОВЕНЬ', referrals:'РЕФЕРАЛОВ', join:'ПРИСОЕДИНИТЬСЯ', total_income:'ОБЩИЙ ДОХОД', active_partners_short:'АКТИВНЫХ', income_short:'TON ДОХОД',
  ref_id:'ID РЕФЕРЕРА', join_btn:'АКТИВИРОВАТЬ ЗА', my_levels:'МОИ УРОВНИ', ref_tree:'ДЕРЕВО РЕФЕРАЛОВ',
  my_ref_link:'МОЯ РЕФЕРАЛЬНАЯ ССЫЛКА', share_earn:'ПОДЕЛИТЕСЬ И ЗАРАБАТЫВАЙТЕ', copy_link:'СКОПИРОВАТЬ ССЫЛКУ', share_link:'ПОДЕЛИТЬСЯ',
  top_refs:'ТОП РЕФЕРЕРОВ', lb_loading:'Загрузка...', my_history:'ИСТОРИЯ ТРАНЗАКЦИЙ',
@@ -1462,7 +1554,7 @@ const I18N = {
  rule_5:'▸ Всё на TON блокчейне',
  prices:'ЦЕНЫ УРОВНЕЙ', admin:'АДМИН ПАНЕЛЬ', total_users:'ВСЕГО УЧАСТНИКОВ', contract_balance:'БАЛАНС КОНТРАКТА',
  my_earnings:'МОЙ ЗАРАБОТОК', contract_addr:'АДРЕС КОНТРАКТА', copy_addr:'СКОПИРОВАТЬ АДРЕС',
- nav_matrix:'МАТРИЦА', nav_tree:'ДЕРЕВО', nav_top:'ТОП', nav_history:'ИСТОРИЯ', nav_info:'КАЛЬКУЛЯТОР', nav_admin:'АДМИН', nav_more:'ЕЩЁ', write_tg:'Написать в Telegram', tree_you_sub:'Владелец', tree_partner:'Партнёр', tree_open_slot:'Свободно', invite_tg:'Пригласить',
+ nav_matrix:'МАТРИЦА', nav_tree:'ДЕРЕВО', nav_top:'ТОП', nav_history:'ИСТОРИЯ', nav_info:'КАЛЬКУЛЯТОР', nav_admin:'АДМИН', nav_more:'ЕЩЁ', write_tg:'Написать в Telegram', tree_you_sub:'Владелец', tree_partner:'Партнёр', tree_open_slot:'Свободно', invite_tg:'Пригласить', tree_active:'Активен',
  ref_link_used:'ВЫ ПЕРЕШЛИ ПО РЕФЕРАЛЬНОЙ ССЫЛКЕ', auto_filled:'АВТОЗАПОЛНЕНО',
  wallet_connected:'Кошелёк подключён!', tx_sent:'Транзакция отправлена!', tx_error:'Ошибка транзакции',
  copied:'Скопировано!', need_wallet:'Сначала подключите кошелёк', days_left:'дн.',
@@ -1472,8 +1564,8 @@ const I18N = {
  connect_first:'Подключите кошелёк чтобы начать'
  },
  en: {
- connect:'CONNECT', not_connected:'Not connected', welcome:'TONFORCE • 3×8 MATRIX', hero_sub:'Network. Power. Freedom.', hero_copy:'Earn on TON blockchain through the matrix program. 8 levels, payouts flow up the tree automatically.', badge_matrix:'⚡ Matrix 3×8', badge_days:'📅 365 days', badge_onchain:'🔗 On-chain payouts',
- participants:'PARTICIPANTS', my_level:'MY LEVEL', referrals:'REFERRALS', join:'JOIN',
+ connect:'CONNECT', not_connected:'Not connected', welcome:'TONFORCE • 3×8 MATRIX', hero_sub:'Network. Power. Freedom.', hero_copy:'A matrix program on the TON blockchain with 8 levels and automatic payout distribution via smart contract.', badge_matrix:'⚡ Matrix 3×8', badge_days:'📅 365 days', badge_onchain:'🔗 On-chain payouts',
+ participants:'PARTICIPANTS', my_level:'LEVEL', referrals:'REFERRALS', join:'JOIN', total_income:'TOTAL INCOME', active_partners_short:'ACTIVE', income_short:'TON INCOME',
  ref_id:'REFERRER ID', join_btn:'ACTIVATE FOR', my_levels:'MY LEVELS', ref_tree:'REFERRAL TREE',
  my_ref_link:'MY REFERRAL LINK', share_earn:'SHARE & EARN', copy_link:'COPY LINK', share_link:'SHARE',
  top_refs:'TOP REFERRERS', lb_loading:'Loading...', my_history:'TRANSACTION HISTORY',
@@ -1485,7 +1577,7 @@ const I18N = {
  rule_5:'▸ All on TON blockchain',
  prices:'LEVEL PRICES', admin:'ADMIN PANEL', total_users:'TOTAL USERS', contract_balance:'CONTRACT BALANCE',
  my_earnings:'MY EARNINGS', contract_addr:'CONTRACT ADDRESS', copy_addr:'COPY ADDRESS',
- nav_matrix:'MATRIX', nav_tree:'TREE', nav_top:'TOP', nav_history:'HISTORY', nav_info:'CALCULATOR', nav_admin:'ADMIN', nav_more:'MORE', write_tg:'Message on Telegram', tree_you_sub:'Owner', tree_partner:'Partner', tree_open_slot:'Open slot', invite_tg:'Invite',
+ nav_matrix:'MATRIX', nav_tree:'TREE', nav_top:'TOP', nav_history:'HISTORY', nav_info:'CALCULATOR', nav_admin:'ADMIN', nav_more:'MORE', write_tg:'Message on Telegram', tree_you_sub:'Owner', tree_partner:'Partner', tree_open_slot:'Open slot', invite_tg:'Invite', tree_active:'Active',
  ref_link_used:'YOU JOINED VIA REFERRAL LINK', auto_filled:'AUTO-FILLED',
  wallet_connected:'Wallet connected!', tx_sent:'Transaction sent!', tx_error:'Transaction error',
  copied:'Copied!', need_wallet:'Connect wallet first', days_left:'days',
@@ -1495,8 +1587,8 @@ const I18N = {
  connect_first:'Connect wallet to start'
  },
  ua: {
- connect:'CONNECT', not_connected:'Не підключено', welcome:'TONFORCE • МАТРИЦЯ 3×8', hero_sub:'Сила мережі. Свобода доходу.', hero_copy:'Заробляй на блокчейні TON через матричну програму. 8 рівнів, виплати йдуть вгору по дереву автоматично.', badge_matrix:'⚡ Матриця 3×8', badge_days:'📅 365 днів', badge_onchain:'🔗 On-chain виплати',
- participants:'УЧАСНИКІВ', my_level:'МІЙ РІВЕНЬ', referrals:'РЕФЕРАЛІВ', join:'ПРИЄДНАТИСЯ',
+ connect:'CONNECT', not_connected:'Не підключено', welcome:'TONFORCE • МАТРИЦЯ 3×8', hero_sub:'Сила мережі. Свобода доходу.', hero_copy:'Матрична програма на блокчейні TON з 8 рівнями та автоматичним розподілом виплат через смарт-контракт.', badge_matrix:'⚡ Матриця 3×8', badge_days:'📅 365 днів', badge_onchain:'🔗 On-chain виплати',
+ participants:'УЧАСНИКІВ', my_level:'РІВЕНЬ', referrals:'РЕФЕРАЛІВ', join:'ПРИЄДНАТИСЯ', total_income:'ЗАГАЛЬНИЙ ДОХІД', active_partners_short:'АКТИВНИХ', income_short:'TON ДОХІД',
  ref_id:'ID РЕФЕРЕРА', join_btn:'АКТИВУВАТИ ЗА', my_levels:'МОЇ РІВНІ', ref_tree:'ДЕРЕВО РЕФЕРАЛІВ',
  my_ref_link:'МОЄ РЕФЕРАЛЬНЕ ПОСИЛАННЯ', share_earn:'ПОДІЛІТЬСЯ ТА ЗАРОБЛЯЙТЕ', copy_link:'СКОПІЮВАТИ', share_link:'ПОДІЛИТИСЯ',
  top_refs:'ТОП РЕФЕРЕРІВ', lb_loading:'Завантаження...', my_history:'ІСТОРІЯ ТРАНЗАКЦІЙ',
@@ -1508,7 +1600,7 @@ const I18N = {
  rule_5:'▸ Все на TON блокчейні',
  prices:'ЦІНИ РІВНІВ', admin:'АДМІН ПАНЕЛЬ', total_users:'ВСЬОГО УЧАСНИКІВ', contract_balance:'БАЛАНС КОНТРАКТУ',
  my_earnings:'МІЙ ЗАРОБІТОК', contract_addr:'АДРЕСА КОНТРАКТУ', copy_addr:'СКОПІЮВАТИ',
- nav_matrix:'МАТРИЦЯ', nav_tree:'ДЕРЕВО', nav_top:'ТОП', nav_history:'ІСТОРІЯ', nav_info:'КАЛЬКУЛЯТОР', nav_admin:'АДМІН', nav_more:'ЩЕ', write_tg:'Написати в Telegram', tree_you_sub:'Власник', tree_partner:'Партнер', tree_open_slot:'Вільно', invite_tg:'Запросити',
+ nav_matrix:'МАТРИЦЯ', nav_tree:'ДЕРЕВО', nav_top:'ТОП', nav_history:'ІСТОРІЯ', nav_info:'КАЛЬКУЛЯТОР', nav_admin:'АДМІН', nav_more:'ЩЕ', write_tg:'Написати в Telegram', tree_you_sub:'Власник', tree_partner:'Партнер', tree_open_slot:'Вільно', invite_tg:'Запросити', tree_active:'Активний',
  ref_link_used:'ВИ ПЕРЕЙШЛИ ЗА ПОСИЛАННЯМ', auto_filled:'АВТОЗАПОВНЕНО',
  wallet_connected:'Гаманець підключено!', tx_sent:'Транзакція надіслана!', tx_error:'Помилка',
  copied:'Скопійовано!', need_wallet:'Спочатку підключіть гаманець', days_left:'дн.',
@@ -1531,8 +1623,8 @@ function applyI18n() {
  document.querySelectorAll('[data-i18n]').forEach(el => {
    const key = el.dataset.i18n;
    if (!I18N[currentLang]?.[key]) return;
-   // Не перезаписываем walletBtn если кошелёк подключён — там уже имя/адрес юзера
-   if (el.id === 'walletBtn' && walletAddress) return;
+   // Не перезаписываем статус подключения если кошелёк подключён
+   if (el.closest('#connStatus') && walletAddress) return;
    // Не перезаписываем userInfo если кошелёк подключён
    if (el.closest('#userInfo') && walletAddress) return;
    el.textContent = I18N[currentLang][key];
@@ -1550,7 +1642,16 @@ if (tg) {
  tg.setHeaderColor('#07101f');
  tg.setBackgroundColor('#07101f');
 }
-const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({ manifestUrl: 'https://tonforce.app/tonconnect-manifest.json' });
+const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({ manifestUrl: 'https://tonforce.app/tonconnect-manifest.json?v=2' });
+// Обновляет статус-индикатор подключения в шапке
+function setConnStatus(online, label) {
+ const el = document.getElementById('connStatus');
+ if (!el) return;
+ el.classList.toggle('online', !!online);
+ el.classList.toggle('offline', !online);
+ const txt = el.querySelector('.conn-text');
+ if (txt) txt.textContent = online ? (label || t('connected') || 'Online') : (t('not_connected') || 'Offline');
+}
 function updateNavigationVisibility() {
  const nav = document.getElementById('bottomNav');
  if (!nav) return;
@@ -1579,15 +1680,16 @@ tonConnectUI.onStatusChange(wallet => {
  // КРИТИЧНО: сбрасываем userState от предыдущего кошелька — иначе UI покажет
  // данные старого юзера (или owner-а) пока loadUserData асинхронно не отработает
  userState = { registered: false, id: 0, referrerID: 0, referralCount: 0, levels: Array(8).fill(0) };
- const statRefsEl = document.getElementById('statRefs'); if (statRefsEl) statRefsEl.textContent = '—';
- const statLevelEl = document.getElementById('statLevel'); if (statLevelEl) statLevelEl.textContent = '—';
+ const statRefsEl = document.getElementById('statRefs'); if (statRefsEl) statRefsEl.textContent = '0';
+ const statLevelEl = document.getElementById('statLevel'); if (statLevelEl) statLevelEl.textContent = '0';
+ const statIncEl = document.getElementById('statIncome'); if (statIncEl) statIncEl.textContent = '0';
+ const totIncEl = document.getElementById('totalIncome'); if (totIncEl) totIncEl.textContent = '0.00 TON';
 
  saveMyTelegramData();
  const myName = getUserDisplayName(walletAddress);
  const shortAddr = shortenAddr(walletAddress);
- // Кнопка вверху справа — ВСЕГДА адрес кошелька (для consistency с Tonkeeper)
- document.getElementById('walletBtn').textContent = shortAddr;
- document.getElementById('walletBtn').classList.add('connected');
+ // Статус-индикатор вверху справа → онлайн + короткий адрес
+ setConnStatus(true, shortAddr);
  // Под лого — имя из Telegram (если есть) или адрес
  document.getElementById('userInfo').innerHTML = '⚡ ' + myName;
  showToast(t('wallet_connected'), 'success');
@@ -1600,14 +1702,15 @@ tonConnectUI.onStatusChange(wallet => {
  updateRefLink(); renderTree(); renderDashboard(); loadUserData(); syncNamesFromBackend();
  } else {
  walletAddress = null;
- document.getElementById('walletBtn').textContent = 'CONNECT';
- document.getElementById('walletBtn').classList.remove('connected');
+ setConnStatus(false);
  document.getElementById('userInfo').innerHTML = '⚡ ' + t('not_connected');
  document.getElementById('navAdmin').classList.add('hidden');
  userState = { registered: false, id: 0, referrerID: 0, referralCount: 0, levels: Array(8).fill(0) };
  // Очищаем все статы UI чтобы не показывать данные предыдущего юзера
- const statRefsEl = document.getElementById('statRefs'); if (statRefsEl) statRefsEl.textContent = '—';
- const statLevelEl = document.getElementById('statLevel'); if (statLevelEl) statLevelEl.textContent = '—';
+ const statRefsEl = document.getElementById('statRefs'); if (statRefsEl) statRefsEl.textContent = '0';
+ const statLevelEl = document.getElementById('statLevel'); if (statLevelEl) statLevelEl.textContent = '0';
+ const statIncEl = document.getElementById('statIncome'); if (statIncEl) statIncEl.textContent = '0';
+ const totIncEl = document.getElementById('totalIncome'); if (totIncEl) totIncEl.textContent = '0.00 TON';
  // statUsers оставляем — это глобальное число, не зависит от пользователя
  document.getElementById('refLink').textContent = '—';
  updateNavigationVisibility();
@@ -1624,7 +1727,7 @@ async function loadUserData() {
  if (!walletAddress) return;
  const totalRes = await callGet('getTotalUsers', []);
  totalUsers = parseStackNum(totalRes) || 1;
- document.getElementById('statUsers').textContent = totalUsers.toLocaleString();
+ const statUsersEl = document.getElementById('statUsers'); if (statUsersEl) statUsersEl.textContent = totalUsers.toLocaleString();
  const adminUsersEl = document.getElementById('adminUsers'); if (adminUsersEl) adminUsersEl.textContent = totalUsers.toLocaleString();
  let isRegistered = false, userID = 0, refCount = 0, levels = Array(8).fill(0);
  if (walletAddress.toLowerCase() === OWNER_WALLET_RAW.toLowerCase()) { isRegistered = true; userID = 1; refCount = Math.max(0, totalUsers - 1); levels = Array(8).fill(99999999999); }
@@ -1640,13 +1743,31 @@ async function loadUserData() {
  } catch(e) {}
  }
  userState.registered = isRegistered; userState.id = userID; userState.referralCount = refCount; userState.levels = levels;
- document.getElementById('statRefs').textContent = refCount;
  const activeLvl = levels.filter(e => e > Date.now() / 1000).length;
- document.getElementById('statLevel').textContent = isRegistered ? String(activeLvl) : '—';
+ const income = estimateIncome(refCount, activeLvl, isRegistered);
+ userState.earnings = income;
+ document.getElementById('statRefs').textContent = refCount;
+ document.getElementById('statLevel').textContent = isRegistered ? String(activeLvl) : '0';
+ const statIncomeEl = document.getElementById('statIncome'); if (statIncomeEl) statIncomeEl.textContent = formatTon(income);
+ const totalIncomeEl = document.getElementById('totalIncome'); if (totalIncomeEl) totalIncomeEl.textContent = income.toFixed(2) + ' TON';
  document.getElementById('treeActiveRefs').textContent = refCount;
  document.getElementById('treeOpenSlots').textContent = Math.max(0, 3 - refCount);
- document.getElementById('treeEarned').textContent = (refCount * 0.1).toFixed(1) + ' TON';
+ document.getElementById('treeEarned').textContent = formatTon(income) + ' TON';
  updateRefLink(); renderTree(); renderDashboard();
+}
+// Оценка суммарного дохода: сумма income активных уровней × число рефералов (грубая оценка для UI)
+function estimateIncome(refCount, activeLvl, isRegistered) {
+ if (!isRegistered || refCount <= 0 || activeLvl <= 0) return 0;
+ // доход уровня 1 за реферала — базовая ставка; растёт с уровнем
+ let perRef = 0;
+ for (let i = 0; i < Math.min(activeLvl, 8); i++) perRef += LEVELS[i].price; // суммарная «стоимость линии»
+ // примерная доля выплат вверх (упрощённо ~ цена уровня 1 за прямого реферала)
+ return refCount * LEVELS[0].price * Math.max(1, activeLvl) * 0.6;
+}
+function formatTon(v) {
+ if (v >= 1000) return (v/1000).toFixed(1) + 'k';
+ if (v >= 100) return Math.round(v).toString();
+ return v.toFixed(v < 10 ? 1 : 0);
 }
 async function loadHistory() {
  if (!walletAddress) { document.getElementById('historyList').innerHTML = `<div class="empty-state"><div class="empty-state-icon">📜</div><div>${t('history_empty')}</div></div>`; return; }
@@ -1660,7 +1781,10 @@ async function loadHistory() {
  const value = parseInt(isIn ? inMsg.value : (outMsg?.value || 0)) / 1e9;
  const date = new Date(tx.utime * 1000);
  const timeStr = date.toLocaleString();
- return `<div class="card"><div class="history-item"><div class="history-icon ${isIn ? 'in' : 'out'}">${isIn ? '↓' : '↑'}</div><div class="history-info"><div class="history-title">${isIn ? t('received') : t('sent')}</div><div class="history-time">${timeStr}</div></div><div class="history-amount ${isIn ? 'in' : 'out'}">${isIn ? '+' : '-'}${value.toFixed(3)} TON</div></div></div>`;
+ const badge = isIn
+   ? `<span class="history-badge in">${t('received') || 'Получено'}</span>`
+   : `<span class="history-badge out">${t('sent') || 'Отправлено'}</span>`;
+ return `<div class="card"><div class="history-item"><div class="history-icon ${isIn ? 'in' : 'out'}">${isIn ? '↓' : '↑'}</div><div class="history-info"><div class="history-title">${isIn ? t('received') : t('sent')} ${badge}</div><div class="history-time">${timeStr}</div></div><div class="history-amount ${isIn ? 'in' : 'out'}">${isIn ? '+' : '-'}${value.toFixed(3)} TON</div></div></div>`;
  }).join('');
  } catch(e) {}
 }
@@ -1698,15 +1822,19 @@ async function renderLeaderboard() {
  list.innerHTML = topItems.map((item, idx) => {
    const rank = idx + 1;
    const rankClass = rank === 1 ? 'gold' : rank === 2 ? 'silver' : rank === 3 ? 'bronze' : '';
+   const medal = rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : '';
    const userInfo = getUserDisplayName(item.addr);
    const displayName = userInfo.startsWith('@') || userInfo.length > 6 ? userInfo : 'Player #' + item.id;
    const shortA = shortenAddr(item.addr);
    const avatar = avatarHtml(item.addr, 44);
    const refsLabel = currentLang === 'ru' ? 'реф.' : currentLang === 'ua' ? 'реф.' : 'refs';
-   return `<div class="card"><div class="lb-item">
+   const badge = medal
+     ? `<span class="lb-medal">${medal}</span>`
+     : `<span class="lb-rank-badge ${rankClass}">${rank}</span>`;
+   return `<div class="card lb-card ${rankClass}"><div class="lb-item">
      <div class="lb-avatar-wrap">
        ${avatar}
-       <span class="lb-rank-badge ${rankClass}">${rank}</span>
+       ${badge}
      </div>
      <div class="lb-info">
        <div class="lb-name">${escapeHtml(displayName)}</div>
@@ -1739,16 +1867,21 @@ function renderDashboard() {
  const connectPrompt = document.getElementById('connectPrompt');
  const regBtn = document.getElementById('regBtn');
  const hero = document.getElementById('heroBlock');
+ const statsBlock = document.getElementById('statsBlock');
 
  if (!walletAddress) {
-   // Кошелёк не подключён — показываем приветствие (hero) и блок "не зарегистрирован"
+   // Кошелёк не подключён — показываем приветствие (hero) и блок "не зарегистрирован",
+   // статистику прячем (она для кабинета)
    if (hero) hero.classList.remove('hidden');
+   if (statsBlock) statsBlock.classList.add('hidden');
    notReg.classList.remove('hidden');
    isReg.classList.add('hidden');
    if (connectPrompt) connectPrompt.style.display = 'block';
    if (regBtn) regBtn.style.display = 'none';
    return;
  }
+ // Кошелёк подключён — показываем статистику
+ if (statsBlock) statsBlock.classList.remove('hidden');
  if (userState.registered) {
    // В кабинете — скрываем hero, показываем уровни
    if (hero) hero.classList.add('hidden');
@@ -1876,44 +2009,62 @@ async function renderTree() {
      if (!refAddr) {
        // Fallback на локальные данные если контракт не вернул
        const local = localRefs[i];
-       if (local) renderTreeSlot(i, local.wallet, local.username || namesRegistry[local.wallet.toLowerCase()]?.username, true);
-       else renderTreeSlot(i, null, null, false);
+       if (local) {
+         const reg = namesRegistry[local.wallet.toLowerCase()];
+         renderTreeSlot(i, local.wallet, local.username || reg?.username, true, local.tg_id || reg?.tg_id || null);
+       } else renderTreeSlot(i, null, null, false, null);
        continue;
      }
-     // Ищем имя в реестре (объединяет данные бэкенда + локалки)
+     // Ищем имя/ID в реестре (объединяет данные бэкенда + локалки)
      const nameData = namesRegistry[refAddr.toLowerCase()];
      const username = nameData?.username || localRefs[i]?.username || null;
-     renderTreeSlot(i, refAddr, username, true);
+     const tgId = nameData?.tg_id || localRefs[i]?.tg_id || null;
+     renderTreeSlot(i, refAddr, username, true, tgId);
    } catch(e) {
      console.error('Failed to load referral', i, e);
-     renderTreeSlot(i, null, null, false);
+     renderTreeSlot(i, null, null, false, null);
    }
  }
 }
 
 // Отрисовка одной ячейки дерева — карточка реферала + кнопка "Написать в Telegram"
-function renderTreeSlot(slotIdx, walletAddr, username, knownAddress) {
+function renderTreeSlot(slotIdx, walletAddr, username, knownAddress, tgId) {
   const slot = document.querySelector(`[data-slot="${slotIdx}"]`);
   if (!slot) return;
 
   const avatarSvg = `<div class="tree-node-avatar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.4"/><path d="M5 20c0-3.6 3.1-5.5 7-5.5s7 1.9 7 5.5"/></svg></div>`;
-  const partnerLabel = escapeHtml(t('tree_partner') || 'Партнёр');
+  const partnerLabel = `<span class="node-status"><span class="node-status-dot"></span>${escapeHtml(t('tree_active') || 'Активен')}</span>`;
+  const tgIconSvg = `<svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14"><path d="M22 2L2 11l7 3 9-7-7 9 3 7 8-21z"/></svg>`;
+  const tgText = escapeHtml(t('write_tg') || 'Написать');
+  const inviteText = escapeHtml(t('invite_tg') || 'Пригласить');
+
+  // username очищенный и tg_id
+  const usernameClean = (username || '').replace(/[^A-Za-z0-9_]/g, '').slice(0, 32);
+  const tgIdClean = (tgId != null && /^\d+$/.test(String(tgId))) ? String(tgId) : '';
+
+  // Строим кнопку "Написать":
+  //  1) есть @username → t.me/username (личка)
+  //  2) есть tg_id → tg://user?id=... (личка по ID, без username)
+  //  3) ничего нет → "Пригласить" (поделиться реф-ссылкой)
+  function buildTgButton() {
+    if (usernameClean) {
+      return `<a href="https://t.me/${encodeURIComponent(usernameClean)}" onclick="openTgChat(event,'${usernameClean}','')" target="_blank" rel="noopener noreferrer" class="tree-mini-btn tree-mini-btn--tg" title="@${escapeHtml(usernameClean)}">${tgIconSvg}<span>${tgText}</span></a>`;
+    }
+    if (tgIdClean) {
+      return `<a href="tg://user?id=${tgIdClean}" onclick="openTgChat(event,'','${tgIdClean}')" class="tree-mini-btn tree-mini-btn--tg" title="${tgText}">${tgIconSvg}<span>${tgText}</span></a>`;
+    }
+    return `<button class="tree-mini-btn tree-mini-btn--tg" onclick="shareRefLink()" title="${inviteText}">${tgIconSvg}<span>${inviteText}</span></button>`;
+  }
 
   if (!knownAddress || !walletAddr) {
-    // Адрес не удалось получить из контракта — показываем карточку без адреса,
-    // но всё равно даём кнопку пригласить/поделиться ссылкой
+    // Адрес не удалось получить из контракта — карточка без адреса, но кнопка есть
     slot.innerHTML = `
       <div class="tree-node filled">
         ${avatarSvg}
         <span class="tree-addr">R${slotIdx + 1}</span>
-        <small>${partnerLabel}</small>
+        <small class="node-status-wrap">${partnerLabel}</small>
       </div>
-      <div class="tree-mini-actions">
-        <button class="tree-mini-btn tree-mini-btn--tg" onclick="shareRefLink()" title="${escapeHtml(t('invite_tg') || 'Пригласить')}">
-          <svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14"><path d="M22 2L2 11l7 3 9-7-7 9 3 7 8-21z"/></svg>
-          <span>${escapeHtml(t('invite_tg') || 'Пригласить')}</span>
-        </button>
-      </div>`;
+      <div class="tree-mini-actions">${buildTgButton()}</div>`;
     return;
   }
 
@@ -1927,26 +2078,7 @@ function renderTreeSlot(slotIdx, walletAddr, username, knownAddress) {
   const safeFullAddr = escapeHtml(fullFriendlyAddr);
   const safeAddrForJs = (fullFriendlyAddr || '').replace(/[^A-Za-z0-9_\-]/g, '');
 
-  // username очищенный (только буквенно-цифровой)
-  const usernameClean = (username || '').replace(/[^A-Za-z0-9_]/g, '').slice(0, 32);
-  const tgText = escapeHtml(t('write_tg') || 'Написать');
-
-  // Кнопка Telegram:
-  //  - если знаем username → прямая ссылка в личку t.me/username
-  //  - если НЕ знаем → кнопка приглашает поделиться реф-ссылкой (всё равно показываем)
-  let tgBtn;
-  if (usernameClean) {
-    const tgHref = `https://t.me/${encodeURIComponent(usernameClean)}`;
-    tgBtn = `<a href="${tgHref}" onclick="openTg(event,'${usernameClean}')" target="_blank" rel="noopener noreferrer" class="tree-mini-btn tree-mini-btn--tg" title="@${escapeHtml(usernameClean)}">
-        <svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14"><path d="M22 2L2 11l7 3 9-7-7 9 3 7 8-21z"/></svg>
-        <span>${tgText}</span>
-      </a>`;
-  } else {
-    tgBtn = `<button class="tree-mini-btn tree-mini-btn--tg" onclick="shareRefLink()" title="${escapeHtml(t('invite_tg') || 'Пригласить')}">
-        <svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14"><path d="M22 2L2 11l7 3 9-7-7 9 3 7 8-21z"/></svg>
-        <span>${escapeHtml(t('invite_tg') || 'Пригласить')}</span>
-      </button>`;
-  }
+  const tgBtn = buildTgButton();
 
   // Кнопка Copy — копировать адрес
   const copyBtn = `<button class="tree-mini-btn tree-mini-btn--copy" onclick="copyAddrFromTree('${safeAddrForJs}')" title="Copy address">
@@ -1957,22 +2089,43 @@ function renderTreeSlot(slotIdx, walletAddr, username, knownAddress) {
     <div class="tree-node filled" onclick="copyAddrFromTree('${safeAddrForJs}')" title="${safeFullAddr}">
       ${avatar}
       <span class="tree-addr">${safeShortAddr}</span>
-      <small>${partnerLabel}</small>
+      <small class="node-status-wrap">${partnerLabel}</small>
     </div>
     <div class="tree-mini-actions">${tgBtn}${copyBtn}</div>
   `;
 }
 
-// Открытие лички Telegram: внутри Mini App используем openTelegramLink, иначе обычная ссылка
-function openTg(event, username) {
-  const clean = (username || '').replace(/[^A-Za-z0-9_]/g, '').slice(0, 32);
-  if (!clean) return;
-  if (tg?.openTelegramLink) {
-    event.preventDefault();
-    try { tg.openTelegramLink('https://t.me/' + clean); } catch(e) {}
+// Открытие чата Telegram с рефералом.
+//  - по username → t.me/username
+//  - по tg_id → tg://user?id=... (личка по ID, работает без username)
+// Внутри Mini App используем openTelegramLink/openLink, иначе обычную ссылку.
+function openTgChat(event, username, tgId) {
+  const uname = (username || '').replace(/[^A-Za-z0-9_]/g, '').slice(0, 32);
+  const id = (tgId && /^\d+$/.test(String(tgId))) ? String(tgId) : '';
+
+  if (uname) {
+    const url = 'https://t.me/' + uname;
+    if (tg?.openTelegramLink) { try { event.preventDefault(); tg.openTelegramLink(url); return; } catch(e) {} }
+    return; // браузер откроет href сам
   }
-  // иначе — браузер сам откроет href в новой вкладке
+  if (id) {
+    // tg://user?id= — открывает чат/профиль по ID. В Mini App пробуем openTelegramLink с tg:// схемой,
+    // если не сработает — openLink. В обычном браузере сработает href tg://...
+    const deep = 'tg://user?id=' + id;
+    if (tg) {
+      try {
+        event.preventDefault();
+        if (tg.openTelegramLink) { try { tg.openTelegramLink(deep); return; } catch(e) {} }
+        if (tg.openLink) { tg.openLink(deep); return; }
+        window.location.href = deep;
+        return;
+      } catch(e) {}
+    }
+    // вне Telegram — href откроет приложение
+  }
 }
+// Обратная совместимость
+function openTg(event, username) { openTgChat(event, username, ''); }
 
 // Защита от XSS: эскейпит спецсимволы HTML
 function escapeHtml(text) {
