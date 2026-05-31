@@ -39,7 +39,7 @@ body {
  color: var(--text);
  min-height: 100vh;
  overflow-x: hidden;
- padding-bottom: 102px;
+ padding-bottom: 84px;
 }
 body::before {
  content: '';
@@ -157,12 +157,12 @@ body::before {
  text-transform: uppercase;
 }
 .name {
- font-size: 20px;
- margin: 6px 0 8px;
+ font-size: 18px;
+ margin: 4px 0 6px;
  font-weight: 700;
 }
 .price {
- font-size: 30px;
+ font-size: 26px;
  font-weight: 800;
  letter-spacing: -0.03em;
 }
@@ -173,10 +173,10 @@ body::before {
  line-height: 1.7;
 }
 .button {
- margin-top: 14px;
- padding: 14px 16px;
+ margin-top: 12px;
+ padding: 12px 16px;
  text-align: center;
- border-radius: 16px;
+ border-radius: 14px;
  background: linear-gradient(135deg, var(--cyan), var(--cyan-2));
  cursor: pointer;
  transition: 0.2s;
@@ -294,8 +294,26 @@ body::before {
  gap: 6px;
 }
 .stat-icon {
- font-size: 18px;
+ width: 30px; height: 30px;
+ border-radius: 10px;
+ display: flex; align-items: center; justify-content: center;
  line-height: 1;
+}
+.stat-icon svg { width: 18px; height: 18px; }
+.stat-icon--users {
+ background: linear-gradient(145deg, rgba(124,109,255,0.26), rgba(124,109,255,0.12));
+ color: #b3a7ff;
+ box-shadow: inset 0 0 0 1px rgba(124,109,255,0.28);
+}
+.stat-icon--level {
+ background: linear-gradient(145deg, rgba(255,200,97,0.26), rgba(255,157,66,0.12));
+ color: var(--gold);
+ box-shadow: inset 0 0 0 1px rgba(255,200,97,0.3);
+}
+.stat-icon--refs {
+ background: linear-gradient(145deg, rgba(68,225,166,0.24), rgba(68,225,166,0.1));
+ color: var(--green);
+ box-shadow: inset 0 0 0 1px rgba(68,225,166,0.3);
 }
 .stat-value {
  font-size: 18px;
@@ -385,18 +403,25 @@ body::before {
 .tree-row {
  width: 100%;
  display: flex;
- gap: 12px;
+ gap: 8px;
  position: relative;
  padding-top: 26px;
  margin-top: 0;
  overflow-x: auto;
  scrollbar-width: none;
- justify-content: flex-start;
+ justify-content: center;
  scroll-snap-type: x mandatory;
 }
 .tree-row::-webkit-scrollbar { display: none; }
-/* когда рефералов мало — центрируем */
-.tree-row.few { justify-content: center; }
+/* до 3 рефералов — равномерная сетка, три помещаются по ширине */
+.tree-row.few {
+ display: grid;
+ grid-template-columns: repeat(3, 1fr);
+ overflow: visible;
+}
+/* больше 3 — горизонтальный скролл с фикс-шириной карточек */
+.tree-row.scroll { justify-content: flex-start; }
+.tree-row.scroll .tree-node-wrapper { width: 120px; flex: 0 0 120px; }
 .tree-row::before {
  content: "";
  position: absolute;
@@ -415,20 +440,21 @@ body::before {
 }
 /* Карточка-нода реферала (как на референсе) */
 .tree-node {
- width: 150px;
- min-height: 118px;
- border-radius: 22px;
+ width: 100%;
+ max-width: 150px;
+ min-height: 104px;
+ border-radius: 18px;
  display: flex;
  flex-direction: column;
  align-items: center;
  justify-content: center;
- gap: 8px;
+ gap: 6px;
  font-size: 13px; font-weight: 800;
  flex-shrink: 0;
  text-align: center;
  cursor: default;
  transition: transform 0.2s ease, box-shadow 0.2s ease;
- padding: 16px 12px;
+ padding: 12px 8px;
  line-height: 1.2;
  position: relative;
  scroll-snap-align: center;
@@ -608,6 +634,12 @@ body::before {
 .history-amount { font-size: 13px; font-weight: 800; flex-shrink: 0; }
 .history-amount.in { color: var(--green); }
 .history-amount.out { color: var(--danger); }
+.calc-inputs {
+ display: grid;
+ grid-template-columns: 1fr 1fr;
+ gap: 12px;
+}
+.calc-inputs .input-group { margin-bottom: 0; }
 .calc-result {
  background: rgba(68,225,166,0.08);
  border: 1px solid rgba(68,225,166,0.2);
@@ -665,29 +697,29 @@ body::before {
 .toast.success { background: linear-gradient(135deg, #44e1a6, #18b98d); }
 .bottom-nav {
  position: fixed;
- bottom: 14px; left: 12px; right: 12px;
+ bottom: 10px; left: 10px; right: 10px;
  background: linear-gradient(180deg, rgba(13, 22, 42, 0.92), rgba(8, 14, 28, 0.96));
  backdrop-filter: blur(26px);
  -webkit-backdrop-filter: blur(26px);
- border-radius: 28px;
+ border-radius: 22px;
  display: flex;
  align-items: stretch;
  z-index: 200;
  border: 1px solid rgba(112, 157, 255, 0.16);
- box-shadow: 0 18px 48px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.05);
- padding: 10px 8px;
+ box-shadow: 0 14px 38px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.05);
+ padding: 6px 6px;
  gap: 2px;
 }
 .nav-item {
  flex: 1; min-width: 0;
- padding: 8px 2px 6px;
+ padding: 5px 2px 4px;
  background: none; border: none;
  color: rgba(255,255,255,0.46);
- font-size: 10px; font-weight: 700;
- letter-spacing: 0.02em;
+ font-size: 9px; font-weight: 700;
+ letter-spacing: 0.01em;
  cursor: pointer;
- display: flex; flex-direction: column; align-items: center; gap: 6px;
- border-radius: 18px;
+ display: flex; flex-direction: column; align-items: center; gap: 4px;
+ border-radius: 14px;
  transition: 0.22s ease;
  position: relative;
 }
@@ -698,12 +730,12 @@ body::before {
  max-width: 100%;
 }
 .nav-item .nav-icon {
- width: 24px; height: 24px;
+ width: 22px; height: 22px;
  display: flex; align-items: center; justify-content: center;
  color: currentColor;
 }
 .nav-item .nav-icon svg {
- width: 24px; height: 24px;
+ width: 21px; height: 21px;
  display: block;
  stroke: currentColor;
  fill: none;
@@ -718,9 +750,9 @@ body::before {
 .nav-item.active .nav-icon {
  color: var(--cyan);
  background: linear-gradient(135deg, rgba(72,207,255,0.22), rgba(124,109,255,0.22));
- border-radius: 14px;
- box-shadow: 0 6px 16px rgba(40, 150, 255, 0.28), inset 0 0 0 1px rgba(122, 203, 255, 0.32);
- width: 44px; height: 32px;
+ border-radius: 12px;
+ box-shadow: 0 5px 14px rgba(40, 150, 255, 0.28), inset 0 0 0 1px rgba(122, 203, 255, 0.32);
+ width: 40px; height: 28px;
 }
 .nav-item.active .nav-icon svg {
  stroke-width: 2;
@@ -814,6 +846,12 @@ body::before {
  .stat { padding: 10px 8px; }
  .stat-value { font-size: 16px; }
  .stat-label { font-size: 9px; letter-spacing: 0.1em; }
+ .tree-row.few { gap: 6px; }
+ .tree-node { padding: 10px 5px; min-height: 96px; border-radius: 16px; }
+ .tree-node .avatar, .tree-node-avatar { width: 38px; height: 38px; border-radius: 12px; }
+ .tree-addr { font-size: 10px; letter-spacing: 0.2px; }
+ .tree-node small { font-size: 8px; letter-spacing: 0.06em; }
+ .tree-row.few .tree-mini-btn { font-size: 9px; height: 30px; }
 }
 /* ═══════════════════════════════════════════════════════════════
    TIER SYSTEM — финансовые тиры с цветовой дифференциацией
@@ -846,10 +884,10 @@ body::before {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 10px;
-  margin: 12px 0;
-  padding: 12px;
+  margin: 10px 0;
+  padding: 10px 12px;
   background: rgba(4, 10, 20, 0.42);
-  border-radius: 16px;
+  border-radius: 14px;
   border: 1px solid rgba(255, 255, 255, 0.04);
 }
 .info-cell { display: flex; flex-direction: column; gap: 4px; }
@@ -1047,6 +1085,8 @@ body::before {
   flex-direction: column;
   align-items: center;
   gap: 6px;
+  width: 100%;
+  min-width: 0;
 }
 
 /* Адрес внутри ноды */
@@ -1068,29 +1108,37 @@ body::before {
 /* Компактные мини-кнопки под нодой дерева */
 .tree-mini-actions {
   display: flex;
-  gap: 6px;
+  gap: 5px;
   justify-content: center;
   margin-top: 2px;
-  width: 150px;
+  width: 100%;
+  max-width: 150px;
 }
 
 .tree-mini-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
-  height: 34px;
-  border-radius: 12px;
+  gap: 5px;
+  height: 32px;
+  border-radius: 11px;
   border: 1px solid rgba(255, 255, 255, 0.1);
   background: rgba(255, 255, 255, 0.06);
   color: rgba(255, 255, 255, 0.7);
   cursor: pointer;
   text-decoration: none;
   transition: 0.15s;
-  padding: 0 10px;
+  padding: 0 8px;
   font-size: 11px;
   font-weight: 700;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.01em;
+  min-width: 0;
+  overflow: hidden;
+}
+.tree-mini-btn span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .tree-mini-btn:hover {
   transform: translateY(-1px) scale(1.03);
@@ -1114,10 +1162,15 @@ body::before {
 .tree-mini-btn--tg svg { flex-shrink: 0; }
 
 .tree-mini-btn--copy {
-  width: 40px;
+  width: 36px;
   flex-shrink: 0;
   padding: 0;
 }
+/* В сетке из 3 карточек места мало: прячем отдельную copy-кнопку
+   (адрес копируется кликом по самой карточке), TG-кнопка — на всю ширину */
+.tree-row.few .tree-mini-btn--copy { display: none; }
+.tree-row.few .tree-mini-btn--tg { width: 100%; }
+.tree-row.few .tree-mini-btn { font-size: 10px; padding: 0 6px; gap: 4px; }
 </style>
 </head>
 <body>
@@ -1156,17 +1209,17 @@ body::before {
 
  <div class="stats">
  <div class="stat">
- <div class="stat-icon">👥</div>
+ <div class="stat-icon stat-icon--users"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><path d="M3.5 19c0-3 2.5-4.8 5.5-4.8s5.5 1.8 5.5 4.8"/><path d="M16 5.2a3 3 0 0 1 0 5.6M20.5 19c0-2.6-1.7-4.3-4-4.7"/></svg></div>
  <div class="stat-value" id="statUsers">—</div>
  <div class="stat-label" data-i18n="participants">УЧАСТНИКОВ</div>
  </div>
  <div class="stat">
- <div class="stat-icon">⭐</div>
+ <div class="stat-icon stat-icon--level"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 3.2l2.5 5.2 5.7.8-4.1 4 1 5.7-5.1-2.7-5.1 2.7 1-5.7-4.1-4 5.7-.8z"/></svg></div>
  <div class="stat-value" id="statLevel">—</div>
  <div class="stat-label" data-i18n="my_level">МОЙ УРОВЕНЬ</div>
  </div>
  <div class="stat">
- <div class="stat-icon">🌿</div>
+ <div class="stat-icon stat-icon--refs"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21c-5-2.5-7.5-6-7.5-10A4.5 4.5 0 0 1 12 8.2 4.5 4.5 0 0 1 19.5 11c0 4-2.5 7.5-7.5 10z"/><path d="M12 8.2V21"/></svg></div>
  <div class="stat-value" id="statRefs">—</div>
  <div class="stat-label" data-i18n="referrals">РЕФЕРАЛОВ</div>
  </div>
@@ -1255,6 +1308,7 @@ body::before {
 
  <div class="section-title"><span data-i18n="calc_title">КАЛЬКУЛЯТОР ДОХОДА</span><span class="section-note">Estimate your upside</span></div>
  <div class="card">
+ <div class="calc-inputs">
  <div class="input-group">
  <label class="input-label" data-i18n="refs_count">КОЛ-ВО РЕФЕРАЛОВ В МЕСЯЦ</label>
  <input class="input-field" id="calcRefs" type="number" value="3" min="1" max="100" oninput="calculateIncome()" />
@@ -1262,6 +1316,7 @@ body::before {
  <div class="input-group">
  <label class="input-label" data-i18n="active_levels">АКТИВНЫХ УРОВНЕЙ</label>
  <input class="input-field" id="calcLevels" type="number" value="3" min="1" max="8" oninput="calculateIncome()" />
+ </div>
  </div>
  <div class="calc-result">
  <div class="calc-result-value" id="calcResult">0 TON</div>
@@ -1789,8 +1844,9 @@ async function renderTree() {
    youName.textContent = (myName && myName !== '—' && myName !== shortenAddr(walletAddress)) ? myName : 'YOU';
  }
 
- // Центрируем если рефералов мало (1-2), иначе скролл
- row.classList.toggle('few', realCount <= 2);
+ // Дерево уровня 1 показывает максимум 3 слота — они всегда помещаются в ряд
+ row.classList.add('few');
+ row.classList.remove('scroll');
 
  // Сразу рисуем "загрузка..." для заполненных слотов чтобы не было R1/R2 пока грузим из контракта
  const slots = [];
