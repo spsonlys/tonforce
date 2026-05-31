@@ -1,7 +1,7 @@
 {
   "url": "https://tonforce.app",
   "name": "TonForce",
-  "iconUrl": "https://tonforce.app/logo.png",
-  "termsOfUseUrl": "https://tonforce.app",
-  "privacyPolicyUrl": "https://tonforce.app"
+  "iconUrl": "https://tonforce.app/tonforce-icon.png?v=2",
+  "termsOfUseUrl": "https://tonforce.app/terms",
+  "privacyPolicyUrl": "https://tonforce.app/privacy"
 }
