@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="robots" content="noindex, nofollow" />
+<title>Редактор статей · TonForce</title>
+<link rel="icon" href="/favicon.png" type="image/png" />
+<script src="https://cdn.jsdelivr.net/npm/marked@12.0.0/marked.min.js"></script>
+<style>
+:root{
+  --bg:#060c1c; --panel:rgba(16,28,56,.72); --panel-2:#101c38;
+  --border:rgba(108,152,255,.16); --border-strong:rgba(72,207,255,.36);
+  --text:#eef4ff; --muted:#93a3c4; --muted-2:#5d6c8c;
+  --cyan:#48cfff; --cyan-2:#1e9bff; --green:#45e3a8; --red:#ff5f86; --gold:#ffce6a;
+  --grad-cyan:linear-gradient(135deg,#48cfff,#1e7bff);
+  --grad-green:linear-gradient(135deg,#5ef0b6,#14b97e);
+  --r:16px; --shadow:0 18px 48px rgba(0,0,0,.5);
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  background:radial-gradient(1100px 620px at 50% -10%,#122a5e 0,rgba(18,42,94,0) 55%),
+             radial-gradient(800px 500px at 100% 8%,rgba(124,109,255,.16) 0,rgba(124,109,255,0) 60%),
+             var(--bg);
+  background-attachment:fixed; color:var(--text); min-height:100vh; padding-bottom:40px;
+}
+.wrap{max-width:860px;margin:0 auto;padding:20px 16px}
+.hidden{display:none!important}
+
+/* header */
+.top{display:flex;align-items:center;justify-content:space-between;margin-bottom:22px}
+.brand{display:flex;align-items:center;gap:11px}
+.brand .logo{width:42px;height:42px;border-radius:12px;background:var(--grad-cyan);display:grid;place-items:center;font-weight:800;color:#04203f;box-shadow:0 0 24px rgba(72,207,255,.35);overflow:hidden}
+.brand .logo img{width:30px;height:30px;object-fit:contain}
+.brand h1{font-size:19px;font-weight:800;line-height:1}
+.brand p{font-size:11px;color:var(--muted);margin-top:3px}
+
+/* cards / inputs */
+.card{background:var(--panel);border:1px solid var(--border);border-radius:var(--r);padding:20px;box-shadow:var(--shadow);backdrop-filter:blur(14px);margin-bottom:16px}
+.field{margin-bottom:15px}
+.field label{display:block;font-size:12px;letter-spacing:.5px;color:var(--muted);text-transform:uppercase;margin-bottom:7px;font-weight:700}
+.input,select,textarea{width:100%;background:var(--panel-2);border:1px solid var(--border);border-radius:12px;padding:13px;color:var(--text);font-size:15px;font-family:inherit;outline:none;transition:.15s}
+.input:focus,select:focus,textarea:focus{border-color:var(--border-strong);box-shadow:0 0 0 3px rgba(72,207,255,.12)}
+textarea{resize:vertical;min-height:300px;line-height:1.6;font-size:15px}
+select{appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%2393a3c4' stroke-width='3'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.row-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.hint{font-size:11px;color:var(--muted-2);margin-top:6px;line-height:1.45}
+
+/* buttons */
+.btn{border:none;border-radius:12px;padding:13px 18px;font-size:14px;font-weight:800;letter-spacing:.3px;cursor:pointer;color:#04203f;background:var(--grad-cyan);box-shadow:0 0 22px rgba(72,207,255,.35);transition:.15s}
+.btn:active{transform:scale(.98)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn.green{background:var(--grad-green);color:#04342c;box-shadow:0 0 22px rgba(69,227,168,.35)}
+.btn.ghost{background:rgba(255,255,255,.06);color:var(--text);border:1px solid var(--border);box-shadow:none}
+.btn.danger{background:rgba(255,95,134,.16);color:var(--red);border:1px solid rgba(255,95,134,.4);box-shadow:none}
+.btn.sm{padding:8px 13px;font-size:12px}
+
+/* tabs */
+.tabs{display:flex;gap:6px;background:var(--panel);border:1px solid var(--border);border-radius:13px;padding:4px;margin-bottom:18px}
+.tab{flex:1;text-align:center;padding:11px;border-radius:10px;font-size:13px;font-weight:700;color:var(--muted);cursor:pointer;border:none;background:transparent;transition:.15s}
+.tab.active{background:var(--grad-cyan);color:#04203f}
+
+/* md toolbar */
+.md-toolbar{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
+.md-btn{background:var(--panel-2);border:1px solid var(--border);color:var(--text);border-radius:9px;padding:7px 11px;font-size:13px;cursor:pointer;font-weight:600}
+.md-btn:hover{border-color:var(--border-strong)}
+
+/* preview */
+.preview{background:var(--panel-2);border:1px solid var(--border);border-radius:12px;padding:18px;line-height:1.6}
+.preview h1,.preview h2,.preview h3{margin:14px 0 8px}
+.preview h2{font-size:21px;color:var(--cyan)}
+.preview h3{font-size:17px}
+.preview p{margin:10px 0;color:var(--text)}
+.preview ul,.preview ol{margin:10px 0 10px 22px}
+.preview li{margin:5px 0}
+.preview a{color:var(--cyan)}
+.preview blockquote{border-left:3px solid var(--cyan);padding-left:14px;margin:12px 0;color:var(--muted)}
+.preview code{background:rgba(255,255,255,.08);padding:2px 6px;border-radius:6px;font-size:13px}
+.preview strong{color:#fff}
+
+/* list of posts */
+.post-row{display:flex;align-items:center;gap:13px;background:var(--panel-2);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:10px}
+.post-row .emoji{font-size:26px;flex-shrink:0}
+.post-row .info{flex:1;min-width:0}
+.post-row .info .t{font-size:14px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.post-row .info .m{font-size:11px;color:var(--muted);margin-top:3px}
+.post-row .acts{display:flex;gap:6px;flex-shrink:0}
+
+/* toast */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--panel-2);border:1px solid var(--border-strong);color:var(--text);padding:14px 22px;border-radius:13px;font-size:14px;font-weight:600;opacity:0;pointer-events:none;transition:.25s;z-index:100;box-shadow:var(--shadow);max-width:90%;text-align:center}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast.success{border-color:rgba(69,227,168,.5)}
+.toast.error{border-color:rgba(255,95,134,.5)}
+
+/* badge */
+.badge{display:inline-block;font-size:10px;font-weight:800;padding:3px 9px;border-radius:99px;letter-spacing:.5px}
+.badge.pub{background:rgba(69,227,168,.16);color:var(--green)}
+.badge.draft{background:rgba(255,206,106,.16);color:var(--gold)}
+.lang-pill{font-size:10px;font-weight:800;padding:3px 8px;border-radius:6px;background:rgba(72,207,255,.14);color:var(--cyan);letter-spacing:.5px}
+
+.spinner{display:inline-block;width:16px;height:16px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle}
+@keyframes spin{to{transform:rotate(360deg)}}
+.muted-box{text-align:center;padding:40px 20px;color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="top">
+    <div class="brand">
+      <div class="logo"><img src="/logo-white.png" alt="TF" onerror="this.parentElement.textContent='TF'"/></div>
+      <div><h1>Редактор статей</h1><p>TonForce Blog</p></div>
+    </div>
+    <button class="btn ghost sm hidden" id="logoutBtn" onclick="logout()">Выйти</button>
+  </div>
+
+  <!-- ===== ЭКРАН ВХОДА (ввод токена) ===== -->
+  <div id="authScreen">
+    <div class="card">
+      <h2 style="font-size:18px;margin-bottom:8px">🔑 Вход через GitHub</h2>
+      <p style="font-size:13px;color:var(--muted);line-height:1.55;margin-bottom:18px">
+        Редактор публикует статьи напрямую в ваш репозиторий через GitHub. Это бесплатно и не зависит от Netlify.
+        Нужен персональный токен доступа (Personal Access Token) — он сохранится только в этом браузере.
+      </p>
+      <div class="field">
+        <label>GitHub Personal Access Token</label>
+        <input class="input" type="password" id="tokenInput" placeholder="github_pat_..." autocomplete="off" />
+        <div class="hint">
+          Токен хранится локально в вашем браузере (localStorage) и отправляется только на api.github.com. Мы его никуда не передаём.
+        </div>
+      </div>
+      <button class="btn" id="loginBtn" onclick="login()">Войти</button>
+
+      <details style="margin-top:20px">
+        <summary style="cursor:pointer;font-size:13px;color:var(--cyan);font-weight:700">📖 Как создать токен (1 раз, 2 минуты)</summary>
+        <ol style="font-size:13px;color:var(--muted);line-height:1.7;margin:12px 0 0 18px">
+          <li>Откройте <b>github.com</b> → справа вверху аватар → <b>Settings</b></li>
+          <li>Внизу слева → <b>Developer settings</b></li>
+          <li><b>Personal access tokens</b> → <b>Fine-grained tokens</b> → <b>Generate new token</b></li>
+          <li><b>Token name:</b> TonForce Editor</li>
+          <li><b>Expiration:</b> 1 год (или дольше)</li>
+          <li><b>Repository access:</b> Only select repositories → выберите <b>spsonlys/tonforce</b></li>
+          <li><b>Permissions</b> → Repository permissions → <b>Contents</b> → <b>Read and write</b></li>
+          <li><b>Generate token</b> → скопируйте (он показывается один раз!) и вставьте сюда</li>
+        </ol>
+        <p style="font-size:12px;color:var(--muted-2);margin-top:10px">
+          Токен с правами только на этот репозиторий. Если потеряете — просто создадите новый.
+        </p>
+      </details>
+    </div>
+  </div>
+
+  <!-- ===== ОСНОВНОЙ ИНТЕРФЕЙС ===== -->
+  <div id="appScreen" class="hidden">
+
+    <div class="tabs">
+      <button class="tab active" id="tabNew" onclick="switchTab('new')">✍️ Новая статья</button>
+      <button class="tab" id="tabList" onclick="switchTab('list')">📚 Мои статьи</button>
+    </div>
+
+    <!-- ── Вкладка: Новая/редактирование ── -->
+    <div id="viewNew">
+      <div class="card">
+        <div class="row">
+          <div class="field">
+            <label>Язык / раздел</label>
+            <select class="input" id="fLang">
+              <option value="ru">🇷🇺 Русский (blog)</option>
+              <option value="en">🇬🇧 English (en/blog)</option>
+              <option value="ua">🇺🇦 Українська (ua/blog)</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Категория</label>
+            <select class="input" id="fCategory">
+              <option value="announcements">Анонс</option>
+              <option value="guides">Гайд</option>
+              <option value="security">Безопасность</option>
+              <option value="case-studies">Кейсы</option>
+              <option value="analytics">Аналитика</option>
+              <option value="success-stories">Истории успеха</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Заголовок статьи</label>
+          <input class="input" id="fTitle" placeholder="Например: TonForce обновил матрицу" oninput="updateSlug()" />
+          <div class="hint">Файл: <span id="slugPreview" style="color:var(--cyan)">—</span></div>
+        </div>
+
+        <div class="field">
+          <label>Краткое описание (лид)</label>
+          <input class="input" id="fLead" placeholder="1–2 предложения, появятся на главной блога" />
+        </div>
+
+        <div class="row-3">
+          <div class="field">
+            <label>Эмодзи обложки</label>
+            <input class="input" id="fEmoji" value="🚀" maxlength="4" />
+          </div>
+          <div class="field">
+            <label>Время чтения (мин)</label>
+            <input class="input" type="number" id="fRead" value="5" min="1" max="60" />
+          </div>
+          <div class="field">
+            <label>Дата</label>
+            <input class="input" type="date" id="fDate" />
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Meta-описание (для поисковиков, 140–160 символов)</label>
+          <input class="input" id="fMeta" placeholder="Краткое SEO-описание статьи" />
+        </div>
+
+        <div class="field">
+          <label>Текст статьи (Markdown)</label>
+          <div class="md-toolbar">
+            <button class="md-btn" onclick="md('## ','')">H2</button>
+            <button class="md-btn" onclick="md('### ','')">H3</button>
+            <button class="md-btn" onclick="md('**','**')"><b>Ж</b></button>
+            <button class="md-btn" onclick="md('*','*')"><i>К</i></button>
+            <button class="md-btn" onclick="md('- ','')">• Список</button>
+            <button class="md-btn" onclick="md('1. ','')">1. Нумер.</button>
+            <button class="md-btn" onclick="md('> ','')">❝ Цитата</button>
+            <button class="md-btn" onclick="md('[','](https://)')">🔗 Ссылка</button>
+            <button class="md-btn" onclick="togglePreview()" id="previewBtn">👁 Превью</button>
+          </div>
+          <textarea id="fBody" placeholder="Пишите текст статьи здесь...
+
+## Подзаголовок
+Обычный абзац текста. **Жирный**, *курсив*, [ссылка](https://tonforce.app).
+
+- Пункт списка
+- Ещё пункт
+
+> Цитата для акцента"></textarea>
+          <div class="preview hidden" id="previewBox"></div>
+        </div>
+
+        <div class="field">
+          <label>Статус публикации</label>
+          <select class="input" id="fPublished">
+            <option value="true">✅ Опубликовать сразу</option>
+            <option value="false">📝 Черновик (не показывать на сайте)</option>
+          </select>
+        </div>
+
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <button class="btn green" id="publishBtn" onclick="publish()">🚀 Опубликовать на сайт</button>
+          <button class="btn ghost" onclick="resetForm()">Очистить</button>
+        </div>
+        <input type="hidden" id="editSha" value="" />
+        <input type="hidden" id="editPath" value="" />
+        <div class="hint" style="margin-top:12px">
+          После публикации GitHub соберёт блог автоматически (~30–60 сек) и статья появится на tonforce.app
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Вкладка: Список статей ── -->
+    <div id="viewList" class="hidden">
+      <div class="field" style="margin-bottom:14px">
+        <label>Раздел</label>
+        <select class="input" id="listLang" onchange="loadPosts()">
+          <option value="ru">🇷🇺 Русский</option>
+          <option value="en">🇬🇧 English</option>
+          <option value="ua">🇺🇦 Українська</option>
+        </select>
+      </div>
+      <div id="postsList"><div class="muted-box"><span class="spinner"></span> Загрузка...</div></div>
+    </div>
+
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ═══════════ Конфигурация ═══════════
+const REPO = 'spsonlys/tonforce';
+const BRANCH = 'main';
+const PATHS = { ru: 'blog/posts', en: 'en/blog/posts', ua: 'ua/blog/posts' };
+const API = 'https://api.github.com';
+
+let TOKEN = localStorage.getItem('tf_gh_token') || '';
+
+// ═══════════ Toast ═══════════
+function toast(msg, type) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show' + (type ? ' ' + type : '');
+  clearTimeout(window._tt);
+  window._tt = setTimeout(() => t.className = 'toast', 3500);
+}
+
+// ═══════════ Авторизация ═══════════
+async function login() {
+  const val = document.getElementById('tokenInput').value.trim();
+  if (!val) { toast('Введите токен', 'error'); return; }
+  const btn = document.getElementById('loginBtn');
+  btn.disabled = true; btn.innerHTML = '<span class="spinner"></span> Проверка...';
+  try {
+    // Проверяем токен и доступ к репо
+    const r = await fetch(`${API}/repos/${REPO}`, { headers: ghHeaders(val) });
+    if (!r.ok) throw new Error(r.status === 401 ? 'Неверный токен' : r.status === 404 ? 'Нет доступа к репозиторию' : 'Ошибка ' + r.status);
+    TOKEN = val;
+    localStorage.setItem('tf_gh_token', val);
+    showApp();
+    toast('Вход выполнен ✓', 'success');
+  } catch (e) {
+    toast(e.message, 'error');
+  } finally {
+    btn.disabled = false; btn.textContent = 'Войти';
+  }
+}
+
+function logout() {
+  if (!confirm('Выйти и забыть токен в этом браузере?')) return;
+  localStorage.removeItem('tf_gh_token');
+  TOKEN = '';
+  document.getElementById('appScreen').classList.add('hidden');
+  document.getElementById('authScreen').classList.remove('hidden');
+  document.getElementById('logoutBtn').classList.add('hidden');
+  document.getElementById('tokenInput').value = '';
+}
+
+function ghHeaders(tok) {
+  return {
+    'Authorization': 'Bearer ' + (tok || TOKEN),
+    'Accept': 'application/vnd.github+json',
+    'X-GitHub-Api-Version': '2022-11-28'
+  };
+}
+
+function showApp() {
+  document.getElementById('authScreen').classList.add('hidden');
+  document.getElementById('appScreen').classList.remove('hidden');
+  document.getElementById('logoutBtn').classList.remove('hidden');
+  // дата по умолчанию — сегодня
+  const d = new Date();
+  document.getElementById('fDate').value = d.toISOString().slice(0, 10);
+}
+
+// ═══════════ Табы ═══════════
+function switchTab(tab) {
+  document.getElementById('tabNew').classList.toggle('active', tab === 'new');
+  document.getElementById('tabList').classList.toggle('active', tab === 'list');
+  document.getElementById('viewNew').classList.toggle('hidden', tab !== 'new');
+  document.getElementById('viewList').classList.toggle('hidden', tab !== 'list');
+  if (tab === 'list') loadPosts();
+}
+
+// ═══════════ Транслитерация → slug ═══════════
+const TRANSLIT = {
+  а:'a',б:'b',в:'v',г:'g',д:'d',е:'e',ё:'e',ж:'zh',з:'z',и:'i',й:'y',к:'k',л:'l',м:'m',
+  н:'n',о:'o',п:'p',р:'r',с:'s',т:'t',у:'u',ф:'f',х:'h',ц:'ts',ч:'ch',ш:'sh',щ:'sch',
+  ъ:'',ы:'y',ь:'',э:'e',ю:'yu',я:'ya',
+  і:'i',ї:'yi',є:'ye',ґ:'g'
+};
+function slugify(text) {
+  return text.toLowerCase().split('').map(ch => TRANSLIT[ch] !== undefined ? TRANSLIT[ch] : ch).join('')
+    .replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 60) || 'post';
+}
+function updateSlug() {
+  const title = document.getElementById('fTitle').value;
+  const date = document.getElementById('fDate').value || new Date().toISOString().slice(0,10);
+  const slug = slugify(title);
+  document.getElementById('slugPreview').textContent = `${date}-${slug}.md`;
+}
+
+// ═══════════ Markdown helpers ═══════════
+function md(before, after) {
+  const ta = document.getElementById('fBody');
+  const s = ta.selectionStart, e = ta.selectionEnd;
+  const sel = ta.value.slice(s, e);
+  ta.value = ta.value.slice(0, s) + before + sel + after + ta.value.slice(e);
+  ta.focus();
+  ta.selectionStart = s + before.length;
+  ta.selectionEnd = e + before.length;
+}
+function togglePreview() {
+  const box = document.getElementById('previewBox');
+  const ta = document.getElementById('fBody');
+  if (box.classList.contains('hidden')) {
+    box.innerHTML = marked.parse(ta.value || '*Пусто*');
+    box.classList.remove('hidden');
+    ta.classList.add('hidden');
+    document.getElementById('previewBtn').textContent = '✏️ Редактор';
+  } else {
+    box.classList.add('hidden');
+    ta.classList.remove('hidden');
+    document.getElementById('previewBtn').textContent = '👁 Превью';
+  }
+}
+
+// ═══════════ Формирование .md ═══════════
+function buildMarkdown() {
+  const esc = s => (s || '').replace(/"/g, '\\"');
+  const title = document.getElementById('fTitle').value.trim();
+  const lead = document.getElementById('fLead').value.trim();
+  const date = document.getElementById('fDate').value || new Date().toISOString().slice(0,10);
+  const category = document.getElementById('fCategory').value;
+  const emoji = document.getElementById('fEmoji').value.trim() || '📝';
+  const read = document.getElementById('fRead').value || '5';
+  const meta = document.getElementById('fMeta').value.trim() || lead;
+  const published = document.getElementById('fPublished').value;
+  const body = document.getElementById('fBody').value.trim();
+  const iso = `${date}T12:00:00.000+03:00`;
+
+  return `---
+title: "${esc(title)}"
+lead: "${esc(lead)}"
+date: ${iso}
+category: "${category}"
+cover_emoji: "${emoji}"
+read_time: ${read}
+meta_description: "${esc(meta)}"
+published: ${published}
+---
+
+${body}
+`;
+}
+
+// base64 с поддержкой UTF-8 (кириллица)
+function utf8ToBase64(str) {
+  return btoa(unescape(encodeURIComponent(str)));
+}
+function base64ToUtf8(b64) {
+  return decodeURIComponent(escape(atob(b64)));
+}
+
+// ═══════════ Публикация ═══════════
+async function publish() {
+  const title = document.getElementById('fTitle').value.trim();
+  const body = document.getElementById('fBody').value.trim();
+  if (!title) { toast('Введите заголовок', 'error'); return; }
+  if (!body) { toast('Введите текст статьи', 'error'); return; }
+
+  const lang = document.getElementById('fLang').value;
+  const date = document.getElementById('fDate').value || new Date().toISOString().slice(0,10);
+  const editPath = document.getElementById('editPath').value;
+  const editSha = document.getElementById('editSha').value;
+
+  // путь файла: если редактируем — старый путь, иначе новый из slug
+  const filename = editPath || `${PATHS[lang]}/${date}-${slugify(title)}.md`;
+  const content = utf8ToBase64(buildMarkdown());
+
+  const btn = document.getElementById('publishBtn');
+  btn.disabled = true; btn.innerHTML = '<span class="spinner"></span> Публикую...';
+
+  try {
+    const payload = {
+      message: (editSha ? 'Обновлена статья: ' : 'Новая статья: ') + title,
+      content: content,
+      branch: BRANCH
+    };
+    if (editSha) payload.sha = editSha;
+
+    const r = await fetch(`${API}/repos/${REPO}/contents/${filename}`, {
+      method: 'PUT',
+      headers: ghHeaders(),
+      body: JSON.stringify(payload)
+    });
+    if (!r.ok) {
+      const err = await r.json().catch(() => ({}));
+      throw new Error(err.message || 'Ошибка ' + r.status);
+    }
+    toast('Статья опубликована! Появится на сайте через ~1 мин ✓', 'success');
+    resetForm();
+    switchTab('list');
+  } catch (e) {
+    toast('Ошибка: ' + e.message, 'error');
+  } finally {
+    btn.disabled = false; btn.textContent = '🚀 Опубликовать на сайт';
+  }
+}
+
+function resetForm() {
+  ['fTitle','fLead','fMeta','fBody'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('fEmoji').value = '🚀';
+  document.getElementById('fRead').value = '5';
+  document.getElementById('fCategory').value = 'announcements';
+  document.getElementById('fPublished').value = 'true';
+  document.getElementById('fDate').value = new Date().toISOString().slice(0,10);
+  document.getElementById('editSha').value = '';
+  document.getElementById('editPath').value = '';
+  document.getElementById('slugPreview').textContent = '—';
+  document.getElementById('publishBtn').textContent = '🚀 Опубликовать на сайт';
+  // вернуть редактор если был в превью
+  const box = document.getElementById('previewBox');
+  if (!box.classList.contains('hidden')) togglePreview();
+}
+
+// ═══════════ Список статей ═══════════
+async function loadPosts() {
+  const lang = document.getElementById('listLang').value;
+  const cont = document.getElementById('postsList');
+  cont.innerHTML = '<div class="muted-box"><span class="spinner"></span> Загрузка...</div>';
+  try {
+    const r = await fetch(`${API}/repos/${REPO}/contents/${PATHS[lang]}?ref=${BRANCH}`, { headers: ghHeaders() });
+    if (r.status === 404) { cont.innerHTML = '<div class="muted-box">Пока нет статей в этом разделе.<br>Создайте первую во вкладке «Новая статья».</div>'; return; }
+    if (!r.ok) throw new Error('Ошибка ' + r.status);
+    let files = await r.json();
+    files = files.filter(f => f.name.endsWith('.md')).sort((a,b) => b.name.localeCompare(a.name));
+    if (!files.length) { cont.innerHTML = '<div class="muted-box">Пока нет статей. Создайте первую!</div>'; return; }
+
+    // подгружаем метаданные каждого файла (заголовок/эмодзи/статус)
+    cont.innerHTML = '';
+    for (const f of files) {
+      const row = document.createElement('div');
+      row.className = 'post-row';
+      row.innerHTML = `<div class="emoji">📄</div><div class="info"><div class="t">${f.name}</div><div class="m">загрузка…</div></div>`;
+      cont.appendChild(row);
+      // читаем содержимое для метаданных
+      fetch(f.url, { headers: ghHeaders() }).then(x => x.json()).then(data => {
+        const text = base64ToUtf8(data.content.replace(/\n/g,''));
+        const meta = parseFrontmatter(text);
+        const pub = meta.published !== 'false' && meta.published !== false;
+        row.innerHTML = `
+          <div class="emoji">${meta.cover_emoji || '📄'}</div>
+          <div class="info">
+            <div class="t">${meta.title || f.name}</div>
+            <div class="m"><span class="lang-pill">${lang.toUpperCase()}</span> &nbsp;<span class="badge ${pub?'pub':'draft'}">${pub?'Опубликовано':'Черновик'}</span> &nbsp;${(meta.date||'').slice(0,10)}</div>
+          </div>
+          <div class="acts">
+            <button class="btn ghost sm" onclick='editPost(${JSON.stringify(f.path)}, ${JSON.stringify(f.sha)}, ${JSON.stringify(lang)})'>✏️</button>
+            <button class="btn danger sm" onclick='deletePost(${JSON.stringify(f.path)}, ${JSON.stringify(f.sha)}, ${JSON.stringify(f.name)})'>🗑</button>
+          </div>`;
+      }).catch(() => { row.querySelector('.m').textContent = 'ошибка чтения'; });
+    }
+  } catch (e) {
+    cont.innerHTML = `<div class="muted-box">Ошибка: ${e.message}</div>`;
+  }
+}
+
+// простой парсер frontmatter
+function parseFrontmatter(text) {
+  const m = {};
+  if (!text.startsWith('---')) return m;
+  const end = text.indexOf('\n---', 3);
+  if (end < 0) return m;
+  const block = text.slice(3, end);
+  block.split('\n').forEach(line => {
+    const i = line.indexOf(':');
+    if (i > 0) {
+      let k = line.slice(0, i).trim();
+      let v = line.slice(i+1).trim().replace(/^["']|["']$/g, '');
+      m[k] = v;
+    }
+  });
+  m._body = text.slice(end + 4).trim();
+  return m;
+}
+
+// ═══════════ Редактирование ═══════════
+async function editPost(path, sha, lang) {
+  try {
+    toast('Загружаю статью...');
+    const r = await fetch(`${API}/repos/${REPO}/contents/${path}?ref=${BRANCH}`, { headers: ghHeaders() });
+    if (!r.ok) throw new Error('Ошибка ' + r.status);
+    const data = await r.json();
+    const text = base64ToUtf8(data.content.replace(/\n/g,''));
+    const meta = parseFrontmatter(text);
+
+    document.getElementById('fLang').value = lang;
+    document.getElementById('fTitle').value = meta.title || '';
+    document.getElementById('fLead').value = meta.lead || '';
+    document.getElementById('fCategory').value = meta.category || 'announcements';
+    document.getElementById('fEmoji').value = meta.cover_emoji || '🚀';
+    document.getElementById('fRead').value = meta.read_time || '5';
+    document.getElementById('fMeta').value = meta.meta_description || '';
+    document.getElementById('fDate').value = (meta.date || '').slice(0,10) || new Date().toISOString().slice(0,10);
+    document.getElementById('fPublished').value = (meta.published === 'false' || meta.published === false) ? 'false' : 'true';
+    document.getElementById('fBody').value = meta._body || '';
+    document.getElementById('editSha').value = data.sha;
+    document.getElementById('editPath').value = path;
+    document.getElementById('publishBtn').textContent = '💾 Сохранить изменения';
+    updateSlug();
+    switchTab('new');
+    window.scrollTo(0, 0);
+    toast('Статья загружена для редактирования', 'success');
+  } catch (e) {
+    toast('Ошибка: ' + e.message, 'error');
+  }
+}
+
+// ═══════════ Удаление ═══════════
+async function deletePost(path, sha, name) {
+  if (!confirm(`Удалить статью «${name}»? Это действие нельзя отменить.`)) return;
+  try {
+    const r = await fetch(`${API}/repos/${REPO}/contents/${path}`, {
+      method: 'DELETE',
+      headers: ghHeaders(),
+      body: JSON.stringify({ message: 'Удалена статья: ' + name, sha: sha, branch: BRANCH })
+    });
+    if (!r.ok) { const e = await r.json().catch(()=>({})); throw new Error(e.message || 'Ошибка ' + r.status); }
+    toast('Статья удалена ✓', 'success');
+    loadPosts();
+  } catch (e) {
+    toast('Ошибка: ' + e.message, 'error');
+  }
+}
+
+// ═══════════ Старт ═══════════
+if (TOKEN) {
+  // авто-вход если токен сохранён
+  fetch(`${API}/repos/${REPO}`, { headers: ghHeaders() }).then(r => {
+    if (r.ok) showApp();
+    else { localStorage.removeItem('tf_gh_token'); TOKEN=''; }
+  }).catch(() => {});
+}
+</script>
+</body>
+</html>
