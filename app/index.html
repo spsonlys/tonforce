@@ -199,6 +199,12 @@ body::before {
  font-weight: 800;
  letter-spacing: -0.03em;
 }
+.cur-tag {
+ font-size: 14px;
+ font-weight: 700;
+ opacity: 0.7;
+ letter-spacing: 0;
+}
 .info {
  font-size: 13px;
  color: #dbe6fa;
@@ -307,6 +313,29 @@ body::before {
  border-color: rgba(72, 207, 255, 0.30);
  transform: translateY(-1px);
 }
+/* Плашка-пояснение про ребрендинг TON → Gram */
+.rebrand-note {
+ display: flex; align-items: center; gap: 12px;
+ background: linear-gradient(135deg, rgba(72,207,255,0.12), rgba(124,109,255,0.1));
+ border: 1px solid rgba(72,207,255,0.28);
+ border-radius: 18px;
+ padding: 13px 15px;
+ margin-bottom: 12px;
+ box-shadow: inset 0 1px 0 rgba(255,255,255,0.05);
+}
+.rebrand-icon {
+ width: 36px; height: 36px; flex-shrink: 0;
+ border-radius: 11px;
+ background: rgba(72,207,255,0.16);
+ display: flex; align-items: center; justify-content: center;
+ color: var(--cyan);
+ box-shadow: inset 0 0 0 1px rgba(72,207,255,0.3);
+}
+.rebrand-icon svg { width: 22px; height: 22px; }
+.rebrand-text {
+ font-size: 12px; line-height: 1.4; color: #d4e7fb;
+}
+.rebrand-text b { color: #fff; font-weight: 800; }
 .stats {
  display: grid;
  grid-template-columns: repeat(3, 1fr);
@@ -1395,6 +1424,13 @@ body::before {
  </div>
  </div>
 
+ <div class="rebrand-note" id="rebrandNote">
+ <div class="rebrand-icon">
+ <svg viewBox="0 0 56 56" fill="currentColor"><path d="M28 5C15.3 5 5 15.3 5 28s10.3 23 23 23 23-10.3 23-23S40.7 5 28 5zm-9.6 14.1h19.2c1.9 0 3.1 2.1 2.1 3.8L29.7 41.6c-.8 1.4-2.7 1.4-3.5 0L16.3 22.9c-1-1.7.2-3.8 2.1-3.8zm9.6 3.4h-7.1l7.1 12.6V22.5zm0 0v12.6l7.1-12.6H28z"/></svg>
+ </div>
+ <div class="rebrand-text" data-i18n="rebrand_note"><b>TON теперь называется Gram</b> — это та же монета. Все суммы в приложении одинаковы, ничего делать не нужно.</div>
+ </div>
+
  <div class="stats hidden" id="statsBlock">
  <div class="stat">
  <div class="stat-icon stat-icon--users"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><path d="M3.5 19c0-3 2.5-4.8 5.5-4.8s5.5 1.8 5.5 4.8"/><path d="M16 5.2a3 3 0 0 1 0 5.6M20.5 19c0-2.6-1.7-4.3-4-4.7"/></svg></div>
@@ -1432,7 +1468,7 @@ body::before {
  </button>
  </div>
  <button class="button" id="regBtn" onclick="register()" style="display:none;">
- ⚡️ <span data-i18n="join_btn">АКТИВИРОВАТЬ ЗА</span> <span id="regBtnPrice">5</span> TON
+ ⚡️ <span data-i18n="join_btn">АКТИВИРОВАТЬ ЗА</span> <span id="regBtnPrice">5</span> <span class="cur-suffix">TON</span>
  </button>
  </div>
  </div>
@@ -1615,6 +1651,11 @@ const BOT_USERNAME = 'tonforce_bot';
 const OWNER_WALLET_RAW = '0:e598cd4dc0b5aaa47ab9a5e452c0f0e8729408d36121ffcc60b1e48a82028941';
 const TONCENTER_KEY = '105893705d1e384d248d96788d322fa38ab967bfe6eaa1077039b43ed4b89977';
 const BOT_API_URL = 'https://web-production-7d6ce.up.railway.app';
+// Обозначение валюты. TON переименован в Gram (та же монета).
+// Показываем "TON (Gram)" чтобы никто не путался. Чтобы позже оставить только "Gram" —
+// поменяйте CUR на 'Gram'. CUR — короткая подпись у крупных сумм, CUR_MINI — компактная.
+const CUR = 'TON (Gram)';
+const CUR_MINI = 'TON';
 
 const LEVELS = [
  { level: 1, price: 5,     name: '💵 Starter',  nameRu: 'Стартер',     nameUa: 'Стартер',     income: 15,    slots: 2,   tier: 'starter' },
@@ -1648,7 +1689,7 @@ const I18N = {
  how_works:'КАК ЭТО РАБОТАЕТ',
  rule_1:'▸ Матрица 3×8 — каждый привлекает до 3 рефералов', rule_2:'▸ 8 уровней с умножением цены ×3',
  rule_3:'▸ Уровень активен 365 дней', rule_4:'▸ Выплаты идут вверх по дереву автоматически',
- rule_5:'▸ Всё на TON блокчейне',
+ rule_5:'▸ Всё на TON блокчейне', rebrand_note:'<b>TON теперь называется Gram</b> — это та же монета. Все суммы в приложении одинаковы, ничего делать не нужно.',
  prices:'ЦЕНЫ УРОВНЕЙ', admin:'АДМИН ПАНЕЛЬ', total_users:'ВСЕГО УЧАСТНИКОВ', contract_balance:'БАЛАНС КОНТРАКТА',
  my_earnings:'МОЙ ЗАРАБОТОК', contract_addr:'АДРЕС КОНТРАКТА', copy_addr:'СКОПИРОВАТЬ АДРЕС',
  nav_matrix:'МАТРИЦА', nav_tree:'ДЕРЕВО', nav_top:'ТОП', nav_history:'ИСТОРИЯ', nav_info:'КАЛЬК', nav_admin:'АДМИН', nav_more:'ЕЩЁ', write_tg:'Написать в Telegram', tree_you_sub:'Вы', tree_partner:'Партнёр', tree_open_slot:'Свободно', invite_tg:'Пригласить', tree_active:'Активен', show_full_tree:'ПОКАЗАТЬ ВСЁ ДЕРЕВО', hide_full_tree:'СКРЫТЬ ДЕРЕВО', full_tree:'ВСЯ СТРУКТУРА', ft_loading:'Загрузка структуры...', ft_empty:'Пока нет партнёров в структуре', ft_error:'Не удалось загрузить дерево', ft_level:'Уровень', ft_people:'чел.', no_contact:'Контакт реферала пока неизвестен. Адрес скопирован. Он появится для связи после того, как реферал зайдёт в приложение.', no_contact_short:'Контакт неизвестен',
@@ -1671,7 +1712,7 @@ const I18N = {
  how_works:'HOW IT WORKS',
  rule_1:'▸ Matrix 3×8 — each invites up to 3 refs', rule_2:'▸ 8 levels with ×3 price multiplier',
  rule_3:'▸ Level active for 365 days', rule_4:'▸ Payouts flow up the tree automatically',
- rule_5:'▸ All on TON blockchain',
+ rule_5:'▸ All on TON blockchain', rebrand_note:'<b>TON is now called Gram</b> — it is the same coin. All amounts stay the same, nothing to do.',
  prices:'LEVEL PRICES', admin:'ADMIN PANEL', total_users:'TOTAL USERS', contract_balance:'CONTRACT BALANCE',
  my_earnings:'MY EARNINGS', contract_addr:'CONTRACT ADDRESS', copy_addr:'COPY ADDRESS',
  nav_matrix:'MATRIX', nav_tree:'TREE', nav_top:'TOP', nav_history:'HISTORY', nav_info:'CALC', nav_admin:'ADMIN', nav_more:'MORE', write_tg:'Message on Telegram', tree_you_sub:'You', tree_partner:'Partner', tree_open_slot:'Open slot', invite_tg:'Invite', tree_active:'Active', show_full_tree:'SHOW FULL TREE', hide_full_tree:'HIDE TREE', full_tree:'FULL STRUCTURE', ft_loading:'Loading structure...', ft_empty:'No partners in structure yet', ft_error:'Failed to load tree', ft_level:'Level', ft_people:'ppl', no_contact:'Referral contact is not available yet. Address copied. It will appear once the referral opens the app.', no_contact_short:'No contact yet',
@@ -1694,7 +1735,7 @@ const I18N = {
  how_works:'ЯК ЦЕ ПРАЦЮЄ',
  rule_1:'▸ Матриця 3×8 — кожен запрошує до 3 рефералів', rule_2:'▸ 8 рівнів з множенням ціни ×3',
  rule_3:'▸ Рівень активний 365 днів', rule_4:'▸ Виплати йдуть вгору автоматично',
- rule_5:'▸ Все на TON блокчейні',
+ rule_5:'▸ Все на TON блокчейні', rebrand_note:'<b>TON тепер називається Gram</b> — це та сама монета. Усі суми однакові, нічого робити не потрібно.',
  prices:'ЦІНИ РІВНІВ', admin:'АДМІН ПАНЕЛЬ', total_users:'ВСЬОГО УЧАСНИКІВ', contract_balance:'БАЛАНС КОНТРАКТУ',
  my_earnings:'МІЙ ЗАРОБІТОК', contract_addr:'АДРЕСА КОНТРАКТУ', copy_addr:'СКОПІЮВАТИ',
  nav_matrix:'МАТРИЦЯ', nav_tree:'ДЕРЕВО', nav_top:'ТОП', nav_history:'ІСТОРІЯ', nav_info:'КАЛЬК', nav_admin:'АДМІН', nav_more:'ЩЕ', write_tg:'Написати в Telegram', tree_you_sub:'Ви', tree_partner:'Партнер', tree_open_slot:'Вільно', invite_tg:'Запросити', tree_active:'Активний', show_full_tree:'ПОКАЗАТИ ВСЕ ДЕРЕВО', hide_full_tree:'СХОВАТИ ДЕРЕВО', full_tree:'УСЯ СТРУКТУРА', ft_loading:'Завантаження структури...', ft_empty:'Поки немає партнерів у структурі', ft_error:'Не вдалося завантажити дерево', ft_level:'Рівень', ft_people:'осіб', no_contact:'Контакт реферала поки невідомий. Адресу скопійовано. Він з’явиться після того, як реферал зайде в додаток.', no_contact_short:'Контакт невідомий',
@@ -1716,6 +1757,7 @@ function setLang(lang) {
  applyI18n();
 }
 function t(key) { return I18N[currentLang]?.[key] || key; }
+const I18N_HTML_KEYS = ['rebrand_note']; // эти переводы содержат HTML-разметку
 function applyI18n() {
  document.querySelectorAll('[data-i18n]').forEach(el => {
    const key = el.dataset.i18n;
@@ -1724,7 +1766,8 @@ function applyI18n() {
    if (el.closest('#connStatus') && walletAddress) return;
    // Не перезаписываем userInfo если кошелёк подключён
    if (el.closest('#userInfo') && walletAddress) return;
-   el.textContent = I18N[currentLang][key];
+   if (I18N_HTML_KEYS.includes(key)) el.innerHTML = I18N[currentLang][key];
+   else el.textContent = I18N[currentLang][key];
  });
  if (userState.registered) renderLevels();
  renderPriceTable();
@@ -1781,7 +1824,7 @@ tonConnectUI.onStatusChange(wallet => {
  const statRefsEl = document.getElementById('statRefs'); if (statRefsEl) statRefsEl.textContent = '0';
  const statLevelEl = document.getElementById('statLevel'); if (statLevelEl) statLevelEl.textContent = '0';
  const statIncEl = document.getElementById('statIncome'); if (statIncEl) statIncEl.textContent = '0';
- const totIncEl = document.getElementById('totalIncome'); if (totIncEl) totIncEl.textContent = '0.00 TON';
+ const totIncEl = document.getElementById('totalIncome'); if (totIncEl) totIncEl.textContent = '0.00 ' + CUR_MINI;
 
  saveMyTelegramData();
  const myName = getUserDisplayName(walletAddress);
@@ -1809,7 +1852,7 @@ tonConnectUI.onStatusChange(wallet => {
  const statRefsEl = document.getElementById('statRefs'); if (statRefsEl) statRefsEl.textContent = '0';
  const statLevelEl = document.getElementById('statLevel'); if (statLevelEl) statLevelEl.textContent = '0';
  const statIncEl = document.getElementById('statIncome'); if (statIncEl) statIncEl.textContent = '0';
- const totIncEl = document.getElementById('totalIncome'); if (totIncEl) totIncEl.textContent = '0.00 TON';
+ const totIncEl = document.getElementById('totalIncome'); if (totIncEl) totIncEl.textContent = '0.00 ' + CUR_MINI;
  // statUsers оставляем — это глобальное число, не зависит от пользователя
  document.getElementById('refLink').textContent = '—';
  updateNavigationVisibility();
@@ -1848,10 +1891,10 @@ async function loadUserData() {
  document.getElementById('statRefs').textContent = refCount;
  document.getElementById('statLevel').textContent = isRegistered ? String(activeLvl) : '0';
  const statIncomeEl = document.getElementById('statIncome'); if (statIncomeEl) statIncomeEl.textContent = formatTon(income);
- const totalIncomeEl = document.getElementById('totalIncome'); if (totalIncomeEl) totalIncomeEl.textContent = income.toFixed(2) + ' TON';
+ const totalIncomeEl = document.getElementById('totalIncome'); if (totalIncomeEl) totalIncomeEl.textContent = income.toFixed(2) + ' ' + CUR_MINI;
  document.getElementById('treeActiveRefs').textContent = refCount;
  document.getElementById('treeOpenSlots').textContent = Math.max(0, 3 - refCount);
- document.getElementById('treeEarned').textContent = formatTon(income) + ' TON';
+ document.getElementById('treeEarned').textContent = formatTon(income) + ' ' + CUR_MINI;
  updateRefLink(); renderTree(); renderDashboard();
 }
 // Оценка суммарного дохода: сумма income активных уровней × число рефералов (грубая оценка для UI)
@@ -1883,7 +1926,7 @@ async function loadHistory() {
  const badge = isIn
    ? `<span class="history-badge in">${t('received') || 'Получено'}</span>`
    : `<span class="history-badge out">${t('sent') || 'Отправлено'}</span>`;
- return `<div class="card"><div class="history-item"><div class="history-icon ${isIn ? 'in' : 'out'}">${isIn ? '↓' : '↑'}</div><div class="history-info"><div class="history-title">${isIn ? t('received') : t('sent')} ${badge}</div><div class="history-time">${timeStr}</div></div><div class="history-amount ${isIn ? 'in' : 'out'}">${isIn ? '+' : '-'}${value.toFixed(3)} TON</div></div></div>`;
+ return `<div class="card"><div class="history-item"><div class="history-icon ${isIn ? 'in' : 'out'}">${isIn ? '↓' : '↑'}</div><div class="history-info"><div class="history-title">${isIn ? t('received') : t('sent')} ${badge}</div><div class="history-time">${timeStr}</div></div><div class="history-amount ${isIn ? 'in' : 'out'}">${isIn ? '+' : '-'}${value.toFixed(3)} ${CUR_MINI}</div></div></div>`;
  }).join('');
  } catch(e) {}
 }
@@ -1939,7 +1982,7 @@ async function renderLeaderboard() {
        <div class="lb-name">${escapeHtml(displayName)}</div>
        <div class="lb-stat">${escapeHtml(shortA)} · ${item.refs} ${refsLabel}</div>
      </div>
-     <div class="lb-value">${item.earnings.toFixed(2)} TON</div>
+     <div class="lb-value">${item.earnings.toFixed(2)} ${CUR_MINI}</div>
    </div></div>`;
  }).join('');
 }
@@ -2024,7 +2067,7 @@ function renderLevels() {
  if (isActive) {
    actionHtml = `<button class="button gold" onclick="buyLevel(${level})">+365 ${t('days_left')}</button>`;
  } else if (canBuy) {
-   actionHtml = `<button class="button" onclick="buyLevel(${level})">⚡ ${t('activate')} ${price} TON</button>`;
+   actionHtml = `<button class="button" onclick="buyLevel(${level})">⚡ ${t('activate')} ${price} ${CUR_MINI}</button>`;
  } else {
    actionHtml = `<div class="lock-text">🔒 ${t('locked_text')}</div>`;
  }
@@ -2036,11 +2079,11 @@ function renderLevels() {
        ${activeBadge}
      </div>
      <div class="name">${displayName}</div>
-     <div class="price">${price} TON</div>
+     <div class="price">${price} <span class="cur-tag">${CUR}</span></div>
      <div class="info-grid">
        <div class="info-cell">
          <div class="info-cell-label">${t('income') || 'INCOME'}</div>
-         <div class="info-cell-value income-up">${income} TON</div>
+         <div class="info-cell-value income-up">${income} ${CUR_MINI}</div>
        </div>
        <div class="info-cell">
          <div class="info-cell-label">${t('slots') || 'SLOTS'}</div>
@@ -2102,7 +2145,7 @@ async function renderTree() {
  document.getElementById('treeActiveRefs').textContent = realCount;
  document.getElementById('treeOpenSlots').textContent = Math.max(0, 3 - realCount);
  const earned = userState.earnings || (realCount * 5);
- document.getElementById('treeEarned').textContent = earned.toFixed(1) + ' TON';
+ document.getElementById('treeEarned').textContent = earned.toFixed(1) + ' ' + CUR_MINI;
 
  if (!walletAddress || realCount === 0) return;
 
@@ -2544,9 +2587,9 @@ function copyTextToClipboard(text) {
 function copyContract() { navigator.clipboard.writeText(CONTRACT_ADDRESS).then(() => showToast(t('copied'), 'success')); }
 function renderPriceTable() {
   const el = document.getElementById('priceTable');
-  el.innerHTML = LEVELS.map((lvl) => `<div class="info-line"><span class="lbl">L${lvl.level} · ${getLevelName(lvl)}</span><span class="val">${lvl.price} TON</span></div>`).join('');
+  el.innerHTML = LEVELS.map((lvl) => `<div class="info-line"><span class="lbl">L${lvl.level} · ${getLevelName(lvl)}</span><span class="val">${lvl.price} ${CUR_MINI}</span></div>`).join('');
 }
-function calculateIncome() { const refs = parseInt(document.getElementById('calcRefs').value) || 0; const lvls = parseInt(document.getElementById('calcLevels').value) || 0; let total = 0; for (let i = 1; i <= Math.min(lvls, 8); i++) total += LEVELS[i - 1].price * refs; document.getElementById('calcResult').textContent = total.toFixed(2) + ' TON'; }
+function calculateIncome() { const refs = parseInt(document.getElementById('calcRefs').value) || 0; const lvls = parseInt(document.getElementById('calcLevels').value) || 0; let total = 0; for (let i = 1; i <= Math.min(lvls, 8); i++) total += LEVELS[i - 1].price * refs; document.getElementById('calcResult').textContent = total.toFixed(2) + ' ' + CUR; }
 async function register() { if (!walletAddress) { showToast(t('need_wallet'), 'error'); return; } const refID = parseInt(document.getElementById('refInput').value) || 1; const btn = document.getElementById('regBtn'); btn.disabled = true; const oldText = btn.innerHTML; btn.innerHTML = '⏳ ...'; try { const cell = await buildCell(0xc670f579, refID); const regAmount = LEVELS[0].price + 0.2; await tonConnectUI.sendTransaction({ validUntil: Math.floor(Date.now() / 1000) + 600, messages: [{address: CONTRACT_ADDRESS, amount: String(Math.floor(regAmount * 1e9)), payload: cell}] }); showToast(t('tx_sent'), 'success'); saveMyTelegramData(); if (tg?.sendData && refID > 1) { try { const payload = JSON.stringify({ action: 'registered', wallet: walletAddress, referrerID: refID, telegram: tg.initDataUnsafe?.user || null, ts: Date.now() }); setTimeout(() => { try { tg.sendData(payload); } catch(e) {} }, 30000); } catch(e) {} } setTimeout(() => loadUserData(), 8000); setTimeout(() => loadUserData(), 16000); setTimeout(() => loadUserData(), 25000); } catch(e) { showToast(t('tx_error'), 'error'); } btn.disabled = false; btn.innerHTML = oldText; }
 async function buyLevel(level) { if (!walletAddress) { showToast(t('need_wallet'), 'error'); return; } const price = LEVELS[level - 1].price; try { const cell = await buildCellLevel(0x03398cc8, level); await tonConnectUI.sendTransaction({ validUntil: Math.floor(Date.now() / 1000) + 600, messages: [{address: CONTRACT_ADDRESS, amount: String(Math.floor((price + 0.2) * 1e9)), payload: cell}] }); showToast(t('tx_sent'), 'success'); setTimeout(() => loadUserData(), 8000); setTimeout(() => loadUserData(), 16000); setTimeout(() => loadUserData(), 25000); } catch(e) { showToast(t('tx_error'), 'error'); } }
 async function buildCell(op, referrerID) { const cell = new TonWeb.boc.Cell(); cell.bits.writeUint(op, 32); cell.bits.writeUint(referrerID, 32); const boc = await cell.toBoc(false); return TonWeb.utils.bytesToBase64(boc); }
@@ -2625,6 +2668,7 @@ async function registerWithBackend(wallet, tgUser) {
 }
 async function syncNamesFromBackend() { if (!BOT_API_URL) return; try { const res = await fetch(BOT_API_URL.replace(/\/$/, '') + '/api/names', { method: 'GET' }); if (!res.ok) return; const remote = await res.json(); const local = loadNamesRegistry(); for (const [wallet, data] of Object.entries(remote)) { const existing = local[wallet]; if (!existing || (data.saved_at || 0) > (existing.saved_at || 0)) local[wallet] = { username: data.username || existing?.username || null, first_name: data.first_name || existing?.first_name || null, tg_id: data.tg_id || existing?.tg_id || null, photo_url: data.photo_url || existing?.photo_url || null, saved_at: data.saved_at || Date.now() }; } saveNamesRegistry(local); if (walletAddress) renderTree(); const lbPage = document.getElementById('pageLeaderboard'); if (lbPage && !lbPage.classList.contains('hidden')) renderLeaderboard(); } catch(e) {} }
 document.addEventListener('DOMContentLoaded', () => {
+ document.querySelectorAll('.cur-suffix').forEach(el => el.textContent = CUR_MINI);
  setLang(currentLang); renderPriceTable(); calculateIncome(); renderTree(); syncNamesFromBackend(); updateNavigationVisibility();
  // Подставляем цену уровня 1 в кнопку регистрации (динамически из LEVELS[0])
  const regPriceEl = document.getElementById('regBtnPrice');
